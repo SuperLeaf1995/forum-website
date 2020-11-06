@@ -39,7 +39,7 @@
 	
 	<h2>Add comment</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
-		<input type='text' name='id' style='display:none;' value='{{ post.id }}'>
+		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
 		<input type='submit'>
 	</form>

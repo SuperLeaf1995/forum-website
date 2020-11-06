@@ -5,7 +5,7 @@
 <p>{{ edit_error }}</p>
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action='/post/edit'>
-	<input type='text' name='id' style='display:none;' value='{{ data.id }}'>
+	<input type='text' name='pid' style='display:none;' value='{{ data.id }}'>
 	<span>Name</span>
 	<input class='textbar-normal' type='text' name='name' placeholder='Title of resource' value='{{ data.name }}'></br>
 	<span>Description</span>

@@ -16,11 +16,6 @@ from sqlalchemy.orm import joinedload
 
 board = Blueprint('board',__name__,template_folder='templates')
 
-import random
-def create_unique_identifier(n=250):
-	string = str(''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',k=n)))
-	return string
-
 @board.route('/board/view/<bid>', methods = ['GET'])
 @login_wanted
 def view(u=None,uid=None):
@@ -59,6 +54,52 @@ def view_by_name(u=None,name=None):
 	
 	# Only 1 board exists with that name
 	return redirect(f'/board/view/{board[0].unique_identifier}')
+
+@board.route('/board/edit', methods = ['GET','POST'])
+@login_required
+def edit(u=None):
+	try:
+		db = open_db()
+		
+		bid = request.values.get('bid')
+		
+		board = db.query(Board).filter_by(id=bid).first()
+		if board is None:
+			abort(404)
+		
+		if request.method == 'POST':
+			name = request.values.get('name')
+			descr = request.values.get('descr')
+			category = request.values.get('category')
+			keywords = request.values.get('keywords')
+			
+			if u.mods(board.id) == False:
+				raise XaieconException('Not authorized')
+			
+			category = db.query(Category).filter_by(name=category).first()
+			if category is None:
+				raise XaieconException('Not a valid category')
+			
+			board = Board(
+				name=name,
+				descr=descr,
+				category_id=category.id,
+				keywords=keywords)
+			
+			db.add(board)
+			db.commit()
+			
+			db.refresh(board)
+			
+			db.close()
+			return redirect(f'/board/view/{board.id}')
+		else:
+			category = db.query(Category).all()
+			db.close()
+			return render_template('board/edit.html',u=u,title = 'New board',categories=category,board=board)
+	except XaieconException as e:
+		db.close()
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @board.route('/board/new', methods = ['GET','POST'])
 @login_required

@@ -35,11 +35,6 @@ from sqlalchemy import desc
 
 posts = Blueprint('posts',__name__,template_folder='templates/posts')
 
-import random
-def create_unique_identifier(n=250):
-	string = str(''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',k=n)))
-	return string
-
 @posts.route('/post/vote', methods = ['GET','POST'])
 @login_required
 def vote(u=None):

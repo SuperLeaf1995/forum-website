@@ -98,6 +98,11 @@ def create(u=None):
 		body = request.form.get('body')
 		pid = request.form.get('pid')
 		
+		# Post exists in first place?
+		post = db.query(Post).filter_by(id=pid).first()
+		if post is None:
+			abort(404)
+		
 		# Add comment
 		comment = Comment(body=body,user_id=u.id,post_id=pid)
 		db.add(comment)

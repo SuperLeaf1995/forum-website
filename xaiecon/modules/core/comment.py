@@ -93,4 +93,33 @@ def create(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
+@comment.route('comment/<cid>/reply', methods = ['POST'])
+@login_required
+def reply(u=None, cid=None):
+	try:
+		db = open_db()
+
+		body = request.form.get('body')
+
+		# Get parent comment
+		comment = db.query(Comment).filter_by(id=cid).first()
+
+		# Increment number of comments
+		post = db.query(Post).filter_by(unique_identifier=comment.id).first()
+		if post is None:
+			abort(404)
+		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
+
+		# Add reply
+		reply = Comment(body=body,user_id=u.id,comment_id=cid)
+		db.add(reply)
+		
+		db.commit()
+		
+		db.close()
+
+		return redirect(f'/post/view{post.id}')
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
 print('Comment ... ok')

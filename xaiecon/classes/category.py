@@ -16,11 +16,3 @@ class Category(Base):
 	
 	def __repr__(self):
 		return 'Category(%r,%r)' % (self.name,self.creation_date)
-
-CREATE TABLE xaiecon_oauth_app(
-	id SERIAL PRIMARY KEY,
-	client_id VARCHAR(128) NOT NULL,
-	client_secret VARCHAR(128) NOT NULL,
-	app_name VARCHAR(128),
-	user_id INT REFERENCES xaiecon_users(id)
-);

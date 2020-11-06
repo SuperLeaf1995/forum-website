@@ -13,6 +13,9 @@
 	<input class='textbar-normal' type='password' name='password' value='{{ request.form.password }}'></br>
 	<span>Repeat password:</span>
 	<input class='textbar-normal' type='password' name='password_double' value='{{ request.form.password_double }}'></br>
+	
+	{{ hcaptcha }}
+	
 	<input type='checkbox' name='agree_tos'>I agree with the <a href='/legal/terms'>Terms of Service</a>
 	, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></input></br>
 	<input type='submit'></br>

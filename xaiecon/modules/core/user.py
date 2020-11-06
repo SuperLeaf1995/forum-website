@@ -4,6 +4,7 @@
 #
 
 from flask import Blueprint, render_template, session, request, redirect, abort
+
 from werkzeug.security import check_password_hash, generate_password_hash
 from xaiecon.cache import cache
 
@@ -11,6 +12,7 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.user import *
 from xaiecon.classes.exception import *
 
+from xaiecon.modules.core.hcaptcha import *
 from xaiecon.modules.core.wrappers import *
 
 from distutils.util import *
@@ -29,6 +31,9 @@ def create_unique_identifier(n=250):
 def user_login(u=None):
 	try:
 		if request.method == 'POST':
+			if not hcaptcha.verify():
+				raise XaieconException('Please complete hcaptcha')
+			
 			if len(request.form.get('password')) <= 0:
 				raise XaieconException('Please input a password')
 			if len(request.form.get('username')) <= 0:

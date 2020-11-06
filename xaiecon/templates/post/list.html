@@ -5,5 +5,7 @@
 		{% for post in posts %}
 			{% include 'post/brief.html' %}
 		{% endfor %}
+	{% else %}
+	<p>No posts yet</p>
 	{% endif %}
 {% endblock %}

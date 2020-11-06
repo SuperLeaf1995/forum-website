@@ -1,8 +1,14 @@
 <div class='post-brief' style='overflow:auto;'>
 	<div style='height:100%;float:left;'>
-		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value != 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
+	{% if u.id != 1 %}
+		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
-		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value != -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>
+		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>
+	{% else %}
+		<a tabindex=0 class='content-upvote'>&#11165;</a>
+		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+		<a tabindex=0 class='content-downvote'>&#11167;</a>
+	{% endif %}
 	</div>
 	
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>

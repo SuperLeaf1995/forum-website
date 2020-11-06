@@ -1,4 +1,4 @@
-from flask import *
+from flask import Blueprint
 
 from xaiecon.modules.core.legal import legal
 from xaiecon.modules.core.posts import posts
@@ -11,7 +11,7 @@ from xaiecon.modules.core.board import board
 from xaiecon.modules.core.fediverse import fediverse
 
 # Register modules
-def register_all_modules(app):
+def register_all_modules(app=None):
 	app.register_blueprint(legal)
 	app.register_blueprint(posts)
 	app.register_blueprint(comment)

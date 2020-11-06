@@ -325,9 +325,10 @@ def write(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@posts.route('/post/view/<pid>', methods = ['GET'])
+@posts.route('/post/view', methods = ['GET'])
 @login_wanted
-def view(u=None,pid=None):
+def view(u=None):
+	pid = request.values.get('pid')
 	if pid == None:
 		abort(404)
 	
@@ -388,7 +389,7 @@ def list(u=None):
 		if len(p.body) > 80:
 			p.body = f'{p.body[:75]} ...'
 	
-	res = render_template('post/list.html',u=u,title = 'Post frontpage',posts = post)
+	res = render_template('post/list.html',u=u,title='Post frontpage',posts=post)
 	
 	db.close()
 	

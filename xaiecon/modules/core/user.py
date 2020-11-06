@@ -31,9 +31,6 @@ def create_unique_identifier(n=250):
 def user_login(u=None):
 	try:
 		if request.method == 'POST':
-			if not hcaptcha.verify():
-				raise XaieconException('Please complete hcaptcha')
-			
 			if len(request.form.get('password')) <= 0:
 				raise XaieconException('Please input a password')
 			if len(request.form.get('username')) <= 0:
@@ -81,6 +78,9 @@ def user_login(u=None):
 def user_signup(u=None):
 	try:
 		if request.method == 'POST':
+			if not hcaptcha.verify():
+				raise XaieconException('Please complete hcaptcha')
+			
 			# Validate form data
 			if len(request.form.get('password')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')

@@ -66,7 +66,7 @@ def vote(u=None):
 		# Update vote count
 		downvotes = db.query(Vote).filter_by(post_id=pid,value=-1).count()
 		upvotes = db.query(Vote).filter_by(post_id=pid,value=1).count()
-		db.query(Post).filter_by(unique_identifier=pid).update({
+		db.query(Post).filter_by(id=pid).update({
 			'downvote_count':downvotes,
 			'upvote_count':upvotes,
 			'total_vote_count':upvotes-downvotes})

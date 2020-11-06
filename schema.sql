@@ -13,6 +13,8 @@ DROP TABLE IF EXISTS xaiecon_users;
 
 DROP TABLE IF EXISTS xaiecon_categories;
 
+DROP TABLE IF EXISTS xaiecon_oauth_app;
+
 CREATE TABLE xaiecon_users(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
@@ -115,6 +117,21 @@ CREATE TABLE xaiecon_serverchains(
 	is_share_boards BOOLEAN DEFAULT FALSE,
 	is_share_users BOOLEAN DEFAULT FALSE,
 	is_allow_cross_vote BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE xaiecon_board_ban_rel(
+	id SERIAL PRIMARY KEY,
+	expiration_date TIMESTAMP DEFAULT NOW(),
+	reason VARCHAR(255) NOT NULL,
+	user_id INT REFERENCES xaiecon_users(id)
+);
+
+CREATE TABLE xaiecon_api_app(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(128),
+	token VARCHAR(128),
+	creation_date TIMESTAMP DEFAULT NOW(),
+	user_id INT REFERENCES xaiecon_users(id)
 );
 
 INSERT INTO xaiecon_categories(name) VALUES

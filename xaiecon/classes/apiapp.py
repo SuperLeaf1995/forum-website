@@ -4,23 +4,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker, relationship
 from xaiecon.classes.base import Base
 
-class Category(Base):
-	__tablename__ = 'xaiecon_categories'
+# Note: Not actually OAuth
+class APIApp(Base):
+	__tablename__ = 'xaiecon_api_app'
 	
 	id = Column(Integer, primary_key=True)
-	name = Column(String(4095), nullable=False)
+	token = Column(String(128), nullable=False)
+	name = Column(String(128), nullable=True)
 	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+	
+	user_id = Column(Integer, ForeignKey('xaiecon_users.id'))
+	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):
 		super(Category, self).__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'Category(%r,%r)' % (self.name,self.creation_date)
-
-CREATE TABLE xaiecon_oauth_app(
-	id SERIAL PRIMARY KEY,
-	client_id VARCHAR(128) NOT NULL,
-	client_secret VARCHAR(128) NOT NULL,
-	app_name VARCHAR(128),
-	user_id INT REFERENCES xaiecon_users(id)
-);
+		return 'APIApp(%r,%r)' % (self.name,self.creation_date)

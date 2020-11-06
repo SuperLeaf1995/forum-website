@@ -59,7 +59,6 @@ function vote_post(id,value) {
 			status_change(id,value);
 		}
 	}
-	alert('Meme');
 	xhr.send(params);
 }
 

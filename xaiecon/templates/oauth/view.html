@@ -1,0 +1,11 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>My API Apps</h1>
+{% for app in apps %}
+	<h2>{{ app.name }}</h2>
+	<p>Token: {{ app.token }}</p>
+	
+	<a href='/apiapp/reroll?aid={{ app.id }}'>Reroll token</a>
+	<a href='/apiapp/delete?aid={{ app.id }}'>Delete</a>
+{% endfor %}
+{% endblock %}

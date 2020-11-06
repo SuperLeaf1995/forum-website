@@ -3,6 +3,7 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.user import *
 from functools import wraps
 
+# Wants user to be logged in, otherwise just gives him "guest"
 def login_wanted(f):
 	@wraps(f)
 	def wrapper(*args, **kwargs):

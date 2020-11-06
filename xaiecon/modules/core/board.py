@@ -108,11 +108,13 @@ def new(u=None):
 	try:
 		db = open_db()
 		if request.method == 'POST':
-			
 			name = request.values.get('name')
 			descr = request.values.get('descr')
 			category = request.values.get('category')
 			keywords = request.values.get('keywords')
+			
+			if db.query(Board).filter_by(user_id=u.id).count() > 30:
+				raise XaieconException('Limit of boards reached')
 			
 			category = db.query(Category).filter_by(name=category).first()
 			if category is None:

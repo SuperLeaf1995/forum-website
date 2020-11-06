@@ -15,8 +15,6 @@ class Board(Base):
 	keywords = Column(String(255), nullable=False)
 	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 	
-	unique_identifier = Column(String(255), nullable=False)
-	
 	category_id = Column(Integer, ForeignKey('xaiecon_categories.id'))
 	category_info = relationship('Category', foreign_keys=[category_id])
 	

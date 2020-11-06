@@ -55,7 +55,7 @@ def chaining_entry(u=None):
 			return '',400
 		db = open_db()
 		
-		server = Serverchain(ip_addr=ip_addr,name='TEST')
+		server = Serverchain(ip_addr=ip_addr,name='Chaining')
 		db.add(server)
 		db.commit()
 		

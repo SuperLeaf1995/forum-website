@@ -18,7 +18,7 @@
 		<span>Board to post to</span>
 		<select name='board'>
 			{% for board in boards %}
-			<option value='{{ board.unique_identifier }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
+			<option value='{{ board.id }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
 			{% endfor %}
 		</select>
 	{% endif %}

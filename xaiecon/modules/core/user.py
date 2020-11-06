@@ -133,19 +133,6 @@ def user_logout():
 	session.pop('id', None)
 	return redirect('/')
 
-@user.route('/u/<username>#<id>', methods = ['GET'])
-@login_wanted
-def user_view_like_discord(u=None,username=None,id=None):
-	db = open_db()
-	user = db.query(User).filter_by(username=username).all()
-	if user == None:
-		abort(404)
-	db.close()
-	
-	if len(user) == 1:
-		return redirect(f'/user/view/{user.unique_identifier}')
-	return redirect(f'/user/view/{user[id].unique_identifier}')
-
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted
 def user_view_by_username(u=None,username=None):
@@ -156,23 +143,23 @@ def user_view_by_username(u=None,username=None):
 	db.close()
 	
 	if len(user) == 1:
-		return redirect(f'/user/view/{user.unique_identifier}')
+		return redirect(f'/user/view/{user.id}')
 	return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 
-@user.route('/user/view/<unique_identifier>', methods = ['GET'])
+@user.route('/user/view/<id>', methods = ['GET'])
 @login_wanted
-def user_view_by_unique_identifier(u=None,unique_identifier=None):
+def user_view_by_unique_identifier(u=None,id=None):
 	db = open_db()
-	user = db.query(User).filter_by(unique_identifier=unique_identifier).first()
+	user = db.query(User).filter_by(id=id).first()
 	if user == None:
 		abort(404)
 	
 	db.close()
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
-@user.route('/user/edit/<uid>', methods = ['GET','POST'])
+@user.route('/user/edit/<id>', methods = ['GET','POST'])
 @login_required
-def user_edit(u=None,uid=None):
+def user_edit(u=None,id=None):
 	try:
 		if request.method == 'POST':
 			db = open_db()
@@ -208,7 +195,7 @@ def user_edit(u=None,uid=None):
 			
 			biography = request.form.get('biography')
 			
-			db.query(User).filter_by(unique_identifier=uid).update({
+			db.query(User).filter_by(id=id).update({
 						'biography':biography,
 						'email':email,
 						'is_show_email':is_show_email,

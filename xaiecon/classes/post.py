@@ -22,8 +22,6 @@ class Post(Base):
 	views = Column(Integer, default=1)
 	number_comments = Column(Integer, default=0)
 	
-	unique_identifier = Column(String(255), nullable=False)
-	
 	downvote_count = Column(Integer, default=1)
 	upvote_count = Column(Integer, default=1)
 	total_vote_count = Column(Integer, default=1)
@@ -46,4 +44,4 @@ class Post(Base):
 		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.descr,
 		self.link_url,self.is_link,self.is_nsfw,self.is_admin,self.keywords,
 		self.user_id,self.downvote_count,self.upvote_count,self.total_vote_count,
-		self.is_deleted,self.unique_identifier,self.category_id)
+		self.is_deleted,self.category_id)

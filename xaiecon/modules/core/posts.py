@@ -44,7 +44,7 @@ def create_unique_identifier(n=250):
 @login_required
 def vote(u=None):
 	try:
-		pid = request.values.get('id')
+		pid = request.values.get('pid')
 		val = int(request.values.get('value'))
 		
 		if pid is None or val is None or val not in [-1,1]:
@@ -52,26 +52,21 @@ def vote(u=None):
 		
 		db = open_db()
 		
-		post = db.query(Post).filter_by(unique_identifier=pid).first()
+		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
 		
-		vote = db.query(Vote).filter_by(user_id=u.id,post_id=post.id).first()
+		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
+		db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 		
-		if vote is not None and vote.value == val:
-			# Just delete vote
-			db.query(Vote).filter_by(user_id=u.id,post_id=post.id).delete()
-		else:
-			# Delete previous vote
-			db.query(Vote).filter_by(user_id=u.id,post_id=post.id).delete()
-			
+		if vote is None and vote.value != val:
 			# Create vote relation
 			vote = Vote(user_id=u.id,post_id=post.id,value=val)
 			db.add(vote)
 		
 		# Update vote count
-		downvotes = db.query(Vote).filter_by(post_id=post.id,value=-1).count()
-		upvotes = db.query(Vote).filter_by(post_id=post.id,value=1).count()
+		downvotes = db.query(Vote).filter_by(post_id=pid,value=-1).count()
+		upvotes = db.query(Vote).filter_by(post_id=pid,value=1).count()
 		db.query(Post).filter_by(unique_identifier=pid).update({
 			'downvote_count':downvotes,
 			'upvote_count':upvotes,
@@ -88,13 +83,14 @@ def vote(u=None):
 @login_required
 def ballot(u=None):
 	try:
-		id = request.values.get('id')
+		pid = request.values.get('pid')
 		
 		db = open_db()
 		
-		post = db.query(Post).filter_by(unique_identifier=id).first()
+		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
+		
 		vote = db.query(Vote).filter_by(post_id=post.id).options(joinedload('user_info')).all()
 		
 		db.close()
@@ -106,10 +102,10 @@ def ballot(u=None):
 @login_required
 def kick(u=None):
 	try:
-		uid = request.values.get('id')
+		pid = request.values.get('pid')
 		db = open_db()
 		if request.method == 'POST':
-			post = db.query(Post).filter_by(unique_identifier=uid).first()
+			post = db.query(Post).filter_by(id=pid).first()
 			
 			if post is None:
 				abort(404)
@@ -126,13 +122,13 @@ def kick(u=None):
 				raise XaieconException('Post cannot be kicked because is not in any board')
 			
 			# Change post's bid to none
-			db.query(Post).filter_by(unique_identifier=uid).update({'board_id':1})
+			db.query(Post).filter_by(id=pid).update({'board_id':1})
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view/{uid}')
+			return redirect(f'/post/view/{pid}')
 		else:
-			post = db.query(Post).filter_by(unique_identifier=uid).first()
+			post = db.query(Post).filter_by(id=pid).first()
 			db.close()
 			return render_template('post/kick.html',u=u,title='Kick post',post=post)
 	except XaieconException as e:
@@ -142,12 +138,12 @@ def kick(u=None):
 @login_required
 def yank(u=None):
 	try:
-		uid = request.values.get('id')
+		pid = request.values.get('pid')
 		db = open_db()
 		if request.method == 'POST':
-			buid = request.values.get('buid')
+			bid = request.values.get('bid')
 			
-			post = db.query(Post).filter_by(unique_identifier=uid).first()
+			post = db.query(Post).filter_by(id=pid).first()
 			
 			# User must be also mod of the post's origin board
 			# Or the post must not have a bid
@@ -156,24 +152,23 @@ def yank(u=None):
 			# If post is standalone or baord is not exists then just skip the
 			# auth
 			if board is not None or board.id == 1:
-				if not u.mods(board.unique_identifier) and u.is_admin == False:
+				if not u.mods(board.id) and u.is_admin == False:
 					raise XaieconException('You do not mod the origin board')
 				
 			# Check that user mods the board he is trying to yank to
-			if not u.mods(buid) and u.is_admin == False:
+			if not u.mods(bid) and u.is_admin == False:
 				raise XaieconException('You do not mod the target board')
 			
 			# Change post's bid
-			board = db.query(Board).filter_by(unique_identifier=buid).first()
-			bid = board.id
-			db.query(Post).filter_by(unique_identifier=uid).update({'board_id':bid})
+			board = db.query(Board).filter_by(id=bid).first()
+			db.query(Post).filter_by(id=pid).update({'board_id':board.id})
 			db.commit()
 			
 			db.close()
 			return redirect(f'/post/view/{uid}')
 		else:
 			boards = db.query(Board).filter_by(user_id=u.id).options(joinedload('user_info')).all()
-			post = db.query(Post).filter_by(unique_identifier=uid).first()
+			post = db.query(Post).filter_by(id=pid).first()
 			db.close()
 			return render_template('post/yank.html',u=u,title='Yank post',post=post,boards=boards)
 	except XaieconException as e:
@@ -183,11 +178,11 @@ def yank(u=None):
 @login_required
 def delete(u=None):
 	try:
-		id = request.values.get('id')
+		pid = request.values.get('pid')
 		
 		db = open_db()
 		
-		post = db.query(Post).filter_by(unique_identifier=id).first()
+		post = db.query(Post).filter_by(id=pid).first()
 		if post == None:
 			abort(404)
 		
@@ -195,7 +190,7 @@ def delete(u=None):
 			raise XaieconException('User is not authorized')
 		
 		# Set is_deleted to true
-		db.query(Post).filter_by(unique_identifier=id).update({
+		db.query(Post).filter_by(id=pid).update({
 			'is_deleted':True,
 			'body':'[deleted]'})
 		db.commit()
@@ -210,9 +205,9 @@ def edit(u=None):
 	try:
 		db = open_db()
 		
-		id = request.values.get('id')
+		pid = request.values.get('pid')
 		
-		post = db.query(Post).filter_by(unique_identifier=id).first()
+		post = db.query(Post).filter_by(id=pid).first()
 		
 		if u.id != post.user_id and u.is_admin == False:
 			raise XaieconException('User is not authorized')
@@ -242,7 +237,7 @@ def edit(u=None):
 				raise XaieconException('Empty name')
 			
 			# Update post entry on database
-			db.query(Post).filter_by(unique_identifier=id).update({
+			db.query(Post).filter_by(id=pid).update({
 						'keywords':keywords,
 						'body':description,
 						'is_link':is_link,
@@ -252,7 +247,7 @@ def edit(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view/{id}')
+			return redirect(f'/post/view/{pid}')
 		else:
 			db.close()
 			return render_template('post/edit.html',u=u,title = 'Edit',data = post)
@@ -270,7 +265,7 @@ def write(u=None):
 			name = request.form.get('name')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
-			buid = request.form.get('board')
+			bid = request.form.get('bid')
 			category = request.values.get('category')
 			
 			category = db.query(Category).filter_by(name=category).first()
@@ -292,7 +287,7 @@ def write(u=None):
 			if name is None or name == '':
 				raise XaieconException('Empty name')
 			
-			board = db.query(Board).filter_by(unique_identifier=buid).first()
+			board = db.query(Board).filter_by(id=bid).first()
 			if board is None:
 				raise XaieconException('Invalid board')
 			
@@ -305,7 +300,6 @@ def write(u=None):
 						is_link=is_link,
 						user_id=u.id,
 						is_nsfw=is_nsfw,
-						unique_identifier=create_unique_identifier(),
 						downvote_count=0,
 						upvote_count=0,
 						total_vote_count=0,
@@ -340,7 +334,7 @@ def view(u=None,pid=None):
 	db = open_db()
 	
 	# Query post from database
-	post = db.query(Post).filter_by(unique_identifier=pid).first()
+	post = db.query(Post).filter_by(id=pid).first()
 	if post is None:
 		abort(404)
 	comment = db.query(Comment).filter_by(post_id=post.id).order_by(desc(Comment.id)).all()
@@ -350,7 +344,7 @@ def view(u=None,pid=None):
 		abort(403)
 	
 	# Add one view
-	db.query(Post).filter_by(unique_identifier=pid).update({'views':post.views+1})
+	db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 	db.commit()
 	
 	res = render_template('post/details.html',u=u,title = post.title, post = post, comment = comment)

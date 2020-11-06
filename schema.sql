@@ -17,7 +17,6 @@ CREATE TABLE xaiecon_users(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
 	username VARCHAR(255) NOT NULL,
-	unique_identifier VARCHAR(255) NOT NULL,
 	creation_date TIMESTAMP DEFAULT NOW(),
 	biography VARCHAR(8000),
 	password VARCHAR(510) NOT NULL,
@@ -45,7 +44,6 @@ CREATE TABLE xaiecon_boards(
 	creation_date TIMESTAMP DEFAULT NOW(),
 	name VARCHAR(255),
 	descr VARCHAR(4095),
-	unique_identifier VARCHAR(255) NOT NULL,
 	keywords VARCHAR(255),
 	category_id INT REFERENCES xaiecon_categories(id),
 	user_id INT REFERENCES xaiecon_users(id)
@@ -66,7 +64,6 @@ CREATE TABLE xaiecon_posts(
 	downvote_count INT DEFAULT 0,
 	upvote_count INT DEFAULT 0,
 	total_vote_count INT DEFAULT 0,
-	unique_identifier VARCHAR(255) NOT NULL,
 	category_id INT REFERENCES xaiecon_categories(id),
 	user_id INT REFERENCES xaiecon_users(id),
 	board_id INT REFERENCES xaiecon_boards(id)
@@ -137,4 +134,4 @@ INSERT INTO xaiecon_categories(name) VALUES
 	('Videogames'),
 	('Other');
 
-INSERT INTO xaiecon_users(name,username,biography,password,auth_token,unique_identifier) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable','some_long_string')
+INSERT INTO xaiecon_users(name,username,biography,password,auth_token,id) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable','some_long_string')

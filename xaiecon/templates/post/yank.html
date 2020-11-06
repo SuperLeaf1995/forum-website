@@ -3,13 +3,13 @@
 <h1>Yank post</h1>
 <hr>
 <form enctype='multipart/form-data' method='POST' action='/post/yank'>
-	<input type='text' name='id' style='display:none;' value='{{ post.unique_identifier }}'>
+	<input type='text' name='id' style='display:none;' value='{{ post.id }}'>
 	{% if boards %}
 		<span>Board to yank to</span>
 		<select name='buid'>
 			{% for board in boards %}
-				{% if u.mods(board.unique_identifier) and post.board_id != board.id %}
-					<option value='{{ board.unique_identifier }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
+				{% if u.mods(board.id) and post.board_id != board.id %}
+					<option value='{{ board.id }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
 				{% endif %}
 			{% endfor %}
 		</select>

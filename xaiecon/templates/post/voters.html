@@ -3,7 +3,7 @@
 <h1>Voters</h1>
 {% if votes %}
 	{% for vote in votes%}
-		<p><a href='/user/view/{{ vote.user_info.unique_identifier }}'>/u/{{ vote.user_info.username }}</a> {{ vote.value }}</p>
+		<p><a href='/user/view/{{ vote.user_info.id }}'>/u/{{ vote.user_info.username }}</a> {{ vote.value }}</p>
 	{% endfor %}
 {% else %}
 <p>No downvotes or upvotes yes</p>

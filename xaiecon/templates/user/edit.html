@@ -1,7 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
 
-<form enctype='multipart/form-data' method='POST' action='/user/edit/{{ user.unique_identifier }}'>
+<form enctype='multipart/form-data' method='POST' action='/user/edit/{{ user.id }}'>
 	<h1>{{ user.username }}</h1>
 	<span>Biography</span>
 	<input class='textbar-normal' type='text' name='biography' value='{{ user.biography }}' placeholder='Biography'></br>

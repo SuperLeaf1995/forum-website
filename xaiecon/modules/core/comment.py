@@ -32,7 +32,7 @@ def vote(u=None):
 		cid = request.values.get('cid')
 		val = int(request.values.get('value'))
 		
-		if pid is None or val is None or val not in [-1,1]:
+		if cid is None or val is None or val not in [-1,1]:
 			abort(400)
 		
 		db = open_db()
@@ -66,6 +66,29 @@ def vote(u=None):
 	except XaieconException as e:
 		return jsonify({'error':e}),400
 
+@comment.route('/comment/<cid>/reply', methods = ['GET','POST'])
+@login_required
+def reply(u=None, cid=None):
+    try:
+        db = open_db()
+        body = request.form.get('body')
+        
+        # Increment number of comments
+        post = db.query(Post).filter_by(id=cid).first()
+        if post is None:
+            abort(404)
+        db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
+        
+        # Add reply
+        reply = Comment(body=body,user_id=u.id,comment_id=cid)
+        db.add(reply)
+        db.commit()
+        
+        db.close()
+        return redirect(f'/comment/view/{reply.id}')
+    except XaieconException as e:
+        return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
 @comment.route('/comment/create', methods = ['POST'])
 @login_required
 def create(u=None):
@@ -73,23 +96,18 @@ def create(u=None):
 		db = open_db()
 		
 		body = request.form.get('body')
-		post_id = request.form.get('id')
-		
-		# Increment number of comments
-		post = db.query(Post).filter_by(unique_identifier=post_id).first()
-		if post is None:
-			abort(404)
-		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
+		pid = request.form.get('pid')
 		
 		# Add comment
-		comment = Comment(body=body,user_id=u.id,post_id=post.id)
+		comment = Comment(body=body,user_id=u.id,post_id=pid)
 		db.add(comment)
 		
+		# Increment number of comments
+		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
 		
 		db.close()
-		
-		return redirect(f'/post/view/{post_id}')
+		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

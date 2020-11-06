@@ -3,7 +3,7 @@
 <h1>/b/{{ board.name }}</h1>
 <p>{{ board.descr }}</p>
 <p>Category: {{ board.category_info.name }}</p>
-<b>Board created by: <a href='/user/view/{{ board.user_info.unique_identifier }}'>/u/{{ board.user_info.username }}</a></b>
+<b>Board created by: <a href='/user/view/{{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></b>
 <hr>
 {% if posts %}
 	{% for post in posts %}

@@ -53,7 +53,7 @@
 				<h2>My boards</h2>
 				<hr>
 				{% for board in u.owned_boards() %}
-					<a href='/board/view/{{ board.unique_identifier }}'>/b/{{ board.name }}</a></br>
+					<a href='/board/view/{{ board.id }}'>/b/{{ board.name }}</a></br>
 				{% endfor %}
 			</ul>
 		{% endif %}
@@ -62,7 +62,7 @@
 			{% if u and u.id != 1 %}
 				<li><a href='/board/new'>new board</a></li>
 				<li><a href='/post/write'>new post</a></li>
-				<li><a href='/user/view/{{ u.unique_identifier }}'>/u/{{ u.username }}</a></li>
+				<li><a href='/user/view/{{ u.id }}'>/u/{{ u.username }}</a></li>
 				<li><a href='/user/logout'>logout</a></li>
 			{% else %}
 				<h1>Get back</br>the internet.</h1>

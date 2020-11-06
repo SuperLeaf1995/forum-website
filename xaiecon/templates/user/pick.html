@@ -3,9 +3,9 @@
 	<h1>Pick one</h1>
 	<p>There are multiple users with that username, select one of them</p>
 	{% for i in range(0,len) %}
-		<a href='/user/view/{{ user[i].unique_identifier }}'><h2>{{ user[i].username }}</h2></a>
+		<a href='/user/view/{{ user[i].id }}'><h2>{{ user[i].username }}</h2></a>
 		<p>{{ user[i].biography }}</p>
-		<a href='/help/unique_identifier'>Unique identifier</a>
-		<i>{{ user[i].unique_identifier }}</p>
+		<a href='/help/id'>Unique identifier</a>
+		<i>{{ user[i].id }}</p>
 	{% endfor %}
 {% endblock %}

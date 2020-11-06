@@ -48,17 +48,19 @@ class User(Base):
 		db = open_db()
 		ret = db.query(Vote).filter_by(post_id=pid,user_id=self.id).first()
 		db.close()
+		
 		return ret
 	
 	def has_vote_on_comment(self,cid=None):
 		db = open_db()
 		ret = db.query(Vote).filter_by(comment_id=cid,user_id=self.id).first()
 		db.close()
+		
 		return ret
 	
-	def mods(self,board_uid=None):
+	def mods(self,bid=None):
 		db = open_db()
-		ret = db.query(Board).filter_by(unique_identifier=board_uid,user_id=self.id).first()
+		ret = db.query(Board).filter_by(id=bid,user_id=self.id).first()
 		db.close()
 		
 		if ret is not None:

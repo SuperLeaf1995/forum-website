@@ -9,11 +9,10 @@ DROP TABLE IF EXISTS xaiecon_comments;
 DROP TABLE IF EXISTS xaiecon_posts;
 DROP TABLE IF EXISTS xaiecon_boards;
 
+DROP TABLE IF EXISTS xaiecon_api_app;
+DROP TABLE IF EXISTS xaiecon_board_ban_rel;
 DROP TABLE IF EXISTS xaiecon_users;
-
 DROP TABLE IF EXISTS xaiecon_categories;
-
-DROP TABLE IF EXISTS xaiecon_oauth_app;
 
 CREATE TABLE xaiecon_users(
 	id SERIAL PRIMARY KEY,
@@ -151,4 +150,4 @@ INSERT INTO xaiecon_categories(name) VALUES
 	('Videogames'),
 	('Other');
 
-INSERT INTO xaiecon_users(name,username,biography,password,auth_token,id) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable','some_long_string')
+INSERT INTO xaiecon_users(name,username,biography,password,auth_token) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable')

@@ -14,7 +14,6 @@ class User(Base):
 	name = Column(String(255), nullable=False)
 	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 	username = Column(String(255), nullable=False)
-	unique_identifier = Column(String(255), nullable=False)
 	biography = Column(String(8000), nullable=True)
 	password = Column(String(510), nullable=False)
 	auth_token = Column(String(510), nullable=False)

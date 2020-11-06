@@ -17,7 +17,7 @@ class APIApp(Base):
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):
-		super(Category, self).__init__(**kwargs)
+		super(APIApp, self).__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'APIApp(%r,%r)' % (self.name,self.creation_date)

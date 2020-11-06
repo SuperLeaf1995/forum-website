@@ -8,6 +8,7 @@ from xaiecon.modules.core.user import user
 from xaiecon.modules.core.gdpr import gdpr
 from xaiecon.modules.core.logs import logs
 from xaiecon.modules.core.board import board
+from xaiecon.modules.core.apiapp import apiapp
 from xaiecon.modules.core.fediverse import fediverse
 
 # Register modules
@@ -20,6 +21,7 @@ def register_all_modules(app=None):
 	app.register_blueprint(gdpr)
 	app.register_blueprint(logs)
 	app.register_blueprint(board)
+	app.register_blueprint(apiapp)
 	app.register_blueprint(fediverse)
 
 print('Adding modules ... ok')

@@ -48,17 +48,16 @@ def user_login(u=None):
 				rbool = check_password_hash(data.password,request.form.get('password'))
 				if rbool == True:
 					# Update auth token, and put it in our session cookie
-					string = '{}:{}'.format(data.unique_identifier,data.password)
+					string = f'{data.password}:{data.id}'
 					auth_token = generate_password_hash(string)
 					
-					db.query(User).filter_by(unique_identifier=data.unique_identifier).update({'auth_token':auth_token})
+					db.query(User).filter_by(id=data.id).update({'auth_token':auth_token})
 					
 					db.commit()
 					
 					session['auth_token'] = auth_token
 					session['username'] = username
 					session['id'] = data.id
-					session['uid'] = data.unique_identifier
 					
 					db.close()
 					
@@ -78,8 +77,8 @@ def user_login(u=None):
 def user_signup(u=None):
 	try:
 		if request.method == 'POST':
-			if not hcaptcha.verify():
-				raise XaieconException('Please complete hcaptcha')
+			#if not hcaptcha.verify():
+			#	raise XaieconException('Please complete hcaptcha')
 			
 			# Validate form data
 			if len(request.form.get('password')) < 6:
@@ -92,11 +91,8 @@ def user_signup(u=None):
 			# Hash the password
 			password = generate_password_hash(request.form.get('password'))
 			
-			# Generate unique identifier
-			unique_identifier = create_unique_identifier()
-			
 			# Create the auth_token of form {username}:{password}
-			string = '{}:{}'.format(unique_identifier,password)
+			string = f'{password}:{id}'
 			auth_token = generate_password_hash(string)
 			
 			# Open the database
@@ -106,24 +102,21 @@ def user_signup(u=None):
 			new_user = User(name=request.form.get('name'),
 							username=request.form.get('username'),
 							password=password,
-							auth_token=auth_token,
-							unique_identifier=unique_identifier)
+							auth_token=auth_token)
 			db.add(new_user)
 			db.commit()
+			
+			db.refresh(new_user)
 			
 			# Set session
 			session['auth_token'] = auth_token
 			session['username'] = request.form.get('username')
-			session['uid'] = unique_identifier
-			
-			# Get user id and add it to the session
-			get_id = db.query(User).filter_by(username = request.form.get('username'), auth_token = auth_token).first()
-			session['id'] = get_id.id
+			session['id'] = new_user.id
 			
 			# Finally, end ;)
 			db.close()
 			
-			return redirect(f'/user/view/{unique_identifier}')
+			return redirect(f'/user/view?id={new_user.id}')
 		else:
 			return render_template('user/signup.html',u=u,signup_error='',title='Signup')
 	except XaieconException as e:

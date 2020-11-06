@@ -12,6 +12,7 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.user import *
 from xaiecon.classes.log import *
 from xaiecon.classes.apiapp import *
+from xaiecon.classes.exception import *
 
 from xaiecon.modules.core.wrappers import *
 
@@ -32,7 +33,7 @@ def new(u=None):
 			db = open_db()
 			
 			aapp = APIApp(
-				token=secrets.token_urlsafe(127),
+				token=secrets.token_urlsafe(64),
 				name=name,
 				user_id=u.id)
 			
@@ -42,9 +43,9 @@ def new(u=None):
 			# db.refresh(oauth)
 			
 			db.close()
-			return redirect('/oauth/view')
+			return redirect('/apiapp/view')
 		else:
-			return render_template('oauth/new.html',u=u,title='New OAuth App')
+			return render_template('apiapp/new.html',u=u,title='New OAuth App')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
@@ -57,7 +58,7 @@ def view_all(u=None):
 		apps = db.query(APIApp).filter_by(user_id=u.id).all()
 		
 		db.close()
-		return render_template('oauth/view.html',u=u,title='Your apps',apps=apps)
+		return render_template('apiapp/view.html',u=u,title='Your apps',apps=apps)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
@@ -74,7 +75,7 @@ def delete(u=None):
 		db.commit()
 		
 		db.close()
-		return redirect('/oauth/view')
+		return redirect('/apiapp/view')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
@@ -93,7 +94,7 @@ def reroll(u=None):
 		db.commit()
 		
 		db.close()
-		return redirect('/oauth/view')
+		return redirect('/apiapp/view')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

@@ -1,2 +1,5 @@
 # private stuff
 prun.sh
+
+# remove cache of pycache
+__pycache__/

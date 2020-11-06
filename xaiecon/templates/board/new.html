@@ -1,0 +1,20 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Create board</h1>
+<p>Boards lets you create your own community</p>
+<form enctype='multipart/form-data' method='POST' action='/board/new'>
+	<span>Name</span>
+	<input class='textbar-normal' type='text' name='name' placeholder='Name of your board'></br>
+	<span>Description</span>
+	<textarea class='textbar-normal' maxlength='4095' name='descr' placeholder='Description'></textarea></br>
+	<span>Keywords</span>
+	<input class='textbar-normal' type='text' name='keywords' placeholder='cats, dogs, etc'></br>
+	<span>Category</span>
+	<select name='category'>
+	{% for category in categories %}
+		<option value='{{ category.name }}'>{{ category.name }}</option>
+	{% endfor %}
+	</select>
+	<input type='submit'></br>
+</form>
+{% endblock %}

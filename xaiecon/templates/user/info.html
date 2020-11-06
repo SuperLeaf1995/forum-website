@@ -1,0 +1,27 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<h1>{{ user.username }}</h1>
+	<p>{{ user.biography }}</p>
+	
+	{% if user.is_show_email == True or u.id == user.id %}
+		<p>Electronic Mail Address: {{ user.email }}</p>
+	{% else %}
+		<p>Electronic Mail Address: Unknown</p>
+	{% endif %}
+	
+	{% if user.is_show_fax == True or u.id == user.id %}
+		<p>Telefax: {{ user.fax }}</p>
+	{% else %}
+		<p>Telefax: Unknown</p>
+	{% endif %}
+	
+	{% if user.is_show_phone == True or u.id == user.id %}
+		<p>Telephone: {{ user.phone }}</p>
+	{% else %}
+		<p>Telephone: Unknown</p>
+	{% endif %}
+	
+	{% if u.id == user.id %}
+		<a href='/user/edit/{{ user.unique_identifier }}'>Edit details</a>
+	{% endif %}
+{% endblock %}

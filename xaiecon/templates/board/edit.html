@@ -1,0 +1,11 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Edit board /b/{{ data.name }}</h1>
+<form enctype='multipart/form-data' method='POST' action='/post/edit'>
+	<span>Name</span>
+	<input class='textbar-normal' type='text' name='name' placeholder='Name of your board' value='{{ data.name }}'></br>
+	<span>Description</span>
+	<textarea class='textbar-normal' maxlength='4095' name='descr' placeholder='Description' value='{{ data.descr }}'></textarea></br>
+	<input type='submit'></br>
+</form>
+{% endblock %}

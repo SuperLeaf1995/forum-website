@@ -1,0 +1,9 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<h1>List posts</h1>
+	{% if posts %}
+		{% for post in posts %}
+			{% include 'post/brief.html' %}
+		{% endfor %}
+	{% endif %}
+{% endblock %}

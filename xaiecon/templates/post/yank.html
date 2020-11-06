@@ -1,0 +1,21 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Yank post</h1>
+<hr>
+<form enctype='multipart/form-data' method='POST' action='/post/yank'>
+	<input type='text' name='id' style='display:none;' value='{{ post.unique_identifier }}'>
+	{% if boards %}
+		<span>Board to yank to</span>
+		<select name='buid'>
+			{% for board in boards %}
+				{% if u.mods(board.unique_identifier) and post.board_id != board.id %}
+					<option value='{{ board.unique_identifier }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
+				{% endif %}
+			{% endfor %}
+		</select>
+	{% else %}
+	<p>You are not moderating any guilds, you cannot yank</p>
+	{% endif %}
+	<input type='submit'></br>
+</form>
+{% endblock %}

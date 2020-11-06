@@ -1,0 +1,11 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<h1>Logs</h1>
+	{% if logs %}
+		<ul>
+		{% for i in range(0,len) %}
+			<li>{{ logs[i].creation_date }} @ {{ logs[i].name }}</li>
+		{% endfor %}
+		<ul>
+	{% endif %}
+{% endblock %}

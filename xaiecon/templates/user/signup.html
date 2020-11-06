@@ -1,0 +1,20 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Signup</h1>
+{% if signup_error %}
+<p>{{ signup_error }}</p>
+{% endif %}
+<form enctype='multipart/form-data' method='POST' action='/user/signup'>
+	<span>Username:</span>
+	<input class='textbar-normal' type='text' name='username' value='{{ request.form.username }}'></br>
+	<span>Name:</span>
+	<input class='textbar-normal' type='text' name='name' value='{{ request.form.name }}'></br>
+	<span>Password:</span>
+	<input class='textbar-normal' type='password' name='password' value='{{ request.form.password }}'></br>
+	<span>Repeat password:</span>
+	<input class='textbar-normal' type='password' name='password_double' value='{{ request.form.password_double }}'></br>
+	<input type='checkbox' name='agree_tos'>I agree with the <a href='/legal/terms'>Terms of Service</a>
+	, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></input></br>
+	<input type='submit'></br>
+</form>
+{% endblock %}

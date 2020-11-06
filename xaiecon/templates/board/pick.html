@@ -1,0 +1,13 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<h1>Pick one</h1>
+	<p>There are multiple boards with that name, select one of them</p>
+	{% for board in boards %}
+		<a href='/board/view/{{ board.unique_identifier }}'><h2>{{ board.name }}</h2></a>
+		<p>Category: {{ board.category_info.name }}</p>
+		<b>Board created by: <a href='/user/view/{{ board.user_info.unique_identifier }}'>/u/{{ board.user_info.username }}</a></b>
+		<p>{{ board.descr }}</p>
+		<a href='/help/unique_identifier'>Unique identifier</a>
+		<i>{{ board.unique_identifier }}</p>
+	{% endfor %}
+{% endblock %}

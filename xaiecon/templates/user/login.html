@@ -1,0 +1,14 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Login</h1>
+{% if login_error %}
+<p>{{ login_error }}</p>
+{% endif %}
+<form enctype='multipart/form-data' method='POST' action='/user/login'>
+	<span>Username:</span>
+	<input class='textbar-normal' type='text' name='username' value='{{ request.form.username }}'></br>
+	<span>Passsowrd</span>
+	<input class='textbar-normal' type='password' name='password' value='{{ request.form.password }}'></br>
+	<input type='submit'></br>
+</form>
+{% endblock %}

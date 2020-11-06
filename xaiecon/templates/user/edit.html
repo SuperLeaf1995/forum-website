@@ -1,0 +1,32 @@
+{% extends "default_layout.html" %}
+{% block content %}
+
+<form enctype='multipart/form-data' method='POST' action='/user/edit/{{ user.unique_identifier }}'>
+	<h1>{{ user.username }}</h1>
+	<span>Biography</span>
+	<input class='textbar-normal' type='text' name='biography' value='{{ user.biography }}' placeholder='Biography'></br>
+	
+	<span>Electronic Mail</span>
+	<span>Address</span>
+	<input class='textbar-normal' type='text' name='email' value='{{ user.email }}' placeholder='Electronic Mail Address'></br>
+	<span>Show publicly?</span>
+	<input type='checkbox' name='is_show_email' value='{{ user.is_show_email }}'></br>
+	
+	<span>Telefax</span>
+	<span>Number</span>
+	<input class='textbar-normal' type='text' name='fax' value='{{ user.fax }}' placeholder='Telefax'></br>
+	<span>Show publicly?</span>
+	<input type='checkbox' name='is_show_fax' value='{{ user.is_show_fax }}'></br>
+	
+	<span>Telephone</span>
+	<span>Number</span>
+	<input class='textbar-normal' type='text' name='phone' value='{{ user.phone }}' placeholder='Telephone'></br>
+	<span>Show publicly?</span>
+	<input type='checkbox' name='is_show_phone' value='{{ user.is_show_phone }}'></br>
+	
+	<span>Check this box if you are ok viewing NSFW content</span>
+	<input type='checkbox' name='is_nsfw' value='{{ user.is_nsfw }}'></br>
+	
+	<input type='submit'>
+</form>
+{% endblock %}

@@ -1,0 +1,96 @@
+#
+# Simple post-sharing base module
+#
+
+import hashlib
+from random import random
+
+from os import path, remove
+from flask import Blueprint, render_template, request, session, jsonify, redirect, send_from_directory, abort, send_file
+from werkzeug.utils import secure_filename
+from xaiecon.cache import cache
+
+from xaiecon.classes.base import open_db
+from xaiecon.classes.user import *
+from xaiecon.classes.post import *
+from xaiecon.classes.comment import *
+from xaiecon.classes.log import *
+from xaiecon.classes.vote import *
+from xaiecon.classes.exception import *
+
+from xaiecon.modules.core.wrappers import *
+
+from distutils.util import *
+from sqlalchemy import desc
+
+comment = Blueprint('comment',__name__,template_folder='templates/comment')
+
+@comment.route('/comment/vote', methods = ['GET','POST'])
+@login_required
+def vote(u=None):
+	try:
+		cid = request.values.get('cid')
+		val = int(request.values.get('value'))
+		
+		if pid is None or val is None or val not in [-1,1]:
+			abort(400)
+		
+		db = open_db()
+		
+		vote = db.query(Vote).filter_by(user_id=u.id,comment_id=cid).first()
+		comment = db.query(Comment).filter_by(id=cid).first()
+		
+		if comment is None:
+			abort(404)
+		
+		# Delete previous vote
+		db.query(Vote).filter_by(user_id=u.id,comment_id=cid).delete()
+		
+		if vote is not None and vote.value != val:
+			# Create vote relation
+			vote = Vote(user_id=u.id,comment_id=cid,value=val)
+			db.add(vote)
+		
+		# Update vote count
+		downvotes = db.query(Vote).filter_by(comment_id=cid,value=-1).count()
+		upvotes = db.query(Vote).filter_by(comment_id=cid,value=1).count()
+		db.query(Post).filter_by(id=cid).update({
+			'downvote_count':downvotes,
+			'upvote_count':upvotes,
+			'total_vote_count':upvotes-downvotes})
+		
+		db.commit()
+		
+		db.close()
+		return '',200
+	except XaieconException as e:
+		return jsonify({'error':e}),400
+
+@comment.route('/comment/create', methods = ['POST'])
+@login_required
+def create(u=None):
+	try:
+		db = open_db()
+		
+		body = request.form.get('body')
+		post_id = request.form.get('id')
+		
+		# Increment number of comments
+		post = db.query(Post).filter_by(unique_identifier=post_id).first()
+		if post is None:
+			abort(404)
+		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
+		
+		# Add comment
+		comment = Comment(body=body,user_id=u.id,post_id=post.id)
+		db.add(comment)
+		
+		db.commit()
+		
+		db.close()
+		
+		return redirect(f'/post/view/{post_id}')
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+print('Comment ... ok')

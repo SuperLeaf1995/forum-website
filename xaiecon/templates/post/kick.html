@@ -1,0 +1,10 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Kick post</h1>
+<hr>
+<form enctype='multipart/form-data' method='POST' action='/post/kick'>
+	<input type='text' name='id' style='display:none;' value='{{ post.unique_identifier }}'>
+	<p>Are you sure?</p>
+	<input type='submit'></br>
+</form>
+{% endblock %}

@@ -1,0 +1,2 @@
+class XaieconException(Exception):
+	pass

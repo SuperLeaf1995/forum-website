@@ -1,0 +1,9 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Flag post</h1>
+<form enctype='multipart/form-data' method='POST' action='/post/flag'>
+	<span>Reason</span>
+	<textarea class='textbar-normal' name='reason' placeholder='Reason of flag'></textarea></br>
+	<input type='submit'></br>
+</form>
+{% endblock %}

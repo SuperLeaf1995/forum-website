@@ -1,0 +1,165 @@
+::-moz-selection, ::selection {
+  background-color: #18dbd5;
+  color: white;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Alef','Actor','Arial','Times New Roman';
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:visited, a:active, a:hover, a:focus {
+  color: blue;
+}
+
+/* Headers */
+.top-top-header {
+  height: 100px;
+  width: 100%;
+  position: relative;
+  background-color: #14bdcc; 
+}
+
+.top-top-header img {
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width:400px;
+  height:64px;
+}
+
+.header-nav, .header-with-text, .top-header-nav {
+  /*background-color: #107bcc;*/
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav {
+  list-style-type: none;
+  box-shadow: 0 0 4px grey;
+  border: 1px solid grey;
+  padding: 12px;
+  margin: 12px;
+}
+
+.header-nav li a, input[type=button], input[type=submit] {
+  display: block;
+  padding: 4px 12px;
+  background-color: white;
+  color: blue;
+  margin: 4px;
+  border: 1px solid grey;
+  transition: 0.3s;
+}
+
+.header-nav li a:hover, input[type=button]:hover, input[type=submit]:hover {
+  box-shadow: 0 0 4px grey;
+}
+
+.top-header-nav {
+  list-style-type: none;
+  overflow: hidden;
+}
+
+.top-header-nav li {
+  float: left;
+}
+
+.top-header-nav li a {
+  display: block;
+  text-align: center;
+  padding: 4px 12px;
+  color: blue;
+  box-shadow: 0 0 1px grey;
+  margin: 4px;
+  border: 1px solid grey;
+  transition: 0.3s;
+}
+
+.top-header-nav li a:hover {
+  box-shadow: 0 0 4px grey;
+}
+
+/* Normal input stylization */
+input[type=text], input[type=password] {
+  color: black;
+  background-color: white;
+  border: solid 1px grey;
+  padding: 4px 12px;
+  margin: 4px;
+}
+
+textarea {
+  border: 1px solid grey;
+  font-family: 'Actor','Alef','Arial';
+}
+
+/* Post */
+.block-content {
+  overflow: auto;
+  border: 1px solid grey;
+  color: black;
+  word-break: break-all;
+  margin: 12px;
+  padding: 12px;
+  box-shadow: 0 0 4px grey;
+}
+
+.post-brief {
+  border: 1px solid grey;
+  color: black;
+  width: -moz-available;
+  float: left;
+  padding: 2px;
+  margin: 8px;
+  transition: 0.3s;
+}
+
+.post-brief:hover {
+  box-shadow: 0 0 4px grey;
+}
+
+.post-option, .post-option:visited {
+  float: left;
+  color: grey;
+  padding: 0 8px;
+  border-right: solid 1px black;
+  transition: 0.3s;
+}
+
+.post-option:hover {
+  color: blue;
+}
+
+.post-upvote, .post-downvote, .post-upvote-active, .post-downvote-active {
+  font-size: 35px;
+  line-height: 0.5;
+  letter-spacing: 0.0;
+}
+
+.post-upvote, .post-downvote {
+  color: grey;
+}
+
+.post-upvote:hover, .post-downvote:hover {
+  color: blue;
+}
+
+.post-upvote-active {
+  color: blue;
+}
+
+.post-downvote-active {
+  color: blue;
+}
+
+:focus {
+  box-shadow: 0 0 4px cyan;
+  border: none;
+}

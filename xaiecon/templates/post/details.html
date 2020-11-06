@@ -1,0 +1,59 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<div style='height:100%;float:left;'>
+		{% if u.has_vote_on_post(post.id).value == 1 %}
+		<a tabindex=0 id='{{ post.unique_identifier }}-upvote'class='post-upvote-active' onclick='vote("{{ post.unique_identifier }}",1)'>&#11165;</a>
+		{% else %}
+		<a tabindex=0 id='{{ post.unique_identifier }}-upvote'class='post-upvote' onclick='vote("{{ post.unique_identifier }}",1)'>&#11165;</a>
+		{% endif %}
+		<p id='{{ post.unique_identifier }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+		{% if u.has_vote_on_post(post.id).value == -1 %}
+		<a tabindex=0 id='{{ post.unique_identifier }}-downvote' class='post-downvote-active' onclick='vote("{{ post.unique_identifier }}",-1)'>&#11167;</a>
+		{% else %}
+		<a tabindex=0 id='{{ post.unique_identifier }}-downvote' class='post-downvote' onclick='vote("{{ post.unique_identifier }}",-1)'>&#11167;</a>
+		{% endif %}
+	</div>
+	
+	<a href='/post/view/{{ post.unique_identifier }}'><h2>{{ post.title }}</h2></a>
+	
+	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
+	{% if post.user_info.username != 'guest' %}
+	<a href='/user/view/{{ post.user_info.username }}'>/u/{{ post.user_info.username }}</a>
+	{% endif %}
+	Posted on <a href='/board/view/{{ post.board_info.unique_identifier }}'>/b/{{ post.board_info.name }}</a>
+	</p>
+	
+	<p>{{ post.body }}</p>
+	
+	<a class='post-option' href='/post/view/{{ post.unique_identifier }}'>{{ post.views }} views</a>
+	<a class='post-option' href='/post/view/{{ post.unique_identifier }}'>{{ post.number_comments }} comments</a>
+	
+	{% if u.id == post.user_id %}
+	<a class='post-option' href='/post/delete?id={{ post.unique_identifier }}'>delete</a>
+	<a class='post-option' href='/post/edit?id={{ post.unique_identifier }}'>edit</a>
+	{% endif %}
+	<a class='post-option' href='/post/ballot?id={{ post.unique_identifier }}'>ballot</a>
+	<a class='post-option' href='/post/flag?id={{ post.unique_identifier }}'>flag</a>
+	
+	</br>
+	
+	<h2>Add comment</h2>
+	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
+		<input type='text' name='id' style='display:none;' value='{{ post.unique_identifier }}'>
+		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
+		<input type='submit'>
+	</form>
+	
+	{% if comment %}
+		<h2>Comments</h2>
+		<hr>
+		{% for c in comment %}
+			<div class='post-block-details'>
+				<p>{{ c.body }}</p>
+				<p>Comment By: <a href='/user/view/{{ c.user_id }}'>{{ c.user_info.username }}</a></p>
+			</div>
+		{% endfor %}
+	{% else %}
+		<h2>No comments yet</h2>
+	{% endif %}
+{% endblock %}

@@ -135,7 +135,7 @@ def user_logout():
 
 @user.route('/u/<username>#<id>', methods = ['GET'])
 @login_wanted
-def user_view_by_username(u=None,username=None,id=None):
+def user_view_like_discord(u=None,username=None,id=None):
 	db = open_db()
 	user = db.query(User).filter_by(username=username).all()
 	if user == None:

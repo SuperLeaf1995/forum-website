@@ -146,9 +146,11 @@ def user_view_by_username(u=None,username=None):
 		return redirect(f'/user/view/{user.id}')
 	return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 
-@user.route('/user/view/<id>', methods = ['GET'])
+@user.route('/user/view', methods = ['GET'])
 @login_wanted
-def user_view_by_unique_identifier(u=None,id=None):
+def user_view_by_unique_identifier(u=None):
+	id = request.values.get('uid')
+	
 	db = open_db()
 	user = db.query(User).filter_by(id=id).first()
 	if user == None:
@@ -157,16 +159,18 @@ def user_view_by_unique_identifier(u=None,id=None):
 	db.close()
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
-@user.route('/user/edit/<id>', methods = ['GET','POST'])
+@user.route('/user/edit', methods = ['GET','POST'])
 @login_required
-def user_edit(u=None,id=None):
+def user_edit(u=None):
 	try:
+		id = request.values.get('uid')
+		
+		db = open_db()
+		user = db.query(User).filter_by(id=id).first()
+		if u.id != id and u.is_admin == False:
+			raise XaieconException('Not authorized')
+		
 		if request.method == 'POST':
-			db = open_db()
-			
-			if u.unique_identifier != uid and u.is_admin == False:
-				raise XaieconException('Not authorized')
-			
 			# Get stuff
 			email = request.form.get('email')
 			fax = request.form.get('fax')
@@ -207,12 +211,8 @@ def user_edit(u=None,id=None):
 			
 			db.commit()
 			db.close()
-			return redirect(f'/user/view/{uid}')
+			return redirect(f'/user/view?uid={id}')
 		else:
-			db = open_db()
-			user = db.query(User).filter_by(unique_identifier=uid).first()
-			if u.unique_identifier != uid and u.is_admin == False:
-				raise XaieconException('Not authorized')
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)
 	except XaieconException as e:

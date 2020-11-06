@@ -53,7 +53,7 @@
 				<h2>My boards</h2>
 				<hr>
 				{% for board in u.owned_boards() %}
-					<a href='/board/view/{{ board.id }}'>/b/{{ board.name }}</a></br>
+					<a href='/board/view?bid={{ board.id }}'>/b/{{ board.name }}</a></br>
 				{% endfor %}
 			</ul>
 		{% endif %}

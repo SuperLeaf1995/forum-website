@@ -5,17 +5,17 @@
 <p>{{ edit_error }}</p>
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action='/post/edit'>
-	<input type='text' name='pid' style='display:none;' value='{{ data.id }}'>
+	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 	<span>Name</span>
-	<input class='textbar-normal' type='text' name='name' placeholder='Title of resource' value='{{ data.name }}'></br>
+	<input class='textbar-normal' type='text' name='name' placeholder='Title of resource' value='{{ post.title }}'></br>
 	<span>Description</span>
-	<textarea class='textbar-normal' maxlength='4095' name='description' placeholder='Description'>{{ data.descr }}</textarea></br>
+	<textarea class='textbar-normal' maxlength='4095' name='description' placeholder='Description'>{{ post.body }}</textarea></br>
 	<span>Keywords</span>
-	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords' value='{{ data.keywords }}'></br>
-	<input type='checkbox' name='is_nsfw' value='{{ data.is_nsfw }}'>Is NSFW? (+18)</input></br>
-	<input type='checkbox' name='is_link' value='{{ data.is_link }}' onchange='handle_is_link(this);'>Is link?</input></br>
+	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords' value='{{ post.keywords }}'></br>
+	<input type='checkbox' name='is_nsfw' value='{{ post.is_nsfw }}'>Is NSFW? (+18)</input></br>
+	<input type='checkbox' name='is_link' value='{{ post.is_link }}' onchange='handle_is_link(this);'>Is link?</input></br>
 	<div id='link-text' style='display:none'>
-		<input class='textbar-normal' type='text' name='link' value='{{ data.link_url }}'></br>
+		<input class='textbar-normal' type='text' name='link' value='{{ post.link_url }}'></br>
 	</div>
 	<input type='submit'></br>
 </form>

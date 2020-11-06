@@ -16,10 +16,11 @@ from sqlalchemy.orm import joinedload
 
 board = Blueprint('board',__name__,template_folder='templates')
 
-@board.route('/board/view/<bid>', methods = ['GET'])
+@board.route('/board/view', methods = ['GET'])
 @login_wanted
-def view(u=None,uid=None):
+def view(u=None):
 	sort = request.values.get('sort','new')
+	bid = request.values.get('bid','new')
 	
 	db = open_db()
 	board = db.query(Board).filter_by(id=bid).options(joinedload('*')).first()

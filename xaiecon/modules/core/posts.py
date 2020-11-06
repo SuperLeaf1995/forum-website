@@ -35,14 +35,16 @@ from sqlalchemy import desc
 
 posts = Blueprint('posts',__name__,template_folder='templates/posts')
 
-@posts.route('/post/vote', methods = ['GET','POST'])
+@posts.route('/post/vote', methods = ['POST'])
 @login_required
 def vote(u=None):
 	try:
 		pid = request.values.get('pid')
-		val = int(request.values.get('value'))
+		val = int(request.values.get('value',''))
 		
-		if pid is None or val is None or val not in [-1,1]:
+		if pid is None:
+			abort(404)
+		if val not in [-1,1]:
 			abort(400)
 		
 		db = open_db()
@@ -52,9 +54,11 @@ def vote(u=None):
 			abort(404)
 		
 		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
-		db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 		
-		if vote is None and vote.value != val:
+		if vote is not None and vote.value == val:
+			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
+		else:
+			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 			# Create vote relation
 			vote = Vote(user_id=u.id,post_id=post.id,value=val)
 			db.add(vote)
@@ -203,6 +207,8 @@ def edit(u=None):
 		pid = request.values.get('pid')
 		
 		post = db.query(Post).filter_by(id=pid).first()
+		if post is None:
+			abort(404)
 		
 		if u.id != post.user_id and u.is_admin == False:
 			raise XaieconException('User is not authorized')
@@ -245,7 +251,7 @@ def edit(u=None):
 			return redirect(f'/post/view/{pid}')
 		else:
 			db.close()
-			return render_template('post/edit.html',u=u,title = 'Edit',data = post)
+			return render_template('post/edit.html',u=u,title = 'Edit',post = post)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

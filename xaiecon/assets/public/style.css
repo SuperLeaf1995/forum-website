@@ -137,25 +137,25 @@ textarea {
   color: blue;
 }
 
-.post-upvote, .post-downvote, .post-upvote-active, .post-downvote-active {
+.content-upvote, .content-downvote, .content-upvote-active, .content-downvote-active {
   font-size: 35px;
   line-height: 0.5;
   letter-spacing: 0.0;
 }
 
-.post-upvote, .post-downvote {
+.content-upvote, .content-downvote {
   color: grey;
 }
 
-.post-upvote:hover, .post-downvote:hover {
+.content-upvote:hover, .content-downvote:hover {
   color: blue;
 }
 
-.post-upvote-active {
+.content-upvote-active {
   color: blue;
 }
 
-.post-downvote-active {
+.content-downvote-active {
   color: blue;
 }
 

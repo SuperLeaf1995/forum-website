@@ -4,11 +4,11 @@
 <form enctype='multipart/form-data' method='POST' action='/board/edit'>
 	<input type='text' name='pid' style='display:none;' value='{{ board.id }}'>
 	<span>Name</span>
-	<input class='textbar-normal' type='text' name='name' placeholder='Name of your board'>{{ board.name }}</br>
+	<input class='textbar-normal' type='text' name='name' placeholder='Name of your board' value='{{ board.name }}'></br>
 	<span>Description</span>
 	<textarea class='textbar-normal' maxlength='4095' name='descr' placeholder='Description'>{{ board.descr }}</textarea></br>
 	<span>Keywords</span>
-	<input class='textbar-normal' type='text' name='keywords' placeholder='cats, dogs, etc'>{{ board.keywords }}</br>
+	<input class='textbar-normal' type='text' name='keywords' placeholder='cats, dogs, etc' value='{{ board.keywords }}'></br>
 	<span>Category</span>
 	<select name='category'>
 	{% for category in categories %}

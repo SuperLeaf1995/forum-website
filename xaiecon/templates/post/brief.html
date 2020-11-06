@@ -1,44 +1,36 @@
 <div class='post-brief' style='overflow:auto;'>
 	<div style='height:100%;float:left;'>
-		{% if u.has_vote_on_post(post.id).value == 1 %}
-		<a tabindex=0 id='{{ post.id }}-upvote'class='post-upvote-active' onclick='vote("{{ post.id }}",1)'>&#11165;</a>
-		{% else %}
-		<a tabindex=0 id='{{ post.id }}-upvote'class='post-upvote' onclick='vote("{{ post.id }}",1)'>&#11165;</a>
-		{% endif %}
+		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value != 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
-		{% if u.has_vote_on_post(post.id).value == -1 %}
-		<a tabindex=0 id='{{ post.id }}-downvote' class='post-downvote-active' onclick='vote("{{ post.id }}",-1)'>&#11167;</a>
-		{% else %}
-		<a tabindex=0 id='{{ post.id }}-downvote' class='post-downvote' onclick='vote("{{ post.id }}",-1)'>&#11167;</a>
-		{% endif %}
+		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value != -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>
 	</div>
 	
-	<a href='/post/view/{{ post.id }}'><h2>{{ post.title }}</h2></a>
+	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	{% if post.user_info.username != 'guest' %}
 	<a href='/user/view/{{ post.user_info.username }}'>/u/{{ post.user_info.username }}</a>
 	{% endif %}
-	Posted on <a href='/board/view/{{ post.board_info.id }}'>/b/{{ post.board_info.name }}</a>
+	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name }}</a>
 	</p>
 	
 	<p>{{ post.body }}</p>
 	
-	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.views }} views</a>
-	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.number_comments }} comments</a>
+	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
+	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
 	
 	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?id={{ post.id }}'>delete</a>
-	<a class='post-option' href='/post/edit?id={{ post.id }}'>edit</a>
+	<a class='post-option' href='/post/delete?pid={{ post.id }}'>delete</a>
+	<a class='post-option' href='/post/edit?pid={{ post.id }}'>edit</a>
 	{% endif %}
 	{% if u %}
 		{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-		<a class='post-option' href='/post/kick?id={{ post.id }}'>kick</a>
+		<a class='post-option' href='/post/kick?pid={{ post.id }}'>kick</a>
 		{% endif %}
 		{% if post.board_id != 0 %}
-		<a class='post-option' href='/post/yank?id={{ post.id }}'>yank</a>
+		<a class='post-option' href='/post/yank?pid={{ post.id }}'>yank</a>
 		{% endif %}
 	{% endif %}
-	<a class='post-option' href='/post/ballot?id={{ post.id }}'>ballot</a>
-	<a class='post-option' href='/post/flag?id={{ post.id }}'>flag</a>
+	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>ballot</a>
+	<a class='post-option' href='/post/flag?pid={{ post.id }}'>flag</a>
 </div>

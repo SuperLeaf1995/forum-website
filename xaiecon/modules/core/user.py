@@ -141,6 +141,9 @@ def user_view_by_username(u=None,username=None,id=None):
 	if user == None:
 		abort(404)
 	db.close()
+	
+	if len(user) == 1:
+		return redirect(f'/user/view/{user.unique_identifier}')
 	return redirect(f'/user/view/{user[id].unique_identifier}')
 
 @user.route('/u/<username>', methods = ['GET'])
@@ -150,7 +153,6 @@ def user_view_by_username(u=None,username=None):
 	user = db.query(User).filter_by(username=username).all()
 	if user == None:
 		abort(404)
-	
 	db.close()
 	
 	if len(user) == 1:

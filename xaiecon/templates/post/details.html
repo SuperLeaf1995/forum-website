@@ -41,6 +41,7 @@
 	
 	<h2>Reply form</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
+		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 		<input type='text' name='cid' placeholder='comment_id of thing'>
 		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body of reply what'></textarea></br>
 		<input type='submit'>
@@ -58,7 +59,11 @@
 		<hr>
 		{% for c in comment %}
 			<div class='post-block-details'>
-				<p>{{ c.body }}</p>
+				<p>
+				<b style='color:lightgrey;'>
+				{% for l in range(0,c.depth_level) %}>{% endfor %}
+				</b>
+				{{ c.body }}</p>
 				<p>Comment By: <a href='/user/view?uid={{ c.user_id }}'>{{ c.user_info.username }}</a></p>
 			</div>
 		{% endfor %}

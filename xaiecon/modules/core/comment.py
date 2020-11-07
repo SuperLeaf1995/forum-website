@@ -85,7 +85,7 @@ def reply(u=None, cid=None):
 		db.refresh(reply)
 		
 		# Increment number of comments
-		post = db.query(Post).filter_by(id=cid).first()
+		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
 		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
@@ -120,14 +120,28 @@ def view(u=None):
 					abort(404)
 				break
 
-		# TODO: Get the fucking replies
-		for i in range(0,6):
-			comms = db.query(Comment).filter_by(comment_id=cid).all()
-
+		# This is how we get replies, pardon for so many cringe
 		comments = []
+
+		# First add the top comment(s)
+		comment.depth_level = 1
 		comments.append(comment)
-		for i in comms:
-			comments.append(i)
+		
+		# The level of depth given is 3 comments, 1 the top comments, 2 the replies to the top
+		# and 3, the replies to the replies, after that user has to go manually through each new
+		# discussion. This saves us a lot of time instead of omega nesting ;)
+		# Obtain comments that reference the current comment (top)
+		comms = db.query(Comment).filter_by(comment_id=cid).options(joinedload('*')).all()
+		if comms is not None:
+			# Obtain the comments of comments
+			for c in comms:
+				c.depth_level = 2
+				ecomms = db.query(Comment).filter_by(comment_id=c.id).options(joinedload('*')).all()
+				
+				comments.append(c)
+				for l in ecomms:
+					l.depth_level = 3
+					comments.append(l)
 
 		db.close()
 		return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)

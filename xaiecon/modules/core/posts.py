@@ -340,6 +340,27 @@ def view(u=None):
 		abort(404)
 	comment = db.query(Comment).filter_by(post_id=post.id).order_by(desc(Comment.id)).all()
 	
+	# This is how we get replies, pardon for so many cringe
+	comments = []
+
+	# First add the top comment(s)
+	for c in comment:
+		c.depth_level = 1
+		comments.append(c)
+
+		# Obtain comments that reference the current comment (top)
+		comms = db.query(Comment).filter_by(comment_id=c.id).options(joinedload('*')).all()
+		if comms is not None:
+			# Obtain the comments of comments
+			for d in comms:
+				d.depth_level = 2
+				ecomms = db.query(Comment).filter_by(comment_id=d.id).options(joinedload('*')).all()
+				
+				comments.append(d)
+				for l in ecomms:
+					l.depth_level = 3
+					comments.append(l)
+
 	# Dont let people see nsfw
 	if post.is_nsfw == True and u.is_nsfw == False:
 		abort(403)
@@ -348,7 +369,7 @@ def view(u=None):
 	db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 	db.commit()
 	
-	res = render_template('post/details.html',u=u,title = post.title, post = post, comment = comment)
+	res = render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 	db.close()
 	return res, 200
 

@@ -1,7 +1,8 @@
 import os
 import traceback
+import urllib
 
-from flask import Blueprint, Flask, render_template, request, redirect
+from flask import Blueprint, Flask, render_template, request, redirect, session
 from flask_caching import Cache
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
@@ -21,11 +22,6 @@ app.config['CACHE_TYPE'] = 'simple'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300
 app.config['HCAPTCHA_SITE_KEY'] = os.environ.get('HCAPTCHA_SITE_KEY','')
 app.config['HCAPTCHA_SECRET_KEY'] = os.environ.get('HCAPTCHA_SECRET_KEY','')
-
-# Create cache associated with our app
-# And also initialize hcaptcha
-cache.init_app(app)
-hcaptcha.init_app(app)
 
 # Developement-only stuff
 if os.environ.get('FLASK_ENV') == 'developement':
@@ -54,6 +50,10 @@ def after_request_fn(response):
 			response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
 			response.headers.add('X-Content-Type-Options','nosniff')
 			response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
+
+	if session.get('agreed_gdpr') is not None:
+		session['last_url'] = urllib.parse.quote(request.full_path)
+
 	return response
 
 @app.route('/', methods=['GET'])
@@ -68,6 +68,11 @@ def handle_404(e=None):
 @app.errorhandler(500)
 def handle_500(e=None):
 	return render_template('500.html',title='500'),500
+
+# Create cache associated with our app
+# And also initialize hcaptcha
+cache.init_app(app)
+hcaptcha.init_app(app)
 
 # Register modules
 from xaiecon.modules.core.legal import legal
@@ -100,7 +105,11 @@ app.register_blueprint(apiapp)
 from xaiecon.modules.core.fediverse import fediverse
 app.register_blueprint(fediverse)
 
-# Listen to 0.0.0.0 for all addresses on system
-app.run(host='0.0.0.0')
+if __name__ == "__main__":
+	print('Xaiecon node is up and running. Good luck.')
 
-print('Xaiecon node is up and running. Good luck.')
+	if app.config['DOCKER'] == True:
+		# Listen to 0.0.0.0 for all addresses on system only on Docker
+		app.run(host='0.0.0.0')
+	else:
+		app.run()

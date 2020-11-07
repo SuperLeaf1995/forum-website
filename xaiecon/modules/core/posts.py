@@ -22,6 +22,7 @@ from xaiecon.classes.user import User
 from xaiecon.classes.post import Post
 from xaiecon.classes.log import Log
 from xaiecon.classes.comment import Comment
+from xaiecon.classes.category import Category
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
@@ -29,7 +30,7 @@ from xaiecon.modules.core.wrappers import login_wanted, login_required
 from distutils.util import *
 
 from sqlalchemy.orm import joinedload
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 
 posts = Blueprint('posts',__name__,template_folder='templates/posts')
 
@@ -363,7 +364,10 @@ def list(u=None):
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
 	
-	is_nsfw = u.is_nsfw
+	if u is not None:
+		is_nsfw = u.is_nsfw
+	else:
+		is_nsfw = False
 	
 	post = db.query(Post).filter_by(is_deleted=False)
 	

@@ -18,6 +18,7 @@ from xaiecon.modules.core.wrappers import login_wanted, login_required
 from distutils.util import *
 
 import random
+import urllib
 
 user = Blueprint('user',__name__,template_folder='templates/user')
 
@@ -121,7 +122,7 @@ def user_signup(u=None):
 			# Finally, end ;)
 			db.close()
 			
-			return redirect(f'/user/view?id={new_user.id}')
+			return redirect(f'/user/view?uid={urllib.parse.quote(new_user.id)}')
 		else:
 			return render_template('user/signup.html',u=u,signup_error='',title='Signup')
 	except XaieconException as e:
@@ -134,6 +135,9 @@ def user_logout():
 	session.pop('auth_token', None)
 	session.pop('username', None)
 	session.pop('id', None)
+
+	if session.get('last_url') is not None:
+		return redirect(urllib.parse.unquote(session.get('last_url')))
 	return redirect('/')
 
 @user.route('/u/<username>', methods = ['GET'])
@@ -146,7 +150,7 @@ def user_view_by_username(u=None,username=None):
 	db.close()
 	
 	if len(user) == 1:
-		return redirect(f'/user/view/{user.id}')
+		return redirect(f'/user/view?uid={urllib.parse.quote(user.id)}')
 	return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 
 @user.route('/user/view', methods = ['GET'])
@@ -215,7 +219,7 @@ def user_edit(u=None):
 			
 			db.commit()
 			db.close()
-			return redirect(f'/user/view?uid={id}')
+			return redirect(f'/user/view?uid={urllib.parse.quote(id)}')
 		else:
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)

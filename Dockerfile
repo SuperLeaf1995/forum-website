@@ -54,4 +54,5 @@ COPY . /app
 RUN chmod 777 run.sh
 
 USER xaiuser
+ENV DOCKER=True
 CMD ./run.sh

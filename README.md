@@ -12,14 +12,8 @@ Install the python dependencias via this command:
 Allow local connections on postgresql, this requires accesing `/etc/postgresql/(version)/main/pg_hba.conf`
 Exchange `ident` and `peer` for `trust`. This will allow all local users to connect to PostgreSQL, so be cautious.
 
-After that create a user for RW access to the database, otherwise use postgres user if you are lazy (don't do this on a production enviroment).
-`sudo -u postgres psql`
-
-Create the database, normally it can be any name but i recommend calling it `xaiecon`.
-`CREATE DATABASE xaiecon;`
-
-Exit postgresql with `\\q`. Then execute the following, to apply the `schema.sql` into the xaiecon database.
-`sudo -u postgres psql -d xaiecon < schema.sql`
+Now, create a user called `xaiuser`, example: `sudo useradd --create-home --shell /bin/bash -p xaipass xaiuser
+`. And add the user to the database with `sudo -u postgres psql --command "CREATE USER xaiuser WITH SUPERUSER PASSWORD 'xaipass';"`. The user now has superuser permissions on PostgreSQL. We will use this user for our database accesses. We will now make a database for our node `createdb -O xaiuser xaiecon`. Then apply the schema to the database with `sudo -u xaiuser psql -d xaiecon < schema.sql`
 
 Then run the server with one single command:
 `sh run.sh`

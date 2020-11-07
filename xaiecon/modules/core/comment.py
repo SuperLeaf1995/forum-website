@@ -21,6 +21,7 @@ from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from distutils.util import *
+from sqlalchemy.orm import joinedload
 from sqlalchemy import desc
 
 comment = Blueprint('comment',__name__,template_folder='templates/comment')
@@ -100,32 +101,36 @@ def view(u=None):
 	try:
 		db = open_db()
 		
-		cid = request.form.get('cid')
-		
-		comment = db.query(Comment).filter_by(id=cid).first()
+		cid = request.values.get('cid','')
+
+		comment = db.query(Comment).filter_by(id=cid).options(joinedload('*')).first()
 		if comment is None:
 			abort(404)
-		
-		if comment.post_id is not None:
-			post = db.query(Post).filter_by(id=comment.post_id).first()
-			if post is None:
-				abort(404)
+
+		post_comment = None
+		post_cid = cid
+		post = None
+		while post is None:
+			post_comment = db.query(Comment).filter_by(id=post_cid).first()
+			if post_comment.post_id is None:
+				post_cid = post_comment.comment_id
+			else:
+				post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+				if post is None:
+					abort(404)
+				break
 
 		# TODO: Get the fucking replies
-		comment = db.query(Comment).filter_by(comment_id=cid).all()
-		if comment is None:
-			abort(404)
-		
 		for i in range(0,6):
-			comms = db.query(Comment).filter_by(comment_id=comment.id).all()
+			comms = db.query(Comment).filter_by(comment_id=cid).all()
 
 		comments = []
-		comments += comment
-		comments += comms
+		comments.append(comment)
+		for i in comms:
+			comments.append(i)
 
-		res = render_template('post/details.html',u=u,title = post.title,post=post,comment=comments)
 		db.close()
-		return res, 200
+		return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

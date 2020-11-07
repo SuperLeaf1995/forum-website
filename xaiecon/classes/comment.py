@@ -25,5 +25,4 @@ class Comment(Base):
 		super(Comment, self).__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'Comment(%r,%r,%r,%r)' % (self.body,self.user_id,self.post_id,self.comment_id,
-		self.downvote_count,self.upvote_count,self.total_vote_count)
+		return 'Comment(%r,%r,%r,%r)' % (self.body,self.user_id,self.post_id,self.comment_id)

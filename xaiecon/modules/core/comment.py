@@ -74,11 +74,14 @@ def reply(u=None, cid=None):
 		
 		body = request.form.get('body')
 		cid = request.form.get('cid')
+		pid = request.form.get('pid')
 		
 		# Add reply
 		reply = Comment(body=body,user_id=u.id,comment_id=cid)
 		db.add(reply)
 		db.commit()
+		
+		db.refresh(reply)
 		
 		# Increment number of comments
 		post = db.query(Post).filter_by(id=cid).first()

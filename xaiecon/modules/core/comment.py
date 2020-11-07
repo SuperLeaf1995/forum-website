@@ -94,7 +94,7 @@ def reply(u=None, cid=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@comment.route('/comment/view', methods = ['POST'])
+@comment.route('/comment/view', methods = ['GET','POST'])
 @login_required
 def view(u=None):
 	try:

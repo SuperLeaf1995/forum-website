@@ -37,6 +37,13 @@
 	
 	</br>
 	
+	<h2>REPLY THINGY SORRY FOR HORRIBLE DESIGN ._.</h2>
+	<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
+		<input type='text' name='cid' value='comment_id of thing'>
+		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body of reply what'></textarea></br>
+		<input type='submit'>
+	</form>
+	
 	<h2>Add comment</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
 		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>

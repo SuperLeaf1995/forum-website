@@ -16,7 +16,7 @@
 	</div>
 	{% if boards %}
 		<span>Board to post to</span>
-		<select name='board'>
+		<select name='bid'>
 			{% for board in boards %}
 			<option value='{{ board.id }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
 			{% endfor %}

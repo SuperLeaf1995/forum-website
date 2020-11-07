@@ -24,7 +24,7 @@ def view(u=None):
 	
 	db = open_db()
 	board = db.query(Board).filter_by(id=bid).options(joinedload('*')).first()
-	if board == None:
+	if board is None:
 		abort(404)
 	posts = db.query(Post).filter_by(board_id=board.id).options(joinedload('*'))
 	
@@ -133,7 +133,7 @@ def new(u=None):
 			db.refresh(board)
 			
 			db.close()
-			return redirect(f'/board/view/{board.id}')
+			return redirect(f'/board/view?bid={board.id}')
 		else:
 			category = db.query(Category).all()
 			db.close()

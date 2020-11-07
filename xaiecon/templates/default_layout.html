@@ -24,8 +24,12 @@
 			<li><a href='/post/list'>newest</a></li>
 			<li><a href='/post/list?sort=old'>oldest</a></li>
 			
+			{% if u %}
+			{% if u.id == 1 %}
 			<li style='float:right;'><a href='/user/signup'>sign-up</a></li>
 			<li style='float:right;'><a href='/user/login'>login</a></li>
+			{% endif %}
+			{% endif %}
 			
 			<li style='float:right;'>
 				<form enctype='multipart/form-data' method='POST' action='/post/search'>

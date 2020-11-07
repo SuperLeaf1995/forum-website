@@ -14,9 +14,7 @@
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
-	{% if post.user_info.username != 'guest' %}
-	<a href='/user/view/{{ post.user_info.username }}'>/u/{{ post.user_info.username }}</a>
-	{% endif %}
+	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name }}</a>
 	</p>
 	
@@ -29,14 +27,10 @@
 	<a class='post-option' href='/post/delete?pid={{ post.id }}'>delete</a>
 	<a class='post-option' href='/post/edit?pid={{ post.id }}'>edit</a>
 	{% endif %}
-	{% if u %}
-		{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-		<a class='post-option' href='/post/kick?pid={{ post.id }}'>kick</a>
-		{% endif %}
-		{% if post.board_id != 0 %}
-		<a class='post-option' href='/post/yank?pid={{ post.id }}'>yank</a>
-		{% endif %}
+	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
+	<a class='post-option' href='/post/kick?pid={{ post.id }}'>kick</a>
 	{% endif %}
+	<a class='post-option' href='/post/yank?pid={{ post.id }}'>yank</a>
 	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>ballot</a>
 	<a class='post-option' href='/post/flag?pid={{ post.id }}'>flag</a>
 </div>

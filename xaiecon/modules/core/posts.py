@@ -313,9 +313,8 @@ def write(u=None):
 			
 			db.refresh(post)
 			
-			pid = post.unique_identifier
 			db.close()
-			return redirect(f'/post/view/{pid}')
+			return redirect(f'/post/view?pid={post.id}')
 		else:
 			db = open_db()
 			board = db.query(Board).options(joinedload('user_info')).all()

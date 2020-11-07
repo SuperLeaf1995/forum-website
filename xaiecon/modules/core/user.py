@@ -136,7 +136,7 @@ def user_logout():
 def user_view_by_username(u=None,username=None):
 	db = open_db()
 	user = db.query(User).filter_by(username=username).all()
-	if user == None:
+	if user is None:
 		abort(404)
 	db.close()
 	
@@ -146,15 +146,16 @@ def user_view_by_username(u=None,username=None):
 
 @user.route('/user/view', methods = ['GET'])
 @login_wanted
-def user_view_by_unique_identifier(u=None):
+def user_view_by_id(u=None):
 	id = request.values.get('uid')
 	
 	db = open_db()
 	user = db.query(User).filter_by(id=id).first()
-	if user == None:
+	if user is None:
 		abort(404)
 	
 	db.close()
+	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
 @user.route('/user/edit', methods = ['GET','POST'])

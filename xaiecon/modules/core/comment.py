@@ -87,7 +87,35 @@ def reply(u=None, cid=None):
 		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
 		
 		db.close()
-		return redirect(f'/comment/view/{reply.id}')
+		return redirect(f'/comment/view?cid={reply.id}')
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+@comment.route('/comment/view', methods = ['POST'])
+@login_required
+def create(u=None):
+	try:
+		db = open_db()
+		
+		body = request.form.get('body')
+		cid = request.form.get('cid')
+		
+		comment = db.query(Comment).filter_by(id=cid).first()
+		if comment is None:
+			abort(404)
+		
+		post = db.query(Post).filter_by(id=comment.post_id).first()
+		if post is None:
+			abort(404)
+		
+		# Aci, get replies
+		comments = db.query(Comment).filter_by(comment_id=cid).all()
+		if comments is None:
+			abort(404)
+		
+		res = render_template('post/details.html',u=u,title = post.title,post=post,comment=comments)
+		db.close()
+		return res, 200
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
@@ -114,7 +142,7 @@ def create(u=None):
 		db.commit()
 		
 		db.close()
-		return redirect(f'/post/view/{pid}')
+		return redirect(f'/post/view?pid={pid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

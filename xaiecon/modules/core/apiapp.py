@@ -67,11 +67,11 @@ def view_all(u=None):
 def delete(u=None):
 	try:
 		# Delete specified app
-		id = request.values.get('aid')
+		aid = request.values.get('aid')
 		
 		db = open_db()
 		
-		db.query(APIApp).filter_by(user_id=u.id,id=id).delete()
+		db.query(APIApp).filter_by(user_id=u.id,id=aid).delete()
 		db.commit()
 		
 		db.close()
@@ -84,11 +84,11 @@ def delete(u=None):
 def reroll(u=None):
 	try:
 		# Reroll tokens for specified app
-		id = request.values.get('aid')
+		aid = request.values.get('aid')
 		
 		db = open_db()
 		
-		db.query(APIApp).filter_by(user_id=u.id,id=id).update({
+		db.query(APIApp).filter_by(user_id=u.id,id=aid).update({
 			'token':secrets.token_urlsafe(127)
 		})
 		db.commit()

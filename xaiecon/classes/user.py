@@ -58,7 +58,7 @@ class User(Base):
 		return ret
 	
 	def mods(self,bid=None):
-		from app.classes.board import Board
+		from xaiecon.classes.board import Board
 
 		db = open_db()
 		ret = db.query(Board).filter_by(id=bid,user_id=self.id).first()
@@ -69,7 +69,7 @@ class User(Base):
 		return False
 	
 	def owned_boards(self):
-		from app.classes.board import Board
+		from xaiecon.classes.board import Board
 
 		db = open_db()
 		ret = db.query(Board).filter_by(user_id=self.id).all()

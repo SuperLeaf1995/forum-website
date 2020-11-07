@@ -5,7 +5,7 @@ from flask import Blueprint, Flask, render_template, request, redirect
 from flask_caching import Cache
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted
 
 # Create the global app
 app = Flask(__name__,instance_relative_config=True)
@@ -49,8 +49,9 @@ def after_request_fn(response):
 	return response
 
 @app.route('/', methods=['GET'])
+@login_wanted
 def send_index(u=None):
-	return render_template('index.html',title='Homepage')
+	return render_template('index.html',u=u,title='Homepage')
 
 @app.errorhandler(404)
 def handle_404(e=None):

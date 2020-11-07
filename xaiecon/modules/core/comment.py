@@ -110,8 +110,8 @@ def view(u=None):
 		post = db.query(Post).filter_by(id=comment.post_id).first()
 		if post is None:
 			abort(404)
-		
-		# Aci, get replies
+
+		# TODO: Get the fucking replies
 		comments = db.query(Comment).filter_by(comment_id=cid).all()
 		if comments is None:
 			abort(404)

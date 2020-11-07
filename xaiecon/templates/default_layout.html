@@ -24,11 +24,11 @@
 			<li><a href='/post/list'>newest</a></li>
 			<li><a href='/post/list?sort=old'>oldest</a></li>
 			
-			{% if u %}
-			{% if u.id == 1 %}
+			{% if u == None %}
 			<li style='float:right;'><a href='/user/signup'>sign-up</a></li>
 			<li style='float:right;'><a href='/user/login'>login</a></li>
-			{% endif %}
+			{% else %}
+			<li><a href='/user/logout'>logout</a></li>
 			{% endif %}
 			
 			<li style='float:right;'>
@@ -66,8 +66,7 @@
 			{% if u and u.id != 1 %}
 				<li><a href='/board/new'>new board</a></li>
 				<li><a href='/post/write'>new post</a></li>
-				<li><a href='/user/view/{{ u.id }}'>/u/{{ u.username }}</a></li>
-				<li><a href='/user/logout'>logout</a></li>
+				<li><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
 			{% else %}
 				<h1>Get back</br>the internet.</h1>
 			{% endif %}
@@ -75,7 +74,9 @@
 			<a href='/legal/terms'>Terms of Service</a></br>
 			<a href='/legal/privacy'>Privacy Policy</a></br>
 			<a href='/legal/content'>Content Policy</a></br>
-			<p>&copy; 2018 - 2020 eConomitopia</p>
+
+			<p><a href='https://gitlab.com/superleaf1995/xaiecon'>Source Code</a> (GPL v3)</p>
+			<p>&copy; 2018 - 2020 Xaiecon</p>
 		</ul>
 		
 		<div>
@@ -95,8 +96,8 @@
 			}
 			</script>
 			<div id='gdpr-block' class='block-content' style='background-color:yellow'>
-				<p>We use cookies/sessions for a better user experience, by continiung you agree</p>
-				<a onclick='gdpr_agree();'>OK</a>
+				<p>We use cookies/sessions for a better user experience, please allow us to store cookies on your browser.</p>
+				<a onclick='gdpr_agree();'>I consent</a>
 			</div>
 			{% endif %}
 			<div class='block-content'>

@@ -10,7 +10,7 @@ def login_wanted(f):
 		db = open_db()
 		user = db.query(User).filter_by(id=session.get('id')).first()
 		if user is None or user.validate() == False:
-			user = db.query(User).filter_by(id=1).first()
+			u = None
 		u = user
 		db.close()
 		return f(u=u, *args, **kwargs)

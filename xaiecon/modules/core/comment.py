@@ -93,7 +93,7 @@ def reply(u=None, cid=None):
 
 @comment.route('/comment/view', methods = ['POST'])
 @login_required
-def create(u=None):
+def view(u=None):
 	try:
 		db = open_db()
 		

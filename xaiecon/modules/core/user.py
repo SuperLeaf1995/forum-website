@@ -6,19 +6,18 @@
 from flask import Blueprint, render_template, session, request, redirect, abort
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import *
-from xaiecon.classes.exception import *
+from xaiecon.classes.user import User
+from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.hcaptcha import *
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.hcaptcha import hcaptcha
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from distutils.util import *
 
 import random
-import re
 
 user = Blueprint('user',__name__,template_folder='templates/user')
 

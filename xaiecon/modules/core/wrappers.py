@@ -1,6 +1,6 @@
 from flask import session, redirect
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import *
+from xaiecon.classes.user import User
 from functools import wraps
 
 # Wants user to be logged in, otherwise just gives him "guest"

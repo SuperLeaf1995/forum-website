@@ -3,10 +3,8 @@ import time
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker, relationship
+
 from xaiecon.classes.base import Base
-from xaiecon.classes.user import *
-from xaiecon.classes.board import *
-from xaiecon.classes.category import *
 
 class Post(Base):
 	__tablename__ = 'xaiecon_posts'

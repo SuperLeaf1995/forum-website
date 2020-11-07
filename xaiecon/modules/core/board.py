@@ -3,14 +3,14 @@
 #
 
 from flask import Blueprint, render_template, session, redirect, request, abort
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
-from xaiecon.classes.board import *
-from xaiecon.classes.post import *
-from xaiecon.classes.exception import *
-from xaiecon.classes.category import *
+from xaiecon.classes.board import Board
+from xaiecon.classes.post import Post
+from xaiecon.classes.category import Category
+from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from sqlalchemy.orm import joinedload
 

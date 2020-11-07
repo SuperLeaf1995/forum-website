@@ -1,5 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
+
 from xaiecon.classes.base import Base
 
 class Serverchain(Base):

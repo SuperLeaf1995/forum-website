@@ -4,16 +4,16 @@
 
 import requests
 from flask import Blueprint, render_template, request
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.post import *
-from xaiecon.classes.user import *
-from xaiecon.classes.board import *
-from xaiecon.classes.serverchain import *
-from xaiecon.classes.exception import *
+from xaiecon.classes.post import Post
+from xaiecon.classes.user import User
+from xaiecon.classes.board import Board
+from xaiecon.classes.serverchain import Serverchain
+from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
 #

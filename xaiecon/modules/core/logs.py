@@ -4,12 +4,13 @@
 
 from os import environ, path, remove
 from flask import Blueprint, render_template, request, session, jsonify, redirect
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.log import *
+from xaiecon.classes.log import Log
+from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 logs = Blueprint('logs',__name__,template_folder='templates/logs')
 
@@ -21,13 +22,13 @@ def showlogs(u=None):
 		
 		logs = db.query(Log).all()
 		if logs == None:
-			raise Exception('No logs :/')
+			raise XaieconException('No logs.')
 		
 		res = render_template('/logs/loglist.html',u=u,title = 'Public logs', logs = logs, len = len(logs))
 		db.close()
 		
 		return res
-	except Exception as e:
+	except XaieconException as e:
 		return render_template('/logs/loglist.html',u=u,title = 'Public logs')
 
 print('Logging system ... ok')

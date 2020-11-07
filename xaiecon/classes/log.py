@@ -1,6 +1,7 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker
+
 from xaiecon.classes.base import Base
 
 class Log(Base):

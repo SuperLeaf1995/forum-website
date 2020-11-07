@@ -6,15 +6,15 @@ import secrets
 
 from flask import Blueprint, render_template, request, session, jsonify, redirect, send_from_directory, abort, send_file
 from werkzeug.utils import secure_filename
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import *
-from xaiecon.classes.log import *
-from xaiecon.classes.apiapp import *
-from xaiecon.classes.exception import *
+from xaiecon.classes.user import User
+from xaiecon.classes.log import Log
+from xaiecon.classes.apiapp import APIApp
+from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from distutils.util import *
 

@@ -2,9 +2,8 @@ import datetime
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker, relationship
+
 from xaiecon.classes.base import Base
-from xaiecon.classes.post import Post
-from xaiecon.classes.user import *
 
 class Comment(Base):
 	__tablename__ = 'xaiecon_comments'
@@ -19,7 +18,7 @@ class Comment(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_users.id'))
 	
 	comment_info = relationship('Comment', foreign_keys=[comment_id])
-	post_info = relationship(Post, foreign_keys=[post_id])
+	post_info = relationship('Post', foreign_keys=[post_id])
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):

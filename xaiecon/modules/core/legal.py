@@ -4,9 +4,9 @@
 #
 
 from flask import Blueprint, render_template
-from xaiecon.cache import cache
+from xaiecon.modules.core.cache import cache
 
-from xaiecon.modules.core.wrappers import *
+from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 legal = Blueprint('legal',__name__,template_folder='templates/legal')
 

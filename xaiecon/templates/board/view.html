@@ -4,7 +4,7 @@
 <p>{{ board.descr }}</p>
 <p>Category: {{ board.category_info.name }}</p>
 <b>Board created by: <a href='/user/view/{{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></b>
-{% if u.mods(board.id) %}
+{% if u != None and u.mods(board.id) %}
 <a href='/board/edit?bid={{ board.id }}'>Edit board /b/{{ board.name }}</a>
 {% endif %}
 <hr>

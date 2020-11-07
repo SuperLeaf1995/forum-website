@@ -95,27 +95,34 @@ def reply(u=None, cid=None):
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @comment.route('/comment/view', methods = ['GET','POST'])
-@login_required
+@login_wanted
 def view(u=None):
 	try:
 		db = open_db()
 		
-		body = request.form.get('body')
 		cid = request.form.get('cid')
 		
 		comment = db.query(Comment).filter_by(id=cid).first()
 		if comment is None:
 			abort(404)
 		
-		post = db.query(Post).filter_by(id=comment.post_id).first()
-		if post is None:
-			abort(404)
+		if comment.post_id is not None:
+			post = db.query(Post).filter_by(id=comment.post_id).first()
+			if post is None:
+				abort(404)
 
 		# TODO: Get the fucking replies
-		comments = db.query(Comment).filter_by(comment_id=cid).all()
-		if comments is None:
+		comment = db.query(Comment).filter_by(comment_id=cid).all()
+		if comment is None:
 			abort(404)
 		
+		for i in range(0,6):
+			comms = db.query(Comment).filter_by(comment_id=comment.id).all()
+
+		comments = []
+		comments += comment
+		comments += comms
+
 		res = render_template('post/details.html',u=u,title = post.title,post=post,comment=comments)
 		db.close()
 		return res, 200

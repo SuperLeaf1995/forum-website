@@ -5,6 +5,7 @@
 from flask import Blueprint, render_template, session, redirect, request, abort
 from xaiecon.modules.core.cache import cache
 
+from xaiecon.classes.base import open_db
 from xaiecon.classes.board import Board
 from xaiecon.classes.post import Post
 from xaiecon.classes.category import Category
@@ -13,6 +14,7 @@ from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from sqlalchemy.orm import joinedload
+from sqlalchemy import desc, asc
 
 board = Blueprint('board',__name__,template_folder='templates')
 

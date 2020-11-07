@@ -1,7 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
 	<div style='height:100%;float:left;'>
-	{% if u.id != 1 %}
+	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
 		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>
@@ -24,12 +24,14 @@
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
 	
-	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?pid={{ post.id }}'>delete</a>
-	<a class='post-option' href='/post/edit?pid={{ post.id }}'>edit</a>
-	{% endif %}
-	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-	<a class='post-option' href='/post/kick?pid={{ post.id }}'>kick</a>
+	{% if u != None %}
+		{% if u.id == post.user_id or u.is_admin == True %}
+		<a class='post-option' href='/post/delete?pid={{ post.id }}'>delete</a>
+		<a class='post-option' href='/post/edit?pid={{ post.id }}'>edit</a>
+		{% endif %}
+		{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
+		<a class='post-option' href='/post/kick?pid={{ post.id }}'>kick</a>
+		{% endif %}
 	{% endif %}
 	<a class='post-option' href='/post/yank?pid={{ post.id }}'>yank</a>
 	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>ballot</a>

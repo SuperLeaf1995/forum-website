@@ -24,6 +24,7 @@ from xaiecon.classes.log import Log
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.category import Category
 from xaiecon.classes.vote import Vote
+from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 

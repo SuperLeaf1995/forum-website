@@ -16,7 +16,7 @@ from distutils.util import *
 app = Flask(__name__,instance_relative_config=True)
 
 app.config['DOCKER'] = strtobool(os.environ.get('DOCKER','False'))
-app.config['SECRET_KEY'] = os.urandom(16)
+app.config['SECRET_KEY'] = 'os.urandom(16)'
 app.config['MAX_CONTENT_PATH'] = 5 * (1000 * 1000) # 5 MB
 app.config['CACHE_TYPE'] = 'simple'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300

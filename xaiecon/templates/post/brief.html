@@ -1,6 +1,6 @@
 <div class='post-brief' style='overflow:auto;'>
 	<div style='height:100%;float:left;'>
-	{% if u.id != 1 %}
+	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
 		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>

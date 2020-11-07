@@ -8,7 +8,7 @@ export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
 
 # Other envars
-export SQLALCHEMY_URL=postgresql://postgres:postgres@localhost/xaiecon
+export SQLALCHEMY_URL=postgresql://xaiuser:xaipass@localhost/xaiecon
 export HCAPTCHA_SITE_KEY='sitekey'
 export HCAPTCHA_SECRET_KEY='secretkey'
 

@@ -7,16 +7,20 @@ from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.wrappers import login_wanted
 
+from xaiecon.classes.exception import XaieconDatabaseException
+
+from distutils.util import *
+
 # Create the global app
 app = Flask(__name__,instance_relative_config=True)
 
-app.config['DOCKER'] = os.environ.get('DOCKER','False')
+app.config['DOCKER'] = strtobool(os.environ.get('DOCKER','False'))
 app.config['SECRET_KEY'] = os.urandom(16)
 app.config['MAX_CONTENT_PATH'] = 5 * (1000 * 1000) # 5 MB
 app.config['CACHE_TYPE'] = 'simple'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300
-app.config['HCAPTCHA_SITE_KEY'] = os.environ.get('HCAPTCHA_SITE_KEY')
-app.config['HCAPTCHA_SECRET_KEY'] = os.environ.get('HCAPTCHA_SECRET_KEY')
+app.config['HCAPTCHA_SITE_KEY'] = os.environ.get('HCAPTCHA_SITE_KEY','')
+app.config['HCAPTCHA_SECRET_KEY'] = os.environ.get('HCAPTCHA_SECRET_KEY','')
 
 # Create cache associated with our app
 # And also initialize hcaptcha
@@ -27,9 +31,13 @@ hcaptcha.init_app(app)
 if os.environ.get('FLASK_ENV') == 'developement':
 	@app.errorhandler(Exception)
 	def handle_exception(e):
-		return render_template("dev_error.html",title='Uh oh!',error=e,trace=traceback.format_exc()),503
+		return render_template("templates/dev_error.html",u=None,title='Uh oh!',error=e,trace=traceback.format_exc()),503
 else:
 	print('Running on production mode')
+
+@app.errorhandler(XaieconDatabaseException)
+def handle_database_exception(e):
+	return render_template("user_error.html",u=None,title='Database error',err=e), 500
 
 @app.before_first_request
 def app_setup():
@@ -91,3 +99,8 @@ app.register_blueprint(apiapp)
 
 from xaiecon.modules.core.fediverse import fediverse
 app.register_blueprint(fediverse)
+
+# Listen to 0.0.0.0 for all addresses on system
+app.run(host='0.0.0.0')
+
+print('Xaiecon node is up and running. Good luck.')

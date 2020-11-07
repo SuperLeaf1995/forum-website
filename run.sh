@@ -9,8 +9,7 @@ export LANG=C.UTF-8
 
 # Other envars
 export SQLALCHEMY_URL=postgresql://postgres:postgres@localhost/xaiecon
-
 export HCAPTCHA_SITE_KEY='sitekey'
 export HCAPTCHA_SECRET_KEY='secretkey'
 
-flask run
+flask run --host=0.0.0.0

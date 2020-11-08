@@ -98,7 +98,7 @@ input[type=button]:hover, input[type=submit]:hover {
 }
 
 .nav-element a, .nav-dropdown a {
-  display: inline-block;
+  display: block;
   text-align: center;
   padding: 12px 18px;
   color: black;
@@ -115,10 +115,6 @@ input[type=button]:hover, input[type=submit]:hover {
   margin: 1px;
 }
 
-.nav-dropdown {
-  display: inline-block;
-}
-
 .nav-dropdown-content {
   display: none;
   position: fixed;
@@ -126,6 +122,11 @@ input[type=button]:hover, input[type=submit]:hover {
   padding: 12px 18px;
   background-color: white;
   border-bottom: 1px solid grey;
+  margin: 0;
+}
+
+.nav-dropdown-content a {
+  float: none;
 }
 
 .nav-dropdown:hover .nav-dropdown-content {

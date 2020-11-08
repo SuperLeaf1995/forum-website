@@ -1,8 +1,8 @@
 <ul class='nav-top'>
 	<li style='float:left;'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
 	{% if u == None %}
-	<li class='nav-element'><a href='/user/login'>Login</a></li>
 	<li class='nav-element'><a href='/user/signup'>Sign-up</a></li>
+	<li class='nav-element'><a href='/user/login'>Login</a></li>
 	{% else %}
 	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
 	{% endif %}

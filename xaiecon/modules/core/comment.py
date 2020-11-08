@@ -30,7 +30,7 @@ comment = Blueprint('comment',__name__,template_folder='templates/comment')
 @login_required
 def vote(u=None):
 	try:
-		cid = request.values.get('cid')
+		cid = int(request.values.get('cid',''))
 		val = int(request.values.get('value'))
 		
 		if cid is None or val is None or val not in [-1,1]:
@@ -74,8 +74,8 @@ def reply(u=None, cid=None):
 		db = open_db()
 		
 		body = request.form.get('body')
-		cid = request.form.get('cid')
-		pid = request.form.get('pid')
+		cid = int(request.form.get('cid',''))
+		pid = int(request.form.get('pid',''))
 		
 		# Add reply
 		reply = Comment(body=body,user_id=u.id,comment_id=cid)
@@ -88,7 +88,7 @@ def reply(u=None, cid=None):
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
-		db.query(Post).filter_by(id=post.id).update({'number_comments':post.number_comments+1})
+		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		
 		db.close()
 		return redirect(f'/comment/view?cid={reply.id}')
@@ -141,6 +141,11 @@ def view(u=None):
 				comments.append(c)
 				for l in ecomms:
 					l.depth_level = 3
+
+					# Deepest comments, check if they have even more children
+					if db.query(Comment).filter_by(comment_id=l.id).first() is not None:
+						l.more_children = True
+					
 					comments.append(l)
 
 		db.close()

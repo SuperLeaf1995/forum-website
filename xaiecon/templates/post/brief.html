@@ -18,7 +18,7 @@
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
-	<p>{{ post.body }}</p>
+	<p>{{ post.body | truncate(1000,true) }}</p>
 	
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>

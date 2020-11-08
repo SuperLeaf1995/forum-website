@@ -59,12 +59,14 @@ def send_index(u=None):
 	return render_template('index.html',u=u,title='Homepage')
 
 @app.errorhandler(404)
-def handle_404(e=None):
-	return render_template('404.html',title='404'),404
+@login_wanted
+def handle_404(e=None,u=None):
+	return render_template('404.html',u=u,title='404'),404
 
 @app.errorhandler(500)
-def handle_500(e=None):
-	return render_template('500.html',title='500'),500
+@login_wanted
+def handle_500(e=None,u=None):
+	return render_template('500.html',u=u,title='500'),500
 
 # Create cache associated with our app
 # And also initialize hcaptcha

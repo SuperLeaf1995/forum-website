@@ -5,6 +5,7 @@
 	<li class='nav-element'><a href='/user/login'>Login</a></li>
 	{% else %}
 	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
+	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a>
 	{% endif %}
 	<li class='nav-dropdown'><a href='/post/list'>Frontpage</a>
 		<div class='nav-dropdown-content'>
@@ -12,6 +13,27 @@
 			<a href='/post/list?sort=old'>Oldest</a>
 		</div>
 	</li>
+
+	<li class='nav-dropdown'><a href='/post/list'>Categories</a>
+		<div class='nav-dropdown-content'>
+			<a href='/post/list?category=Anarchy'>Anarchy</a>
+			<a href='/post/list?category=Animals'>Animals</a>
+			<a href='/post/list?category=Culture'>Culture</a>
+			<a href='/post/list?category=Fiction'>Fiction</a>
+			<a href='/post/list?category=Humor'>Humor</a>
+			<a href='/post/list?category=Mathematics'>Mathematics</a>
+			<a href='/post/list?category=News'>News</a>
+			<a href='/post/list?category=Nonsense'>Nonsense</a>
+			<a href='/post/list?category=Nsfw'>NSFW</a>
+			<a href='/post/list?category=Other'>Other</a>
+			<a href='/post/list?category=Pictures'>Pictures</a>
+			<a href='/post/list?category=Politics'>Politics</a>
+			<a href='/post/list?category=Programming'>Programming</a>
+			<a href='/post/list?category=Technology'>Technology</a>
+			<a href='/post/list?category=Videogames'>Videogames</a>
+		</div>
+	</li>
+
 	<li class='nav-element'><a href='/'>Home</a></li>
 		<li class='nav-element'>
 		<form enctype='multipart/form-data' method='POST' action='/post/search'>

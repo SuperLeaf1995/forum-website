@@ -367,6 +367,11 @@ def view(u=None):
 				comments.append(d)
 				for l in ecomms:
 					l.depth_level = 3
+
+					# Deepest comments, check if they have even more children
+					if db.query(Comment).filter_by(comment_id=l.id).first() is not None:
+						l.more_children = True
+
 					comments.append(l)
 
 	# Dont let people see nsfw
@@ -413,18 +418,10 @@ def list(u=None):
 	else:
 		abort(401)
 	
-	post = post.all()
-	
-	# Truncate description
-	for p in post:
-		if len(p.body) > 80:
-			p.body = f'{p.body[:75]} ...'
-	
-	res = render_template('post/list.html',u=u,title='Post frontpage',posts=post)
+	post = post.options(joinedload('*')).all()
 	
 	db.close()
-	
-	return res, 200
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
 
 @posts.route('/post/search', methods = ['GET','POST'])
 @login_wanted

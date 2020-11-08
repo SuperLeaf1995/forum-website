@@ -13,6 +13,7 @@ class User(Base):
 	id = Column(Integer, primary_key=True)
 	name = Column(String(255), nullable=False)
 	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+	image_file = Column(String(255), nullable=True)
 	username = Column(String(255), nullable=False)
 	biography = Column(String(8000), nullable=True)
 	password = Column(String(510), nullable=False)

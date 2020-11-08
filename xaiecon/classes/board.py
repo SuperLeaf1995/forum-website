@@ -10,6 +10,7 @@ class Board(Base):
 	
 	id = Column(Integer, primary_key=True)
 	name = Column(String(255), nullable=False)
+	image_file = Column(String(255), nullable=True)
 	descr = Column(String(255), nullable=False)
 	keywords = Column(String(255), nullable=False)
 	creation_date = Column(DateTime, default=datetime.datetime.utcnow)

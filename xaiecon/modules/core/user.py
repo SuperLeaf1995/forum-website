@@ -3,8 +3,14 @@
 # module, make sure to also remove the posts module
 #
 
-from flask import Blueprint, render_template, session, request, redirect, abort
+from PIL import Image
+import threading
+import requests
+import random
+import secrets
 
+from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
+from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 from xaiecon.modules.core.cache import cache
 
@@ -17,26 +23,19 @@ from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from distutils.util import *
 
-import random
-import urllib
-
 user = Blueprint('user',__name__,template_folder='templates/user')
-
-def create_unique_identifier(n=250):
-	string = str(''.join(random.choices('abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ',k=n)))
-	return string
 
 @user.route('/user/login', methods = ['GET','POST'])
 @login_wanted
-def user_login(u=None):
+def login(u=None):
 	try:
 		if request.method == 'POST':
 			if session.get('agreed_gdpr') is None:
 				raise XaieconException('To login, we require to set cookies on your browser, please be kind and allow us to store cookies.')
 
-			if len(request.form.get('password')) <= 0:
+			if len(request.form.get('password')) == 0:
 				raise XaieconException('Please input a password')
-			if len(request.form.get('username')) <= 0:
+			if len(request.form.get('username')) == 0:
 				raise XaieconException('Please input a username')
 			
 			username = request.form.get('username')
@@ -77,7 +76,7 @@ def user_login(u=None):
 
 @user.route('/user/signup', methods = ['GET','POST'])
 @login_wanted
-def user_signup(u=None):
+def signup(u=None):
 	try:
 		if request.method == 'POST':
 			#if not hcaptcha.verify():
@@ -122,7 +121,7 @@ def user_signup(u=None):
 			# Finally, end ;)
 			db.close()
 			
-			return redirect(f'/user/view?uid={urllib.parse.quote(new_user.id)}')
+			return redirect(f'/user/view?uid={new_user.id}')
 		else:
 			return render_template('user/signup.html',u=u,signup_error='',title='Signup')
 	except XaieconException as e:
@@ -131,7 +130,7 @@ def user_signup(u=None):
 		return render_template('user/signup.html',u=u,signup_error=e,title='Signup')
 
 @user.route('/user/logout', methods = ['GET'])
-def user_logout():
+def logout():
 	session.pop('auth_token', None)
 	session.pop('username', None)
 	session.pop('id', None)
@@ -139,7 +138,7 @@ def user_logout():
 
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted
-def user_view_by_username(u=None,username=None):
+def view_by_username(u=None,username=None):
 	db = open_db()
 	user = db.query(User).filter_by(username=username).all()
 	if user is None:
@@ -147,12 +146,12 @@ def user_view_by_username(u=None,username=None):
 	db.close()
 	
 	if len(user) == 1:
-		return redirect(f'/user/view?uid={urllib.parse.quote(user.id)}')
+		return redirect(f'/user/view?uid={user.id}')
 	return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 
 @user.route('/user/view', methods = ['GET'])
 @login_wanted
-def user_view_by_id(u=None):
+def view_by_id(u=None):
 	id = request.values.get('uid')
 	
 	db = open_db()
@@ -164,45 +163,44 @@ def user_view_by_id(u=None):
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
+@user.route('/user/thumb', methods = ['GET','POST'])
+@login_wanted
+def thumb(u=None):
+	try:
+		id = int(request.values.get('uid',''))
+
+		db = open_db()
+
+		user = db.query(User).filter_by(id=id).first()
+
+		db.close()
+
+		return send_from_directory('../user_data',user.image_file)
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
 @user.route('/user/edit', methods = ['GET','POST'])
 @login_required
-def user_edit(u=None):
+def edit(u=None):
 	try:
-		id = request.values.get('uid')
-		
-		db = open_db()
-		user = db.query(User).filter_by(id=id).first()
-		if u.id != id and u.is_admin == False:
-			raise XaieconException('Not authorized')
-		
+		id = int(request.values.get('uid',''))
 		if request.method == 'POST':
+			db = open_db()
+
+			if u.id != id and u.is_admin == False:
+				raise XaieconException('Not authorized')
+
 			# Get stuff
 			email = request.form.get('email')
 			fax = request.form.get('fax')
 			phone = request.form.get('phone')
+			biography = request.form.get('biography')
 			
 			# Update our user information
-			if request.form.get('is_show_email'):
-				is_show_email = True
-			else:
-				is_show_email = False
-			
-			if request.form.get('is_show_fax'):
-				is_show_fax = True
-			else:
-				is_show_fax = False
-			
-			if request.form.get('is_show_phone'):
-				is_show_phone = True
-			else:
-				is_show_phone = False
-			
-			if request.form.get('is_nsfw'):
-				is_nsfw = True
-			else:
-				is_nsfw = False
-			
-			biography = request.form.get('biography')
+			is_show_email = strtobool(request.form.get('is_show_email','False'))
+			is_show_fax = strtobool(request.form.get('is_show_fax','False'))
+			is_show_phone = strtobool(request.form.get('is_show_phone','False'))
+			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 			
 			db.query(User).filter_by(id=id).update({
 						'biography':biography,
@@ -215,12 +213,70 @@ def user_edit(u=None):
 						'is_nsfw':is_nsfw})
 			
 			db.commit()
+
+			file = request.files['profile']
+			if file:
+				# Create thumbnail
+				filename = f'{secrets.token_hex(32)}.jpeg'
+				filename = secure_filename(filename)
+
+				final_filename = os.path.join('user_data',filename)
+
+				file.save(final_filename)
+
+				image = Image.open(final_filename)
+				image.thumbnail((120,120))
+				os.remove(final_filename)
+				image.save(final_filename)
+
+				db.query(User).filter_by(id=id).update({'image_file':filename})
+				db.commit()
+
+				csam_thread = threading.Thread(target=csam_check, args=(id,))
+				csam_thread.start()
+
 			db.close()
-			return redirect(f'/user/view?uid={urllib.parse.quote(id)}')
+			return redirect(f'/user/view?uid={id}')
 		else:
+			db = open_db()
+			user = db.query(User).filter_by(id=id).first()
+			if user is None:
+				abort(404)
+
+			if u.id != id and u.is_admin == False:
+				raise XaieconException('Not authorized')
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+# Check user for csam, if so ban the user
+def csam_check(id):
+	db = open_db()
+
+	# Let's see if this is csam
+	user = db.query(User).filter_by(id=id).first()
+
+	headers = {'User-Agent':'xaiecon-csam-check'}
+	for i in range(10):
+		x = requests.get(f'https://localhost:5000/user/thumb?uid={id}',headers=headers)
+		if x.status_code in [200, 451]:
+			break
+		else:
+			time.sleep(10)
+	if x.status_code != 451:
+		return
+
+	# Ban user
+	db.query(User).filter_by(id=id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.commit()
+	db.refresh(user)
+
+	os.remove(os.path.join('user_data',user.image_file))
+	
+	db.close()
+	return
 
 print('User system ... ok')

@@ -22,6 +22,7 @@ CREATE TABLE xaiecon_users(
 	biography VARCHAR(8000),
 	password VARCHAR(510) NOT NULL,
 	auth_token VARCHAR(510) NOT NULL,
+	image_file VARCHAR(255),
 	email VARCHAR(255),
 	is_show_email BOOLEAN DEFAULT FALSE,
 	phone VARCHAR(255),
@@ -46,6 +47,7 @@ CREATE TABLE xaiecon_boards(
 	name VARCHAR(255),
 	descr VARCHAR(4095),
 	keywords VARCHAR(255),
+	image_file VARCHAR(255),
 	category_id INT REFERENCES xaiecon_categories(id),
 	user_id INT REFERENCES xaiecon_users(id)
 );

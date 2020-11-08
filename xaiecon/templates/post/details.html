@@ -16,7 +16,7 @@
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
-	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name }}</a>
+	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
 	<p>{{ post.body }}</p>

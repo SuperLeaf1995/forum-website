@@ -218,6 +218,9 @@ def edit(u=None):
 			name = request.form.get('name')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
+
+			if len(name) > 255:
+				raise XaieconException('Too long name')
 			
 			if link:
 				is_link = True
@@ -262,12 +265,17 @@ def write(u=None):
 		if request.method == 'POST':
 			db = open_db()
 			
-			description = request.form.get('description')
+			description = request.form.get('description','')
 			name = request.form.get('name')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
 			bid = request.form.get('bid')
 			category = request.values.get('category')
+
+			if len(name) > 255:
+				raise XaieconException('Too long name')
+			if len(description) > 16000:
+				raise XaieconException('Too long body')
 			
 			category = db.query(Category).filter_by(name=category).first()
 			if category is None:
@@ -283,7 +291,7 @@ def write(u=None):
 			else:
 				is_nsfw = False
 
-			if description is None or description == '':
+			if description == '' and is_link == False:
 				raise XaieconException('Empty description')
 			if name is None or name == '':
 				raise XaieconException('Empty name')

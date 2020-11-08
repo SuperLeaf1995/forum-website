@@ -1,0 +1,21 @@
+<ul class='nav-top'>
+	<li style='float:left;'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
+	{% if u == None %}
+	<li class='nav-element'><a href='/user/login'>Login</a></li>
+	<li class='nav-element'><a href='/user/signup'>Sign-up</a></li>
+	{% else %}
+	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
+	{% endif %}
+	<li class='nav-dropdown'><a href='/post/list'>Frontpage</a>
+		<div class='nav-dropdown-content'>
+			<a href='/post/list?sort=new'>Newest</a>
+			<a href='/post/list?sort=old'>Oldest</a>
+		</div>
+	</li>
+	<li class='nav-element'><a href='/'>Home</a></li>
+		<li class='nav-element'>
+		<form enctype='multipart/form-data' method='POST' action='/post/search'>
+			<input type='text' name='query' placeholder='Search for posts'></li>
+		</form>
+	</li>
+</ul>

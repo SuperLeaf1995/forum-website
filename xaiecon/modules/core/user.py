@@ -135,9 +135,6 @@ def user_logout():
 	session.pop('auth_token', None)
 	session.pop('username', None)
 	session.pop('id', None)
-
-	if session.get('last_url') is not None:
-		return redirect(urllib.parse.unquote(session.get('last_url')))
 	return redirect('/')
 
 @user.route('/u/<username>', methods = ['GET'])

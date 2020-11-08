@@ -58,13 +58,9 @@
 		<h2>Comments</h2>
 		<hr>
 		{% for c in comment %}
-			<div class='post-block-details'>
-				<p>
-				<b style='color:lightgrey;'>
-				{% for l in range(0,c.depth_level) %}>{% endfor %}
-				</b>
-				{{ c.body }}</p>
-				<p>Comment By: <a href='/user/view?uid={{ c.user_id }}'>{{ c.user_info.username }}</a></p>
+			<div class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
+				<p style='color:grey;'>Submitted by: <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
+				<p>{{ c.body }}</p>
 			</div>
 		{% endfor %}
 	{% else %}

@@ -1,105 +1,11 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>{{ title }} - eConomitopia</title>
-		<link rel='stylesheet' href='/assets/style.css'>
-		<script src='/assets/script.js'></script>
-		<meta charset="UTF-8">
-		<meta name="description" content="An anonymous post storage, for everything and everywhere.">
-		<meta name="keywords" content="instant post hosting, host posts online, host a post online, how to host a post without an account, quick post sharer, share posts anonymously, privacy post share, nsfw post sharer, host a post online free upload, post share, share, post,share posts, post sharing, image share, image hosting, share images for free, image uploads, jpeg optimizer">
-		<meta name="viewport" content="width=device-width, initial-scale=0.5">
-		<meta name="author" content="Jesus Diaz">
-		<meta name="google-site-verification" content="r6DR4HO2a4YSUXA0_B6WhIel41TWx-gS3VZ1s--LTE0"/>
-		<script>0</script>
-	</head>
+	{% include 'common/head.html' %}
 	<body>
-		<div class='top-top-header'>
-			<img src='/assets/site-logo.png' alt='The Xaiecon logo'></img>
-		</div>
-		
-		<ul class='top-header-nav'>
-			<li><a href='/'>home</a></li>
-			<!--<li><a href='/logs/public'>Public logs</a></li>-->
-			
-			<li><a href='/post/list'>newest</a></li>
-			<li><a href='/post/list?sort=old'>oldest</a></li>
-			
-			{% if u == None %}
-			<li style='float:right;'><a href='/user/signup'>sign-up</a></li>
-			<li style='float:right;'><a href='/user/login'>login</a></li>
-			{% else %}
-			<li style='float:right;'><a href='/user/logout'>logout</a></li>
-			{% endif %}
-			
-			<li style='float:right;'>
-				<form enctype='multipart/form-data' method='POST' action='/post/search'>
-					<input type='text' name='query' placeholder='search for posts'></li>
-				</form>
-			</li>
-		</ul>
-		
-		<ul class='top-header-nav'>
-			<li><a href='/post/list?category=Art'>art</a></li>
-			<li><a href='/post/list?category=Culture'>culture</a></li>
-			<li><a href='/post/list?category=Technology'>technology</a></li>
-			<li><a href='/post/list?category=Politics'>politics</a></li>
-			<li><a href='/post/list?category=Anarchy'>anarchy</a></li>
-			<li><a href='/post/list?category=Programming'>programming</a></li>
-			<li><a href='/post/list?category=Videogames'>videogames</a></li>
-			<li><a href='/post/list?category=Mathematics'>math</a></li>
-			<li><a href='/post/list?category=Pictures'>pictures</a></li>
-			<li><a href='/post/list?category=Other'>other</a></li>
-			<li><a style='color:red;' href='/post/list?category=Nsfw'>nsfw (+18)</a></li>
-		</ul>
-		
-		{% if u %}
-			<ul class='header-nav' style='float:left;'>
-				<h2>My boards</h2>
-				<hr>
-				{% for board in u.owned_boards() %}
-					<a href='/board/view?bid={{ board.id }}'>/b/{{ board.name }}</a></br>
-				{% endfor %}
-			</ul>
-		{% endif %}
-		
-		<ul class='header-nav' style='float:right;'>
-			{% if u and u.id != 1 %}
-				<li><a href='/board/new'>new board</a></li>
-				<li><a href='/post/write'>new post</a></li>
-				<li><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
-			{% else %}
-				<h1>Get back</br>the internet.</h1>
-			{% endif %}
-			
-			<a href='/legal/terms'>Terms of Service</a></br>
-			<a href='/legal/privacy'>Privacy Policy</a></br>
-			<a href='/legal/content'>Content Policy</a></br>
-
-			<p><a href='https://gitlab.com/superleaf1995/xaiecon'>Source Code</a> (GPL v3)</p>
-			<p>&copy; 2018 - 2020 Xaiecon</p>
-		</ul>
-		
+		{% include 'common/navbar.html' %}
+		{% include 'common/userpanel.html' %}
 		<div>
-			{% if session.agreed_gdpr != True %}
-			<script>
-			function gdpr_agree() {
-				var xhr = new XMLHttpRequest();
-				var url = '/gdpr/agree';
-				xhr.open('GET',url,true);
-				xhr.onreadystatechange = function() {
-					if(xhr.readyState == 4 && xhr.status == 200) {
-						e = document.getElementById('gdpr-block');
-						e.style.display = 'none';
-					}
-				}
-				xhr.send();
-			}
-			</script>
-			<div id='gdpr-block' class='block-content' style='background-color:yellow'>
-				<p>We use cookies/sessions for a better user experience, please allow us to store cookies on your browser.</p>
-				<a onclick='gdpr_agree();'>I consent</a>
-			</div>
-			{% endif %}
+			{% include 'common/gdprnotice.html' %}
 			<div class='block-content'>
 				{% block content %}{% endblock %}
 			</div>

@@ -51,9 +51,6 @@ def after_request_fn(response):
 			response.headers.add('X-Content-Type-Options','nosniff')
 			response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
 
-	if session.get('agreed_gdpr') is not None:
-		session['last_url'] = urllib.parse.quote(request.full_path)
-
 	return response
 
 @app.route('/', methods=['GET'])

@@ -1,9 +1,17 @@
-{% extends "default_layout.html" %}
-{% block content %}
-	<center>
-		<h1 style='text-shadow:0 0 8px black'>
-			<span style='color:blue'>Xai</span><span style='color:white'>econ</span>
-		</h1>
-		<p>A federation for everyone, get back your internet.</p>
-	</center>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+	{% include 'common/head.html' %}
+	<body>
+		{% include 'common/navbar.html' %}
+		<div>
+			<div class='index-intro'>
+				<h1 class='index-intro-title'>A federation for everyone.</h1>
+				<p class='index-intro-brief'>An opensource fediverse where everyone has a speech, no matter how small the niche is. No censorship, no power abuse. Just old style communities talking without fears of censorship.</p>
+
+				<form method='GET' action='/user/signup'>
+					<input type='submit' value="Let's get started"></br>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>

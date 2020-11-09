@@ -34,10 +34,9 @@ class User(Base):
 		super(User, self).__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'User(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,
+		return 'User(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,
 		self.biography,self.password,self.auth_token,self.email,self.is_show_email,
-		self.fax,self.is_show_fax,self.is_nsfw,self.is_admin,self.unique_identifier,
-		self.is_banned,self.ban_reason)
+		self.fax,self.is_show_fax,self.is_nsfw,self.is_admin,self.is_banned,self.ban_reason)
 
 	def validate(self):
 		if session.get('auth_token') != self.auth_token:

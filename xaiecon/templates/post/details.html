@@ -68,16 +68,6 @@
 				</form>
 			</div>
 		{% endfor %}
-		<script>
-			function reply_comment(idd) {
-				var txt = document.getElementById(idd);
-				if(txt.style.display == 'none') {
-					txt.style.display = 'block';
-				} else {
-					txt.style.display = 'none';
-				}
-			}
-		</script>
 	{% else %}
 		<h2>No comments yet</h2>
 	{% endif %}

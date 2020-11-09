@@ -9,3 +9,4 @@ psycopg2-binary==2.8.6
 mysql-connector==2.2.9
 requests==2.24.0
 flask-hcaptcha==0.5.1
+bs4==0.0.1

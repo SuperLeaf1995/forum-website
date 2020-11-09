@@ -77,8 +77,8 @@ hcaptcha.init_app(app)
 from xaiecon.modules.core.legal import legal
 app.register_blueprint(legal)
 
-from xaiecon.modules.core.posts import posts
-app.register_blueprint(posts)
+from xaiecon.modules.core.post import post
+app.register_blueprint(post)
 
 from xaiecon.modules.core.comment import comment
 app.register_blueprint(comment)
@@ -92,8 +92,8 @@ app.register_blueprint(user)
 from xaiecon.modules.core.gdpr import gdpr
 app.register_blueprint(gdpr)
 
-from xaiecon.modules.core.logs import logs
-app.register_blueprint(logs)
+from xaiecon.modules.core.log import log
+app.register_blueprint(log)
 
 from xaiecon.modules.core.board import board
 app.register_blueprint(board)

@@ -76,3 +76,42 @@ function vote_comment(id,value) {
 	xhr.send(params);
 }
 
+function reply_comment(idd) {
+	var txt = document.getElementById(idd);
+	if(txt.style.display == 'none') {
+		txt.style.display = 'block';
+	} else {
+		txt.style.display = 'none';
+	}
+}
+
+function handle_is_link(checkbox) {
+	var txt = document.getElementById('link-text');
+	if(checkbox.checked == true) {
+		txt.style.display = 'block';
+	} else {
+		txt.style.display = 'none';
+	}
+}
+
+function get_title_from_link(link_f) {
+	var e = link_f
+	var u = document.getElementById('link-text-input');
+
+	// Get title by url
+	var xhr = new XMLHttpRequest();
+
+	xhr.open('GET','/post/title_by_url',true);
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
+	// We dont give a fuck if the server is down, we need to get that title
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4) {
+			e.value = xhr.responseText;
+		}
+	}
+	xhr.send('url='+u.value);
+}
+
+var source = document.getElementById('link-text')
+source.addEventListener('input',get_title_from_link);

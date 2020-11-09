@@ -12,8 +12,8 @@ import secrets
 from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
-from xaiecon.modules.core.cache import cache
 
+from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.exception import XaieconException

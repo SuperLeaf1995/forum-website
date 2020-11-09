@@ -12,9 +12,9 @@ from xaiecon.classes.exception import XaieconException
 
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
-logs = Blueprint('logs',__name__,template_folder='templates/logs')
+log = Blueprint('log',__name__,template_folder='templates/log')
 
-@logs.route('/logs/public', methods = ['GET'])
+@log.route('/log/public', methods = ['GET'])
 @login_wanted
 def showlogs(u=None):
 	try:

@@ -2,9 +2,6 @@
 # Simple post-sharing base module
 #
 
-import hashlib
-from random import random
-
 from os import path, remove
 from flask import Blueprint, render_template, request, session, jsonify, redirect, send_from_directory, abort, send_file
 from werkzeug.utils import secure_filename

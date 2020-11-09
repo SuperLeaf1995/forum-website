@@ -3,6 +3,7 @@
 #
 
 import requests
+
 from flask import Blueprint, render_template, request
 from xaiecon.modules.core.cache import cache
 

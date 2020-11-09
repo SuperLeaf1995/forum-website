@@ -9,14 +9,11 @@ import urllib
 import hashlib
 
 from bs4 import BeautifulSoup
-
-from random import random
-
 from os import path, remove
 from flask import Blueprint, render_template, request, session, jsonify, redirect, send_from_directory, abort, send_file
 from werkzeug.utils import secure_filename
-from xaiecon.modules.core.cache import cache
 
+from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.post import Post
@@ -33,9 +30,9 @@ from distutils.util import *
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc, asc
 
-posts = Blueprint('posts',__name__,template_folder='templates/posts')
+post = Blueprint('post',__name__,template_folder='templates/post')
 
-@posts.route('/post/vote', methods = ['POST'])
+@post.route('/post/vote', methods = ['POST'])
 @login_required
 def vote(u=None):
 	try:
@@ -74,12 +71,15 @@ def vote(u=None):
 		db.commit()
 		
 		db.close()
+		cache.delete_memoized(ballot)
+		cache.delete_memoized(list_posts)
 		return '',200
 	except XaieconException as e:
 		return jsonify({'error':e}),400
 
-@posts.route('/post/ballot', methods = ['GET','POST'])
-@login_required
+@post.route('/post/ballot', methods = ['GET','POST'])
+@login_wanted
+@cache.memoize(604800)
 def ballot(u=None):
 	try:
 		pid = request.values.get('pid')
@@ -97,7 +97,7 @@ def ballot(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',e=e)
 
-@posts.route('/post/kick', methods = ['GET','POST'])
+@post.route('/post/kick', methods = ['GET','POST'])
 @login_required
 def kick(u=None):
 	try:
@@ -125,7 +125,8 @@ def kick(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view/{pid}')
+			cache.delete_memoized(list_posts)
+			return redirect(f'/post/view?pid={pid}')
 		else:
 			post = db.query(Post).filter_by(id=pid).first()
 			db.close()
@@ -133,7 +134,7 @@ def kick(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@posts.route('/post/yank', methods = ['GET','POST'])
+@post.route('/post/yank', methods = ['GET','POST'])
 @login_required
 def yank(u=None):
 	try:
@@ -164,7 +165,8 @@ def yank(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view/{uid}')
+			cache.delete_memoized(list_posts)
+			return redirect(f'/post/view?pid={pid}')
 		else:
 			boards = db.query(Board).filter_by(user_id=u.id).options(joinedload('user_info')).all()
 			post = db.query(Post).filter_by(id=pid).first()
@@ -173,7 +175,7 @@ def yank(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@posts.route('/post/delete', methods = ['GET','POST'])
+@post.route('/post/delete', methods = ['GET','POST'])
 @login_required
 def delete(u=None):
 	try:
@@ -194,12 +196,13 @@ def delete(u=None):
 			'body':'[deleted]'})
 		db.commit()
 		db.close()
+		cache.delete_memoized(list_posts)
 		return '',200
 	except XaieconException as e:
 		return jsonify({'error':e}),400
 
-@posts.route('/post/edit', methods = ['POST','GET'])
-@login_wanted
+@post.route('/post/edit', methods = ['POST','GET'])
+@login_required
 def edit(u=None):
 	try:
 		db = open_db()
@@ -248,14 +251,15 @@ def edit(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view/{pid}')
+			cache.delete_memoized(list_posts)
+			return redirect(f'/post/view?pid={pid}')
 		else:
 			db.close()
 			return render_template('post/edit.html',u=u,title = 'Edit',post = post)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@posts.route('/post/write', methods = ['POST','GET'])
+@post.route('/post/write', methods = ['POST','GET'])
 @login_required
 def write(u=None):
 	try:
@@ -315,6 +319,7 @@ def write(u=None):
 			db.refresh(post)
 			
 			db.close()
+			cache.delete_memoized(list_posts)
 			return redirect(f'/post/view?pid={post.id}')
 		else:
 			db = open_db()
@@ -325,7 +330,7 @@ def write(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@posts.route('/post/view', methods = ['GET'])
+@post.route('/post/view', methods = ['GET'])
 @login_wanted
 def view(u=None):
 	pid = request.values.get('pid')
@@ -336,9 +341,13 @@ def view(u=None):
 	db = open_db()
 	
 	# Query post from database
-	post = db.query(Post).filter_by(id=pid).first()
+	post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
 	if post is None:
 		abort(404)
+	# Dont let people see nsfw
+	if post.is_nsfw == True and u.is_nsfw == False:
+		abort(403)
+
 	comment = db.query(Comment).filter_by(post_id=post.id).order_by(desc(Comment.id)).all()
 	
 	# This is how we get replies, pardon for so many cringe
@@ -366,10 +375,6 @@ def view(u=None):
 						l.more_children = True
 
 					comments.append(l)
-
-	# Dont let people see nsfw
-	if post.is_nsfw == True and u.is_nsfw == False:
-		abort(403)
 	
 	# Add one view
 	db.query(Post).filter_by(id=pid).update({'views':post.views+1})
@@ -379,9 +384,10 @@ def view(u=None):
 	db.close()
 	return res, 200
 
-@posts.route('/post/list', methods = ['GET'])
+@post.route('/post/list', methods = ['GET'])
 @login_wanted
-def list(u=None):
+@cache.memoize(604800)
+def list_posts(u=None):
 	# Select data of SQL
 	db = open_db()
 	
@@ -392,10 +398,9 @@ def list(u=None):
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
 	
+	is_nsfw = False
 	if u is not None:
 		is_nsfw = u.is_nsfw
-	else:
-		is_nsfw = False
 	
 	post = db.query(Post)
 	
@@ -416,7 +421,7 @@ def list(u=None):
 	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
 
-@posts.route('/post/title_by_url', methods = ['GET'])
+@post.route('/post/title_by_url', methods = ['GET'])
 def title_by_url():
 	# Used by javascript for getting title and put it as title
 	# for using url'ed posts
@@ -437,7 +442,7 @@ def title_by_url():
 
 	return title, 200
 
-@posts.route('/post/search', methods = ['GET','POST'])
+@post.route('/post/search', methods = ['GET','POST'])
 @login_wanted
 def search(u=None):
 	try:

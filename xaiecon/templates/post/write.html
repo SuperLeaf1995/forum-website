@@ -6,13 +6,13 @@
 	<span>Title</span>
 	<input id='title' class='textbar-normal' type='text' name='name' placeholder='Title of post'></br>
 	<span>Description</span>
-	<textarea class='textbar-normal' maxlength='4095' name='description' placeholder='Description'></textarea></br>
+	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='description' placeholder='Description'></textarea></br>
 	<span>Keywords</span>
 	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords'></br>
 	<input type='checkbox' name='is_nsfw' value='false'>Is NSFW? (+18)</input></br>
 	<input type='checkbox' name='is_link' value='false' onchange='handle_is_link(this);'>Is link?</input></br>
 	<div id='link-text' style='display:none'>
-		<input oninput='get_title_from_link(this);' class='textbar-normal' type='text' name='link'></br>
+		<input id='link-text-input' oninput='get_title_from_link(this);' class='textbar-normal' type='text' name='link'></br>
 	</div>
 	{% if boards %}
 		<span>Board to post to</span>
@@ -28,7 +28,7 @@
 		<option value='{{ category.name }}'>{{ category.name }}</option>
 	{% endfor %}
 	</select>
-	<input type='submit'></br>
+	<input class='form-btn' type='submit'></br>
 </form>
 <script>
 	function handle_is_link(checkbox) {
@@ -41,24 +41,23 @@
 	}
 
 	function get_title_from_link(link_f) {
+		var e = link_f
+		var u = document.getElementById('link-text-input');
+
+		// Get title by url
 		var xhr = new XMLHttpRequest();
-		var u = document.getElementById('link-text')
-		var e = document.getElementById('title')
-		xhr.open('GET',u.textContent,true);
+
+		xhr.open('GET','/post/title_by_url',true);
+		xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
 		// We dont give a fuck if the server is down, we need to get that title
 		xhr.onreadystatechange = function() {
-			if (xhr.readyState == 4 && xhr.status == 200) {
-				var str = xhr.responseText.match(/<title>(.*?)<\/title>/);
-				str = str[1]
-
-				// Do not overwrite title when user has already gave a title
-				if(e.textContent !== undefined) {
-					e.textContent = str
-				}
+			if (xhr.readyState == 4) {
+				e.value = xhr.responseText;
 			}
 		}
-		xhr.send();
+
+		xhr.send('url='+u.value);
 	}
 
 	var source = document.getElementById('link-text')

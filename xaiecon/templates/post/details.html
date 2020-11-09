@@ -39,34 +39,45 @@
 	
 	</br>
 	
-	<h2>Reply form</h2>
-	<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
-		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-		<input type='text' name='cid' placeholder='comment_id of thing'>
-		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body of reply what'></textarea></br>
-		<input type='submit'>
-	</form>
-	
 	<h2>Add comment</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
 		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-		<textarea class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
-		<input type='submit'>
+		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
+		<input class='form-btn' type='submit'>
 	</form>
 	
 	{% if comment %}
 		<h2>Comments</h2>
 		<hr>
 		{% for c in comment %}
-			<div class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
+			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
 				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb?uid={{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted by: <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body }}</p>
+				<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
 				{% if c.more_children == True %}
 				<a href='/comment/view?cid={{ c.id }}'>View entire discussion</a>
 				{% endif %}
 			</div>
+			<div id='reply-form-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level }}0%;display:none;'>
+				<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
+					<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
+					<input type='text' name='cid' style='display:none;' value='{{ c.id }}'>
+					<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
+					<input class='form-btn' type='submit' value='Reply'>
+				</form>
+			</div>
 		{% endfor %}
+		<script>
+			function reply_comment(idd) {
+				var txt = document.getElementById(idd);
+				if(txt.style.display == 'none') {
+					txt.style.display = 'block';
+				} else {
+					txt.style.display = 'none';
+				}
+			}
+		</script>
 	{% else %}
 		<h2>No comments yet</h2>
 	{% endif %}

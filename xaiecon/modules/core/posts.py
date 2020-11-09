@@ -2,14 +2,14 @@
 # Simple post-sharing base module
 #
 
-import imghdr
-from PIL import Image
-
 import requests
 import threading
 import time
-
+import urllib
 import hashlib
+
+from bs4 import BeautifulSoup
+
 from random import random
 
 from os import path, remove
@@ -230,10 +230,7 @@ def edit(u=None):
 				is_link = False
 				link = ''
 			
-			if request.form.get('is_nsfw'):
-				is_nsfw = True
-			else:
-				is_nsfw = False
+			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 			
 			if description == None or description == '':
 				raise XaieconException('Empty description')
@@ -281,15 +278,11 @@ def write(u=None):
 			if category is None:
 				raise XaieconException('Not a valid category')
 			
+			is_link = False
 			if link != '':
 				is_link = True
-			else:
-				is_link = False
 			
-			if request.form.get('is_nsfw'):
-				is_nsfw = True
-			else:
-				is_nsfw = False
+			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 
 			if description == '' and is_link == False:
 				raise XaieconException('Empty description')
@@ -404,7 +397,7 @@ def list(u=None):
 	else:
 		is_nsfw = False
 	
-	post = db.query(Post).filter_by(is_deleted=False)
+	post = db.query(Post)
 	
 	if is_nsfw == False:
 		post = post.filter_by(is_nsfw=False)
@@ -422,6 +415,27 @@ def list(u=None):
 	
 	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
+
+@posts.route('/post/title_by_url', methods = ['GET'])
+def title_by_url():
+	# Used by javascript for getting title and put it as title
+	# for using url'ed posts
+	url = request.values.get('url')
+	if url is None:
+		return '',400
+
+	html = urllib.request.urlopen(url)
+	if html is None:
+		return '',400
+
+	html = html.read().decode('utf8')
+
+	soup = BeautifulSoup(html, 'html.parser')
+	title = soup.find('title')
+	if title is None:
+		return '',400
+
+	return title, 200
 
 @posts.route('/post/search', methods = ['GET','POST'])
 @login_wanted

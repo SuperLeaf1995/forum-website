@@ -217,37 +217,39 @@ def edit(u=None):
 			raise XaieconException('User is not authorized')
 		
 		if request.method == 'POST':
-			description = request.form.get('description')
-			name = request.form.get('name')
+			body = request.form.get('body')
+			title = request.form.get('title')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
+			category = int(request.form.get('category',''))
 
-			if len(name) > 255:
-				raise XaieconException('Too long name')
+			if len(title) > 255:
+				raise XaieconException('Too long title')
+
+			category = db.query(Category).filter_by(id=category).first()
+			if category is None:
+				raise XaieconException('Not a valid category')
 			
-			if link:
+			is_link = False
+			if link != '':
 				is_link = True
-				if link == None:
-					raise XaieconException('Provide a valid link')
-			else:
-				is_link = False
-				link = ''
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 			
-			if description == None or description == '':
-				raise XaieconException('Empty description')
-			if name == None or name == '':
-				raise XaieconException('Empty name')
+			if body == None or body == '':
+				raise XaieconException('Empty body')
+			if title == None or title == '':
+				raise XaieconException('Empty title')
 			
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
 						'keywords':keywords,
-						'body':description,
+						'body':body,
 						'is_link':is_link,
 						'is_nsfw':is_nsfw,
-						'title':name,
-						'link_url':link})
+						'title':title,
+						'link_url':link,
+						'category_id':category.id})
 			db.commit()
 			
 			db.close()
@@ -266,21 +268,25 @@ def write(u=None):
 		if request.method == 'POST':
 			db = open_db()
 			
-			description = request.form.get('description','')
-			name = request.form.get('name')
+			body = request.form.get('body','')
+			title = request.form.get('title')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
 			bid = request.form.get('bid')
-			category = request.values.get('category')
+			category = int(request.values.get('category',''))
 
-			if len(name) > 255:
-				raise XaieconException('Too long name')
-			if len(description) > 16000:
+			if len(title) > 255:
+				raise XaieconException('Too long title')
+			if len(body) > 16000:
 				raise XaieconException('Too long body')
 			
-			category = db.query(Category).filter_by(name=category).first()
+			category = db.query(Category).filter_by(id=category).first()
 			if category is None:
 				raise XaieconException('Not a valid category')
+			board = db.query(Board).filter_by(id=bid).first()
+			if board is None:
+				raise XaieconException('Invalid board')
+			bid = board.id
 			
 			is_link = False
 			if link != '':
@@ -288,20 +294,14 @@ def write(u=None):
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 
-			if description == '' and is_link == False:
-				raise XaieconException('Empty description')
-			if name is None or name == '':
-				raise XaieconException('Empty name')
-			
-			board = db.query(Board).filter_by(id=bid).first()
-			if board is None:
-				raise XaieconException('Invalid board')
-			
-			bid = board.id
+			if body == '' and is_link == False:
+				raise XaieconException('Empty body')
+			if title is None or title == '':
+				raise XaieconException('Empty title')
 			
 			post = Post(keywords=keywords,
-						title=name,
-						body=description,
+						title=title,
+						body=body,
 						link_url=link,
 						is_link=is_link,
 						user_id=u.id,
@@ -309,9 +309,8 @@ def write(u=None):
 						downvote_count=0,
 						upvote_count=0,
 						total_vote_count=0,
-						category_id=category.id)
-			if bid is not None:
-				post.board_id = bid
+						category_id=category.id,
+						board_id=bid)
 			
 			db.add(post)
 			db.commit()
@@ -453,24 +452,27 @@ def search(u=None):
 			query = request.form.get('query')
 			query = query.split(' ')
 			
-			# TODO: Do better algo
-			is_nsfw = u.is_nsfw
+			is_nsfw = False
+			if u is not None:
+				is_nsfw = u.is_nsfw
 			
 			post = db.query(Post)
 			
 			if is_nsfw == False:
 				post = post.filter_by(is_nsfw=False)
-				
-			post = post.options(joinedload('category')).order_by(desc(Post.id)).options(joinedload('category')).all()
 			
-			res = render_template('post/list.html',u=u,title = 'Post frontpage', posts = post)
+			posts = []
+			for q in query:
+				ps = post.options(joinedload('*')).order_by(desc(Post.id)).filter_by(title=q).all()
+				for p in ps:
+					posts.append(p)
 			
 			# Close the database
 			db.close()
-			return res
+			return render_template('post/list.html',u=u,title='Post frontpage',posts=posts)
 		else:
-			return render_template('post/list.html',u=u,title = 'Post frontpage')
+			return render_template('post/list.html',u=u,title='Post frontpage')
 	except XaieconException as e:
-		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+		return render_template('user_error.html',u=u,title='Whoops!',err=e)
 
 print('Post share ... ok')

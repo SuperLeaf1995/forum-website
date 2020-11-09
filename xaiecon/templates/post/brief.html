@@ -1,4 +1,4 @@
-<div class='post-brief' style='overflow:auto;'>
+<article class='post-brief' style='overflow:auto;'>
 	<div style='height:100%;float:left;'>
 	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
@@ -17,9 +17,11 @@
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
-	
+
 	<p>{{ post.body | truncate(1000,true) }}</p>
 	
+	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
+
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
 	
@@ -35,4 +37,4 @@
 {% endif %}
 	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>Ballot</a>
 	<a class='post-option' href='/post/flag?pid={{ post.id }}'>Flag</a>
-</div>
+</article>

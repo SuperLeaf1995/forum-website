@@ -6,28 +6,16 @@
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action='/post/edit'>
 	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-	<span>Name</span>
-	<input class='textbar-normal' type='text' name='name' placeholder='Title of resource' value='{{ post.title }}'></br>
-	<span>Description</span>
-	<textarea class='textbar-normal' maxlength='4095' name='description' placeholder='Description'>{{ post.body }}</textarea></br>
-	<span>Keywords</span>
+	<label for='title'>Title</label>
+	<input class='textbar-normal' type='text' name='title' placeholder='Title of resource' value='{{ post.title }}'></br>
+	<label for='description'>Description</label>
+	<textarea class='textbar-normal' maxlength='4095' name='body' placeholder='Body of post'>{{ post.body }}</textarea></br>
+	<label for='description'>Keywords</label>
 	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords' value='{{ post.keywords }}'></br>
-	<input type='checkbox' name='is_nsfw' value='{{ post.is_nsfw }}'>Is NSFW? (+18)</input></br>
-	<input type='checkbox' name='is_link' value='{{ post.is_link }}' onchange='handle_is_link(this);'>Is link?</input></br>
-	<div id='link-text' style='display:none'>
-		<input class='textbar-normal' type='text' name='link' value='{{ post.link_url }}'></br>
-	</div>
+	<label for='link'>Link</label>
+	<input class='textbar-normal' type='text' name='link' value='{{ post.link_url }}'></br>
+	<label for='is_nsfw'>Is post NSFW?</label>
+	<input type='checkbox' name='is_nsfw' value='{{ post.is_nsfw }}'></input></br>
 	<input class='form-btn' type='submit'></br>
 </form>
-
-<script>
-	function handle_is_link(checkbox) {
-		var txt = document.getElementById('link-text');
-		if(checkbox.checked == true) {
-			txt.style.display = 'block';
-		} else {
-			txt.style.display = 'none';
-		}
-	}
-</script>
 {% endblock %}

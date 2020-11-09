@@ -20,6 +20,8 @@
 	</p>
 	
 	<p>{{ post.body }}</p>
+
+	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 	
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
 	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>

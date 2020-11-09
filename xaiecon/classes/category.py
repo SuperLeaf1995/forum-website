@@ -1,16 +1,15 @@
-import datetime
+import time
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker, relationship
 
 from xaiecon.classes.base import Base
 
 class Category(Base):
-	__tablename__ = 'xaiecon_categories'
+	__tablename__ = 'xaiecon_category'
 	
 	id = Column(Integer, primary_key=True)
 	name = Column(String(4095), nullable=False)
-	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
+	creation_date = Column(Integer, default=time.time())
 	
 	def __init__(self, **kwargs):
 		super(Category, self).__init__(**kwargs)

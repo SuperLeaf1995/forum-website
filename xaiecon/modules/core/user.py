@@ -47,6 +47,7 @@ def login(u=None):
 				raise XaieconException('Invalid username or password')
 			
 			for data in users:
+				data._repr(id=data.id,username=data.username)
 				rbool = check_password_hash(data.password,request.form.get('password'))
 				if rbool == True:
 					# Update auth token, and put it in our session cookie

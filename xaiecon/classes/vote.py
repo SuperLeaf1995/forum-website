@@ -1,23 +1,21 @@
-import datetime
+import time
 
 from sqlalchemy import *
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relation, sessionmaker, relationship
 
 from xaiecon.classes.base import Base
 
 class Vote(Base):
-	__tablename__ = 'xaiecon_votes'
+	__tablename__ = 'xaiecon_vote'
 	
 	id = Column(Integer, primary_key=True)
-	
-	creation_date = Column(DateTime, default=datetime.datetime.utcnow)
-	
 	value = Column(Integer, default=1)
+
+	creation_date = Column(Integer, default=time.time())
 	
-	comment_id = Column(Integer, ForeignKey('xaiecon_comments.id'))
-	post_id = Column(Integer, ForeignKey('xaiecon_posts.id'))
-	user_id = Column(Integer, ForeignKey('xaiecon_users.id'))
+	comment_id = Column(Integer, ForeignKey('xaiecon_comment.id'))
+	post_id = Column(Integer, ForeignKey('xaiecon_post.id'))
+	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	
 	comment_info = relationship('Comment', foreign_keys=[comment_id])
 	post_info = relationship('Post', foreign_keys=[post_id])

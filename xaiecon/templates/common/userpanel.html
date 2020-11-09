@@ -1,8 +1,8 @@
 <ul class='header-nav' style='float:left;'>
+	{% if u %}
 	<h2>User panel</h2>
 	<hr>
 	<li><a href='/board/new'>New board</a></li>
-	{% if u %}
 	<li><a href='/post/write'>New post</a></li>
 	<li><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username | truncate(8,true) }}</a></li>
 	<h2>My boards</h2>

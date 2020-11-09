@@ -5,10 +5,10 @@
 <p>{{ login_error }}</p>
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action='/user/login'>
-	<span>Username:</span>
-	<input class='textbar-normal' type='text' name='username' value='{{ request.form.username }}'></br>
-	<span>Passsowrd</span>
-	<input class='textbar-normal' type='password' name='password' value='{{ request.form.password }}'></br>
+	<label for='username'>Username</label>
+	<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'></br>
+	<label for='password'>Passsowrd</label>
+	<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'></br>
 	<input class='form-btn' type='submit'></br>
 </form>
 {% endblock %}

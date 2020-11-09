@@ -6,29 +6,29 @@
 
 	<input style='display:none;' value='{{ user.id }}' name='uid'>
 
-	<span>Biography</span>
-	<input class='textbar-normal' type='text' name='biography' value='{{ user.biography }}' placeholder='Biography'></br>
+	<label for='biography'>Biography</label>
+	<input class='textbar-normal' type='text' id='biography' name='biography' value='{{ user.biography }}' placeholder='Biography'></br>
 
-	<span>Profile picture</span>
-	<input class='textbar-normal' type='file' name='profile'>
+	<label for='profile'>Profile picture</label>
+	<input class='textbar-normal' type='file' id='profile' name='profile'></br>
 	
-	<span>Electronic Mail</span>
-	<span>Address</span>
-	<input class='textbar-normal' type='text' name='email' value='{{ user.email }}' placeholder='Electronic Mail Address'></br>
-	<span>Show publicly?</span>
-	<input type='checkbox' name='is_show_email' value='{{ user.is_show_email }}'></br>
+	<label for='email'>Electronic Mail Address</label>
+	<input class='textbar-normal' type='text' id='email' name='email' value='{{ user.email }}' placeholder='Electronic Mail Address'></br>
+
+	<label for='is_show_email'>Show E-Mail address?</label>
+	<input type='checkbox' id='is_show_email' name='is_show_email' value='{{ user.is_show_email }}'></br>
 	
-	<span>Telefax</span>
-	<span>Number</span>
-	<input class='textbar-normal' type='text' name='fax' value='{{ user.fax }}' placeholder='Telefax'></br>
-	<span>Show publicly?</span>
-	<input type='checkbox' name='is_show_fax' value='{{ user.is_show_fax }}'></br>
+	<label for='fax'>Telefax</label>
+	<input class='textbar-normal' type='text' id='fax' name='fax' value='{{ user.fax }}' placeholder='Telefax'></br>
 	
-	<span>Telephone</span>
-	<span>Number</span>
-	<input class='textbar-normal' type='text' name='phone' value='{{ user.phone }}' placeholder='Telephone'></br>
-	<span>Show publicly?</span>
-	<input type='checkbox' name='is_show_phone' value='{{ user.is_show_phone }}'></br>
+	<label for='is_show_fax'>Show telefax number?</label>
+	<input type='checkbox' id='is_show_fax' name='is_show_fax' value='{{ user.is_show_fax }}'></br>
+	
+	<label for='phone'>Telephone number</label>
+	<input class='textbar-normal' type='text' id='phone' name='phone' value='{{ user.phone }}' placeholder='Telephone'></br>
+	
+	<label for='is_show_phone'>Show phone number?</label>
+	<input type='checkbox' id='is_show_phone' name='is_show_phone' value='{{ user.is_show_phone }}'></br>
 	
 	<span>Check this box if you are ok viewing NSFW content</span>
 	<input type='checkbox' name='is_nsfw' value='{{ user.is_nsfw }}'></br>

@@ -5,19 +5,19 @@
 <p>{{ signup_error }}</p>
 {% endif %}
 <form enctype='multipart/form-data' method='POST' action='/user/signup'>
-	<span>Username:</span>
-	<input class='textbar-normal' type='text' name='username' value='{{ request.form.username }}'></br>
-	<span>Name:</span>
-	<input class='textbar-normal' type='text' name='name' value='{{ request.form.name }}'></br>
-	<span>Password:</span>
-	<input class='textbar-normal' type='password' name='password' value='{{ request.form.password }}'></br>
-	<span>Repeat password:</span>
-	<input class='textbar-normal' type='password' name='password_double' value='{{ request.form.password_double }}'></br>
+	<label for='name'>Name</label>
+	<input class='textbar-normal' type='text' id='name' name='name' value='{{ request.form.name }}'></br>
+	<label for='username'>Username</label>
+	<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'></br>
+	<label for='password'>Passsowrd</label>
+	<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'></br>
+	<label for='password_double'>Repeat password</label>
+	<input class='textbar-normal' type='password' id='password_double' name='password_double' value='{{ request.form.password }}'></br>
 	
+	<label><input type='checkbox' name='agree_tos'></input>I agree with the <a href='/legal/terms'>Terms of Service</a>, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></label>
+
 	{{ hcaptcha }}
-	
-	<input type='checkbox' name='agree_tos'>I agree with the <a href='/legal/terms'>Terms of Service</a>
-	, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></input></br>
+
 	<input class='form-btn' type='submit'></br>
 </form>
 {% endblock %}

@@ -4,3 +4,4 @@ prun.sh
 # Remove python cache stuff
 *.pyc
 __pycache__/
+user_data/

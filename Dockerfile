@@ -34,7 +34,8 @@ COPY ./schema.sql /app/schema.sql
 RUN service postgresql start &&\
 	psql --command "CREATE USER xaiuser WITH SUPERUSER PASSWORD 'xaipass'" &&\
 	createdb -O xaiuser xaiecon &&\
-	psql -d xaiecon < schema.sql
+	psql -d xaiecon < schema.sql &&\
+	service postgresql stop
 
 # Expose the PostgreSQL port
 EXPOSE 5432
@@ -55,4 +56,4 @@ RUN chmod 777 run.sh
 
 USER xaiuser
 ENV DOCKER=True
-CMD ./run.sh
+CMD service postgresql start && ./run.sh

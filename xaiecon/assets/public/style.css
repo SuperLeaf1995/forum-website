@@ -82,7 +82,7 @@ a:visited, a:active, a:hover, a:focus {
   cursor: pointer;
 }
 
-.xai-form-btn {
+.form-btn {
   border: none;
   background-color: #3126d1;
   color: white;
@@ -92,7 +92,7 @@ a:visited, a:active, a:hover, a:focus {
   transition: 0.3s;
 }
 
-.xai-form-btn:hover {
+.form-btn:hover {
   color: #3126d1;
   background-color: white;
   cursor: pointer;

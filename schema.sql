@@ -110,7 +110,10 @@ CREATE TABLE xaiecon_log(
 CREATE TABLE xaiecon_serverchain(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
-	ip_addr VARCHAR(4095) NOT NULL,
+	ip_addr VARCHAR(255) NOT NULL,
+	endpoint_url VARCHAR(255) NOT NULL,
+	internal_password VARCHAR(255) NOT NULL,
+	external_password VARCHAR(255) NOT NULL,
 	is_banned BOOLEAN DEFAULT FALSE,
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,

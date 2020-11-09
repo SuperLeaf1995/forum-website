@@ -26,6 +26,26 @@ class Board(Base):
 	def __repr__(self):
 		return 'Board(%r,%r,%r,%r)' % (self.name,self.descr,self.user_id,self.category_id)
 
+	def json(self):
+		return {
+			'name':self.name,
+			'descr':self.descr,
+			'image_file':self.image_file,
+			'keywords':self.keywords,
+			'creation_date':self.creation_date,
+			'category_id':self.category_id,
+			'user_id':self.user_id
+		}
+
+	def from_json(self, json):
+		self.name = json.name
+		self.descr = json.descr
+		self.image_file = json.image_file
+		self.keywords = json.keywords
+		self.creation_date = json.creation_date
+		self.category_id = json.category_id
+		self.user_id = json.user_id
+
 class BoardBan(Base):
 	__tablename__ = 'xaiecon_board_ban'
 	

@@ -75,3 +75,43 @@ class User(Base):
 		ret = db.query(Board).filter_by(user_id=self.id).all()
 		db.close()
 		return ret
+
+	def json(self):
+		return {
+			'name':self.name,
+			'image_file':self.image_file,
+			'username':self.username,
+			'biography':self.biography,
+			'password':self.password,
+			'auth_token':self.auth_token,
+			'email':self.email,
+			'is_show_email':self.is_show_email,
+			'phone':self.phone,
+			'is_show_phone':self.is_show_phone,
+			'fax':self.fax,
+			'is_show_fax':self.is_show_fax,
+			'is_nsfw':self.is_nsfw,
+			'is_admin':self.is_admin,
+			'is_banned':self.is_banned,
+			'ban_reason':self.ban_reason,
+			'creation_date':self.creation_date
+		}
+
+	def from_json(self, json):
+		self.name = json.name
+		self.image_file = json.image_file
+		self.username = json.username
+		self.biography = json.biography
+		self.password = json.password
+		self.auth_token = json.auth_token
+		self.email = json.email
+		self.is_show_email = json.is_show_email
+		self.phone = json.phone
+		self.is_show_phone = json.is_show_phone
+		self.fax = json.fax
+		self.is_show_fax = json.is_show_fax
+		self.is_nsfw = json.is_nsfw
+		self.is_admin = json.is_admin
+		self.is_banned = json.is_banned
+		self.ban_reason = json.ban_reason
+		self.creation_date = json.creation_date

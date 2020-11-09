@@ -10,6 +10,10 @@ class Serverchain(Base):
 	id = Column(Integer, primary_key=True)
 	name = Column(String(255), nullable=False)
 	ip_addr = Column(String(255), nullable=False)
+	endpoint_url = Column(String(255), nullable=False)
+	ip_addr = Column(String(255), nullable=False)
+	internal_password = Column(String(255), nullable=False)
+	external_password = Column(String(255), nullable=False)
 	is_banned = Column(Boolean, default=False)
 	is_active = Column(Boolean, default=False)
 	is_online = Column(Boolean, default=False)
@@ -19,5 +23,6 @@ class Serverchain(Base):
 		super(Serverchain, self).__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'Serverchain(%r,%r,%r,%r,%r)' % (self.name,self.ip_addr,
-			self.is_banned,self.is_online,self.is_active)
+		return 'Serverchain(%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.ip_addr,
+			self.is_banned,self.is_online,self.is_active,self.endpoint_url,
+			self.internal_password,self.external_password)

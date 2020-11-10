@@ -1,4 +1,4 @@
-#
+ #
 # Simple post-sharing base module
 #
 
@@ -393,12 +393,13 @@ def view(u=None):
 
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
-@cache.memoize(604800)
 def list_posts(u=None, sort='new'):
 	# Select data of SQL
 	db = open_db()
 
 	category = request.values.get('category','All')
+	page = int(request.values.get('page','0'))
+	num = int(request.values.get('num','15'))
 	
 	category_obj = None
 	if category != 'All':
@@ -422,19 +423,21 @@ def list_posts(u=None, sort='new'):
 	else:
 		abort(401)
 	
-	post = post.options(joinedload('*')).all()
+	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 	
 	db.close()
-	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
+		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/feed/<sort>', methods = ['GET'])
 @login_required
-@cache.memoize(604800)
 def feed_posts(u=None, sort='new'):
 	# Select data of SQL
 	db = open_db()
 
 	category = request.values.get('category','All')
+	page = int(request.values.get('page','0'))
+	num = int(request.values.get('num','15'))
 	
 	category_obj = None
 	if category != 'All':
@@ -458,7 +461,7 @@ def feed_posts(u=None, sort='new'):
 	else:
 		abort(401)
 	
-	post = post.options(joinedload('*')).all()
+	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 
 	# If only show user feed then remove all posts
 	# That are not in their subscription
@@ -471,7 +474,8 @@ def feed_posts(u=None, sort='new'):
 			post.pop(i)
 	
 	db.close()
-	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
+		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/title_by_url', methods = ['GET'])
 def title_by_url():
@@ -498,6 +502,8 @@ def title_by_url():
 @login_wanted
 def search(u=None):
 	try:
+		page = int(request.values.get('page','0'))
+		num = int(request.values.get('num','15'))
 		if request.method == 'POST':
 			# Select data of SQL
 			db = open_db()
@@ -516,7 +522,7 @@ def search(u=None):
 			
 			posts = []
 			for q in query:
-				ps = post.options(joinedload('*')).order_by(desc(Post.id)).filter_by(title=q).all()
+				ps = post.options(joinedload('*')).order_by(desc(Post.id)).filter_by(title=q).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 				for p in ps:
 					posts.append(p)
 			

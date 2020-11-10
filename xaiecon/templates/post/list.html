@@ -5,6 +5,11 @@
 		{% for post in posts %}
 			{% include 'post/brief.html' %}
 		{% endfor %}
+		<p>
+		<a href='/post/list/{{ sort }}?page={{ page-1 }}&num={{ num }}&category={{ category }}'>&lt;&lt;</a>
+		{{ page }}
+		<a href='/post/list/{{ sort }}?page={{ page+1 }}&num={{ num }}&category={{ category }}'>&gt;&gt;</a>
+		</p>
 	{% else %}
 	<p>No posts yet</p>
 	{% endif %}

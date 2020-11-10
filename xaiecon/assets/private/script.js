@@ -7,43 +7,53 @@ function status_change(id,value) {
 	
 	var downvotes = 0;
 	var upvotes = 0;
+
+	upvotes = cnt[0];
+	downvotes = cnt[1];
 	
-	if(value == 1) {
+	if(value === 1) {
 		// change downvote to upvote
-		if(u.className == 'content-upvote'
-		&& d.className == 'content-downvote-active') {
+		if(u.className === 'content-upvote'
+		&& d.className === 'content-downvote-active') {
 			u.className = 'content-upvote-active';
 			d.className = 'content-downvote';
 			upvotes++;
+			downvotes--;
 		}
 		// remove upvote
-		else if(u.className == 'content-upvote-active') {
+		else if(u.className === 'content-upvote-active') {
 			u.className = 'content-upvote';
+			upvotes--;
 		}
 		// just add a upvote
-		else if(u.className == 'content-upvote') {
+		else if(u.className === 'content-upvote') {
 			u.className = 'content-upvote-active';
 			upvotes++;
 		}
-	} else if(value == -1) {
+	} else if(value === -1) {
 		// change upvote to downvote
-		if(u.className == 'content-upvote-active'
-		&& d.className == 'content-downvote') {
+		if(u.className === 'content-upvote-active'
+		&& d.className === 'content-downvote') {
 			u.className = 'content-upvote';
 			d.className = 'content-downvote-active';
 			downvotes++;
+			upvotes--;
 		}
 		// remove downvote
-		else if(d.className == 'content-downvote-active') {
+		else if(d.className === 'content-downvote-active') {
 			d.className = 'content-downvote';
+			downvotes--;
 		}
 		// just add a downvote
-		else if(d.className == 'content-downvote') {
+		else if(d.className === 'content-downvote') {
 			d.className = 'content-downvote-active';
 			downvotes++;
 		}
 	}
 	
+	console.log(cnt);
+	console.log(downvotes,upvotes);
+
 	str = upvotes+'/'+downvotes;
 	c.textContent = str;
 }

@@ -5,3 +5,4 @@ prun.sh
 *.pyc
 __pycache__/
 user_data/
+public/

@@ -4,8 +4,16 @@
 <p>{{ board.descr }}</p>
 <p>Category: {{ board.category_info.name }}</p>
 <b>Board created by: <a href='/user/view/{{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></br>
-{% if u != None and u.mods(board.id) %}
+{% if u != None %}
+{% if u.is_subscribed(board.id) %}
+<input type='button' class='form-btn' onclick='subscribe("{{ board.id }}",this);' value='Unsubscribe'>
+{% else %}
+<input type='button' class='form-btn' onclick='subscribe("{{ board.id }}",this);' value='Subscribe'>
+{% endif %}
+</br>
+{% if u.mods(board.id) %}
 <a href='/board/edit?bid={{ board.id }}'>Edit board</a>
+{% endif %}
 {% endif %}
 <hr>
 {% if posts %}

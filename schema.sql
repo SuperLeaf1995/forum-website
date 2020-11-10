@@ -1,18 +1,16 @@
-DROP TABLE IF EXISTS xaiecon_user CASCADE;
-DROP TABLE IF EXISTS xaiecon_board CASCADE;
-DROP TABLE IF EXISTS xaiecon_board_sub;
+DROP TABLE IF EXISTS xaiecon_flag;
+DROP TABLE IF EXISTS xaiecon_notification;
 DROP TABLE IF EXISTS xaiecon_log;
+DROP TABLE IF EXISTS xaiecon_board_sub;
+DROP TABLE IF EXISTS xaiecon_board_ban;
+DROP TABLE IF EXISTS xaiecon_apiapp;
 DROP TABLE IF EXISTS xaiecon_serverchain;
 DROP TABLE IF EXISTS xaiecon_vote;
-DROP TABLE IF EXISTS xaiecon_flag;
 DROP TABLE IF EXISTS xaiecon_comment;
 DROP TABLE IF EXISTS xaiecon_post;
 DROP TABLE IF EXISTS xaiecon_board;
-DROP TABLE IF EXISTS xaiecon_apiapp;
-DROP TABLE IF EXISTS xaiecon_board_ban;
-DROP TABLE IF EXISTS xaiecon_notification;
-DROP TABLE IF EXISTS xaiecon_user;
 DROP TABLE IF EXISTS xaiecon_category;
+DROP TABLE IF EXISTS xaiecon_user;
 
 CREATE TABLE xaiecon_user(
 	id SERIAL PRIMARY KEY,
@@ -95,10 +93,17 @@ CREATE TABLE xaiecon_comment(
 CREATE TABLE xaiecon_vote(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
-	comment_id INT REFERENCES xaiecon_comments(id) ON UPDATE CASCADE,
+	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	value BIGINT DEFAULT 1
+);
+
+CREATE TABLE xaiecon_view(
+	id SERIAL PRIMARY KEY,
+	creation_date INT,
+	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE xaiecon_log(
@@ -112,8 +117,6 @@ CREATE TABLE xaiecon_serverchain(
 	name VARCHAR(255) NOT NULL,
 	ip_addr VARCHAR(255) NOT NULL,
 	endpoint_url VARCHAR(255) NOT NULL,
-	internal_password VARCHAR(255) NOT NULL,
-	external_password VARCHAR(255) NOT NULL,
 	is_banned BOOLEAN DEFAULT FALSE,
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,

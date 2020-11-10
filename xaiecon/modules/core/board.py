@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, session, redirect, request, abort
 from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.board import Board
+from xaiecon.classes.board import Board, BoardBan, BoardSub
 from xaiecon.classes.post import Post
 from xaiecon.classes.category import Category
 from xaiecon.classes.exception import XaieconException
@@ -103,6 +103,94 @@ def edit(u=None):
 	except XaieconException as e:
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+@board.route('/board/ban', methods = ['POST'])
+@login_required
+def ban(u=None):
+	db = open_db()
+	
+	bid = request.values.get('bid')
+	uid = request.values.get('uid')
+	reason = request.values.get('reason')
+
+	if u.mods(bid) == False:
+		return '',401
+
+	# Board does not exist
+	if db.query(Board).filter_by(id=bid).first() is None:
+		return '',404
+	# Already banned
+	if db.query(BoardBan).filter_by(user_id=uid,board_id=bid).first() is not None:
+		return '',400
+
+	sub = BoardBan(user_id=uid,board_id=bid,reason=reason)
+	db.add(sub)
+	db.commit()
+
+	db.close()
+	return '',200
+
+@board.route('/board/unban', methods = ['POST'])
+@login_required
+def unban(u=None):
+	db = open_db()
+	
+	bid = request.values.get('bid')
+	uid = request.values.get('uid')
+
+	if u.mods(bid) == False:
+		return '',401
+
+	# Board does not exist
+	if db.query(Board).filter_by(id=bid).first() is None:
+		return '',404
+
+	db.qeury(BoardBan).filter_by(user_id=uid,board_id=bid).delete()
+	db.commit()
+
+	db.close()
+	return '',200
+
+@board.route('/board/subscribe', methods = ['POST'])
+@login_required
+def subscribe(u=None):
+	db = open_db()
+	
+	bid = request.values.get('bid')
+
+	# Board does not exist
+	if db.query(Board).filter_by(id=bid).first() is None:
+		return '',404
+	# Already subscribed
+	if u.is_subscribed(bid) == True:
+		return '',400
+
+	sub = BoardSub(user_id=u.id,board_id=bid)
+	db.add(sub)
+	db.commit()
+
+	db.close()
+	return '',200
+
+@board.route('/board/unsubscribe', methods = ['POST'])
+@login_required
+def unsubscribe(u=None):
+	db = open_db()
+	
+	bid = request.values.get('bid')
+
+	# Board does not exist
+	if db.query(Board).filter_by(id=bid).first() is None:
+		return '',404
+	# Not subscribed
+	if u.is_subscribed(bid) == False:
+		return '',400
+
+	db.query(BoardSub).filter_by(user_id=u.id,board_id=bid).delete()
+	db.commit()
+
+	db.close()
+	return '',200
 
 @board.route('/board/new', methods = ['GET','POST'])
 @login_required

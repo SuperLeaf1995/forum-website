@@ -2,10 +2,8 @@
 {% block content %}
 	<h1>Pick one</h1>
 	<p>There are multiple users with that username, select one of them</p>
-	{% for i in range(0,len) %}
-		<a href='/user/view/{{ user[i].id }}'><h2>{{ user[i].username }}</h2></a>
-		<p>{{ user[i].biography }}</p>
-		<a href='/help/id'>Unique identifier</a>
-		<i>{{ user[i].id }}</p>
+	{% for u in user %}
+		<a href='/user/view/{{ u.id }}'><h2>{{ u.username }}</h2></a>
+		<p>{{ u.biography }}</p>
 	{% endfor %}
 {% endblock %}

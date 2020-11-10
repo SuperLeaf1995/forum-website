@@ -7,10 +7,13 @@
 	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
 	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a>
 	{% endif %}
-	<li class='nav-dropdown'><a href='/post/list'>Frontpage</a>
+	<li class='nav-dropdown'><a href='/post/list/new'>Frontpage</a>
 		<div class='nav-dropdown-content'>
-			<a href='/post/list?sort=new'>Newest</a>
-			<a href='/post/list?sort=old'>Oldest</a>
+			{% if u != None %}
+			<a href='/post/feed/new'>My feed</a>
+			{% endif %}
+			<a href='/post/list/new'>Newest</a>
+			<a href='/post/list/old'>Oldest</a>
 		</div>
 	</li>
 

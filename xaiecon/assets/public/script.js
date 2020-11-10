@@ -76,6 +76,28 @@ function vote_comment(id,value) {
 	xhr.send(params);
 }
 
+function subscribe(bid,e) {
+	var xhr = new XMLHttpRequest();
+	var url;
+	var text;
+	var params = 'bid='+bid;
+	if(e.value === 'Unsubscribe') {
+		url = '/board/unsubscribe';
+		text = 'Subscribe';
+	} else {
+		url = '/board/subscribe';
+		text = 'Unsubscribe';
+	}
+	xhr.open('POST',url,true);
+	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4 && xhr.status == 200) {
+			e.value = text;
+		}
+	}
+	xhr.send(params);
+}
+
 function reply_comment(idd) {
 	var txt = document.getElementById(idd);
 	if(txt.style.display == 'none') {
@@ -114,4 +136,6 @@ function get_title_from_link(link_f) {
 }
 
 var source = document.getElementById('link-text')
-source.addEventListener('input',get_title_from_link);
+if(source !== null) {
+	source.addEventListener('input',get_title_from_link);
+}

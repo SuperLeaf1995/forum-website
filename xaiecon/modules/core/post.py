@@ -21,6 +21,7 @@ from xaiecon.classes.log import Log
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.category import Category
 from xaiecon.classes.vote import Vote
+from xaiecon.classes.view import View
 from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
@@ -376,21 +377,24 @@ def view(u=None):
 					comments.append(l)
 	
 	# Add one view
-	db.query(Post).filter_by(id=pid).update({'views':post.views+1})
-	db.commit()
+	if u is not None:
+		if db.query(View).filter_by(user_id=u.id,post_id=pid) is None:
+			view = View(user_id=u.id,post_id=pid)
+			db.add(view)
+			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
+			db.commit()
 	
 	res = render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 	db.close()
 	return res, 200
 
-@post.route('/post/list', methods = ['GET'])
+@post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
 @cache.memoize(604800)
-def list_posts(u=None):
+def list_posts(u=None, sort='new'):
 	# Select data of SQL
 	db = open_db()
-	
-	sort = request.values.get('sort','new')
+
 	category = request.values.get('category','All')
 	
 	category_obj = None
@@ -416,6 +420,52 @@ def list_posts(u=None):
 		abort(401)
 	
 	post = post.options(joinedload('*')).all()
+	
+	db.close()
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)
+
+@post.route('/post/feed/<sort>', methods = ['GET'])
+@login_required
+@cache.memoize(604800)
+def feed_posts(u=None, sort='new'):
+	# Select data of SQL
+	db = open_db()
+
+	category = request.values.get('category','All')
+	
+	category_obj = None
+	if category != 'All':
+		category_obj = db.query(Category).filter_by(name=category).first()
+	
+	is_nsfw = False
+	if u is not None:
+		is_nsfw = u.is_nsfw
+	
+	post = db.query(Post)
+	
+	if is_nsfw == False:
+		post = post.filter_by(is_nsfw=False)
+	if category_obj is not None:
+		post = post.filter_by(category_id=category_obj.id)
+	
+	if sort == 'new':
+		post = post.order_by(desc(Post.id))
+	elif sort == 'old':
+		post = post.order_by(asc(Post.id))
+	else:
+		abort(401)
+	
+	post = post.options(joinedload('*')).all()
+
+	# If only show user feed then remove all posts
+	# That are not in their subscription
+	subs = u.subscribed_boards()
+	subs_id = []
+	for s in subs:
+		subs_id.append(s.id)
+	for i in range(0,len(post)):
+		if post[i].board_id not in subs_id:
+			post.pop(i)
 	
 	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post)

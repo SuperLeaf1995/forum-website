@@ -57,22 +57,57 @@ class User(Base):
 		db.close()
 		return ret
 	
-	def mods(self,bid: int) -> bool:
+	def mods(self, bid: int) -> bool:
 		from xaiecon.classes.board import Board
 
 		db = open_db()
 		ret = db.query(Board).filter_by(id=bid,user_id=self.id).first()
 		db.close()
 		
-		if ret is not None:
-			return True
-		return False
+		if ret is None:
+			return False
+		return True
+
+	def is_subscribed(self, bid: int) -> bool:
+		from xaiecon.classes.board import BoardSub
+
+		db = open_db()
+		ret = db.query(BoardSub).filter_by(board_id=bid,user_id=self.id).first()
+		db.close()
+
+		if ret is None:
+			return False
+		return True
+
+	def is_banned_from_board(self, bid: int) -> bool:
+		from xaiecon.classes.board import BoardBan
+
+		db = open_db()
+		ret = db.query(BoardBan).filter_by(board_id=bid,user_id=self.id).first()
+		db.close()
+
+		if ret is None:
+			return False
+		return True
 	
-	def owned_boards(self):
+	def moderated_boards(self):
 		from xaiecon.classes.board import Board
 
 		db = open_db()
 		ret = db.query(Board).filter_by(user_id=self.id).all()
+		db.close()
+		return ret
+
+	def subscribed_boards(self):
+		from xaiecon.classes.board import Board, BoardSub
+
+		db = open_db()
+		sub = db.query(BoardSub).filter_by(user_id=self.id).all()
+		ret = []
+		for s in sub:
+			b = db.query(Board).filter_by(id=s.board_id).first()
+			ret.append(b)
+		
 		db.close()
 		return ret
 

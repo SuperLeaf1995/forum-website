@@ -26,14 +26,14 @@ from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
 
-@fediverse.route('/fediverse/recv')
+@fediverse.route('/fediverse/recv', methods = ['GET','POST'])
 def recv():
 	db = open_db()
 
 	ip_addr = request.remote_addr
 	server = db.query(Serverchain).filter_by(ip_addr=ip_addr).first()
 	if server is None:
-		return jsonify({'message':'fuck you'}),401
+		return jsonify({'message':f'fuck you {ip_addr}'}),401
 
 	data = request.get_json(force=True)
 	if data is None:
@@ -59,7 +59,7 @@ def recv():
 	db.close()
 	return jsonify({'message':'done'}),200
 
-@fediverse.route('/fediverse/endpoint', methods = ['GET'])
+@fediverse.route('/fediverse/endpoint', methods = ['POST','GET'])
 def endpoint():
 	db = open_db()
 
@@ -67,7 +67,7 @@ def endpoint():
 	# Check that we are chained to server first, otherwise just reject them
 	server = db.query(Serverchain).filter_by(ip_addr=ip_addr).first()
 	if server is None:
-		return jsonify({'message':'fuck you'}),401
+		return jsonify({'message':f'fuck you {ip_addr}'}),401
 
 	users = db.query(User).filter(User.id>=int(request.values.get('last_user_id','0'))).all()
 	boards = db.query(Board).filter(Board.id>=int(request.values.get('last_board_id','0'))).all()
@@ -92,6 +92,7 @@ def endpoint():
 	db.close()
 	return jsonify({'message':'done syncing'}),200
 
+@fediverse.route('/fediverse/sync', methods = ['GET','POST'])
 def sync():
 	db = open_db()
 	data = {
@@ -112,5 +113,6 @@ def sync():
 
 	# Wait for all of these lazy assholes to get up
 	time.sleep(5)
+	return '',200
 
 print('Fediverse module ... ok')

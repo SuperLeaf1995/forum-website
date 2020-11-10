@@ -121,7 +121,7 @@ def kick(u=None):
 			else:
 				raise XaieconException('Post cannot be kicked because is not in any board')
 			
-			# Change post's bid to none
+			# Change post's bid to general waters
 			db.query(Post).filter_by(id=pid).update({'board_id':1})
 			db.commit()
 			
@@ -288,6 +288,9 @@ def write(u=None):
 			if board is None:
 				raise XaieconException('Invalid board')
 			bid = board.id
+
+			if u.is_banned_from_board(bid) == True:
+				raise XaieconException(f'You\'re banned from /b/{board.name}')
 			
 			is_link = False
 			if link != '':

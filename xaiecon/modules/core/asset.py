@@ -14,21 +14,23 @@ asset = Blueprint('asset',__name__,template_folder='templates')
 
 # optimize assets to save space and time
 def optimize_all():
-	for file in os.listdir('./assets/private')
-		name, ext = os.path.splittext(file)
-		filename = os.path.join('./assets/public','{name}.min.{ext}')
-		outfile = open(filename,'w')
-		infile = open(file,'r')
-		
+	for file in os.listdir('./xaiecon/assets/private'):
 		# minify css
-		if ext == 'css':
+		if file.endswith('css'):
+			infile = open(os.path.join('./xaiecon/assets/private',file),'r')
+			outfile = open(os.path.join('./xaiecon/assets/public',file),'w')
 			outfile.write(rcssmin.cssmin(infile.read()))
 		# minify css
-		elif ext == 'js':
+		elif file.endswith('js'):
+			infile = open(os.path.join('./xaiecon/assets/private',file),'r')
+			outfile = open(os.path.join('./xaiecon/assets/public',file),'w')
 			outfile.write(rjsmin.jsmin(infile.read()))
+		else:
+			infile = open(os.path.join('./xaiecon/assets/private',file),'rb')
+			outfile = open(os.path.join('./xaiecon/assets/public',file),'wb')
+			outfile.write(infile.read())
 
 @asset.route('/assets/<asset_name>', methods = ['GET'])
-@cache.memoize(0)
 def send_asset(asset_name):
 	final_filename = os.path.join('./assets/public',secure_filename(asset_name))
 	return send_file(final_filename)

@@ -104,31 +104,37 @@ def edit(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@board.route('/board/ban', methods = ['POST'])
+@board.route('/board/ban', methods = ['POST','GET'])
 @login_required
 def ban(u=None):
-	db = open_db()
-	
-	bid = request.values.get('bid')
-	uid = request.values.get('uid')
-	reason = request.values.get('reason')
+	bid = int(request.values.get('bid','0'))
+	uid = int(request.values.get('uid','0'))
+	if request.method == 'POST':
+		db = open_db()
 
-	if u.mods(bid) == False:
-		return '',401
+		reason = request.values.get('reason','No reason specified')
 
-	# Board does not exist
-	if db.query(Board).filter_by(id=bid).first() is None:
-		return '',404
-	# Already banned
-	if db.query(BoardBan).filter_by(user_id=uid,board_id=bid).first() is not None:
-		return '',400
+		if u.mods(bid) == False:
+			return '',401
 
-	sub = BoardBan(user_id=uid,board_id=bid,reason=reason)
-	db.add(sub)
-	db.commit()
+		# Board does not exist
+		if db.query(Board).filter_by(id=bid).first() is None:
+			return '',404
+		# Already banned
+		if db.query(BoardBan).filter_by(user_id=uid,board_id=bid).first() is not None:
+			return '',400
+		# Do not ban self
+		if uid == u.id:
+			return '',400
 
-	db.close()
-	return '',200
+		sub = BoardBan(user_id=uid,board_id=bid,reason=reason)
+		db.add(sub)
+		db.commit()
+
+		db.close()
+		return redirect(f'/board/view?bid={bid}')
+	else:
+		return render_template('board/ban.html',u=u,title='Ban user',bid=bid,uid=uid)
 
 @board.route('/board/unban', methods = ['POST'])
 @login_required
@@ -144,6 +150,9 @@ def unban(u=None):
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
 		return '',404
+	# Do not unban self
+	if uid == u.id:
+		return '',400
 
 	db.qeury(BoardBan).filter_by(user_id=uid,board_id=bid).delete()
 	db.commit()
@@ -203,8 +212,8 @@ def new(u=None):
 			category = request.values.get('category')
 			keywords = request.values.get('keywords')
 			
-			if db.query(Board).filter_by(user_id=u.id).count() > 30:
-				raise XaieconException('Limit of boards reached')
+			if db.query(Board).filter_by(user_id=u.id).count() > 20:
+				raise XaieconException('Limit of 20 boards reached')
 			
 			category = db.query(Category).filter_by(name=category).first()
 			if category is None:

@@ -107,7 +107,6 @@ a:visited, a:active, a:hover, a:focus {
   overflow: hidden;
   background-color: white;
   border-bottom: 1px solid grey;
-  position: sticky;
   margin: 0;
   padding: 2px;
 }
@@ -136,7 +135,7 @@ a:visited, a:active, a:hover, a:focus {
 
 .nav-dropdown-content {
   display: none;
-  position: fixed;
+  position: absolute;
   z-index: 1;
   padding: 12px 18px;
   background-color: white;
@@ -235,5 +234,8 @@ textarea {
  @media only screen and (max-width: 800px) {
    .nav-dropdown, .header-nav, .nav-top img {
      display: none;
+   }
+   .nav-top {
+     position: sticky;
    }
 }

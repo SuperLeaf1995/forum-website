@@ -35,4 +35,5 @@ def send_asset(asset_name):
 	final_filename = os.path.join('./assets/public',secure_filename(asset_name))
 	return send_file(final_filename)
 
+optimize_all()
 print('Asset serving ... ok')

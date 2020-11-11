@@ -6,7 +6,6 @@ import requests
 import threading
 import time
 import urllib
-import hashlib
 
 from bs4 import BeautifulSoup
 from os import path, remove
@@ -113,14 +112,13 @@ def nuke(u=None):
 		
 		# Check that post is not already kicked and that user mods
 		# the guild
-		if board is not None:
-			if not u.mods(board.unique_identifier) and u.is_admin == False:
-				raise XaieconException('You do not mod the origin board')
-		else:
-			raise XaieconException('Post cannot be kicked because it is not in any board')
+		if board is None:
+			raise XaieconException('Post cannot be nuked because it is not in any board')
+		if not u.mods(board.id) and u.is_admin == False:
+			raise XaieconException('You do not mod the origin board')
 		
 		# "Nuke" post
-		db.query(Post).filter_by(id=pid).update({'nuked':True})
+		db.query(Post).filter_by(id=pid).update({'nuked':True,'nuker_id':u.id})
 		db.commit()
 		
 		db.close()
@@ -145,11 +143,10 @@ def kick(u=None):
 			
 			# Check that post is not already kicked and that user mods
 			# the guild
-			if board is not None:
-				if not u.mods(board.unique_identifier) and u.is_admin == False:
-					raise XaieconException('You do not mod the origin board')
-			else:
-				raise XaieconException('Post cannot be kicked because is not in any board')
+			if board is None:
+				raise XaieconException('Post cannot be kicked because it is not in any board')
+			if not u.mods(board.id) and u.is_admin == False:
+				raise XaieconException('You do not mod the origin board')
 			
 			# Change post's bid to general waters
 			db.query(Post).filter_by(id=pid).update({'board_id':1})
@@ -178,7 +175,7 @@ def yank(u=None):
 			# User must be also mod of the post's origin board
 			# Or the post must not have a bid
 			board = db.query(Board).filter_by(id=post.board_id).first()
-			
+
 			# If post is standalone or baord is not exists then just skip the
 			# auth
 			if board is not None or board.id == 1:
@@ -422,6 +419,44 @@ def view(u=None):
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
 def list_posts(u=None, sort='new'):
+	# Select data of SQL
+	db = open_db()
+
+	category = request.values.get('category','All')
+	page = int(request.values.get('page','0'))
+	num = int(request.values.get('num','15'))
+	
+	category_obj = None
+	if category != 'All':
+		category_obj = db.query(Category).filter_by(name=category).first()
+	
+	is_nsfw = False
+	if u is not None:
+		is_nsfw = u.is_nsfw
+	
+	post = db.query(Post)
+	
+	if is_nsfw == False:
+		post = post.filter_by(is_nsfw=False)
+	if category_obj is not None:
+		post = post.filter_by(category_id=category_obj.id)
+	
+	if sort == 'new':
+		post = post.order_by(desc(Post.id))
+	elif sort == 'old':
+		post = post.order_by(asc(Post.id))
+	else:
+		abort(401)
+	
+	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
+	
+	db.close()
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
+		page=page,num=num,category=category,sort=sort)
+
+@post.route('/post/nuked/<sort>', methods = ['GET'])
+@login_required
+def list_nuked(u=None, sort='new'):
 	# Select data of SQL
 	db = open_db()
 

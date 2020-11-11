@@ -1,4 +1,1 @@
-import os
-from xaiecon.__init__ import app
-
-application = app
+from xaiecon.__init__ import app as application

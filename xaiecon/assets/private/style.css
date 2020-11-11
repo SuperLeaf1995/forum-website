@@ -37,6 +37,7 @@ a:visited, a:active, a:hover, a:focus {
   padding: 8px;
   width: 30%;
   font-size: larger;
+  clear: both;
 }
 
 .header-nav, .header-with-text, .nav-top {

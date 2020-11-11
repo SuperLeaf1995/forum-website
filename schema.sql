@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS xaiecon_board_ban;
 DROP TABLE IF EXISTS xaiecon_apiapp;
 DROP TABLE IF EXISTS xaiecon_serverchain;
 DROP TABLE IF EXISTS xaiecon_vote;
+DROP TABLE IF EXISTS xaiecon_view;
 DROP TABLE IF EXISTS xaiecon_comment;
 DROP TABLE IF EXISTS xaiecon_post;
 DROP TABLE IF EXISTS xaiecon_board;
@@ -67,6 +68,7 @@ CREATE TABLE xaiecon_post(
 	upvote_count INT DEFAULT 0,
 	total_vote_count INT DEFAULT 0,
 	nuked BOOLEAN DEFAULT FALSE,
+	nuker_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	board_id INT REFERENCES xaiecon_board(id) ON UPDATE CASCADE

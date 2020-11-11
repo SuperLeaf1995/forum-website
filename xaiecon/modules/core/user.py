@@ -125,8 +125,6 @@ def signup(u=None):
 		else:
 			return render_template('user/signup.html',u=u,signup_error='',title='Signup')
 	except XaieconException as e:
-		db.rollback()
-		db.close()
 		return render_template('user/signup.html',u=u,signup_error=e,title='Signup')
 
 @user.route('/user/logout', methods = ['GET'])

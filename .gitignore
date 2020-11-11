@@ -6,3 +6,7 @@ prun.sh
 __pycache__/
 user_data/
 public/
+
+*.zip
+*.tar.gz
+*.tar

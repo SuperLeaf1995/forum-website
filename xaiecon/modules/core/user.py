@@ -232,7 +232,7 @@ def edit(u=None):
 				db.query(User).filter_by(id=id).update({'image_file':filename})
 				db.commit()
 
-				csam_thread = threading.Thread(target=csam_check, args=(id,))
+				csam_thread = threading.Thread(target=csam_check_profile, args=(id,))
 				csam_thread.start()
 
 			db.close()
@@ -251,7 +251,7 @@ def edit(u=None):
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 # Check user for csam, if so ban the user
-def csam_check(id):
+def csam_check_profile(id: int):
 	db = open_db()
 
 	# Let's see if this is csam

@@ -33,6 +33,7 @@
 	{% endif %}
 	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
 	<a class='post-option' href='/post/kick?pid={{ post.id }}'>Kick</a>
+	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>Nuke</a>
 	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>Ban user</a>
 	{% endif %}
 	<a class='post-option' href='/post/yank?pid={{ post.id }}'>Yank</a>

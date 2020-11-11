@@ -26,6 +26,7 @@ class User(Base):
 	is_show_fax = Column(Boolean, default=False)
 	is_nsfw = Column(Boolean, default=False)
 	is_admin = Column(Boolean, default=False)
+	can_make_board = Column(Boolean, default=True)
 	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)

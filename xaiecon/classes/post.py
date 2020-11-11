@@ -17,6 +17,8 @@ class Post(Base):
 	views = Column(Integer, default=1)
 	number_comments = Column(Integer, default=0)
 	creation_date = Column(Integer, default=time.time())
+
+	nuked = Column(Boolean, default=False)
 	
 	downvote_count = Column(Integer, default=1)
 	upvote_count = Column(Integer, default=1)

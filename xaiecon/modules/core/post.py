@@ -73,14 +73,13 @@ def vote(u=None):
 		
 		db.close()
 		cache.delete_memoized(ballot)
-		cache.delete_memoized(list_posts)
 		return '',200
 	except XaieconException as e:
 		return jsonify({'error':e}),400
 
 @post.route('/post/ballot', methods = ['GET','POST'])
 @login_wanted
-@cache.memoize(604800)
+@cache.memoize(0)
 def ballot(u=None):
 	try:
 		pid = request.values.get('pid')
@@ -97,6 +96,37 @@ def ballot(u=None):
 		return render_template('post/voters.html',u=u,title = 'Ballot',votes=vote)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',e=e)
+
+@post.route('/post/nuke', methods = ['GET','POST'])
+@login_required
+def nuke(u=None):
+	try:
+		pid = request.values.get('pid')
+
+		db = open_db()
+		post = db.query(Post).filter_by(id=pid).first()
+		if post is None:
+			abort(404)
+		
+		# User must be also mod of the post's origin board
+		board = db.query(Board).filter_by(id=post.board_id).first()
+		
+		# Check that post is not already kicked and that user mods
+		# the guild
+		if board is not None:
+			if not u.mods(board.unique_identifier) and u.is_admin == False:
+				raise XaieconException('You do not mod the origin board')
+		else:
+			raise XaieconException('Post cannot be kicked because it is not in any board')
+		
+		# "Nuke" post
+		db.query(Post).filter_by(id=pid).update({'nuked':True})
+		db.commit()
+		
+		db.close()
+		return redirect(f'/post/view?pid={pid}')
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/kick', methods = ['GET','POST'])
 @login_required
@@ -126,7 +156,6 @@ def kick(u=None):
 			db.commit()
 			
 			db.close()
-			cache.delete_memoized(list_posts)
 			return redirect(f'/post/view?pid={pid}')
 		else:
 			post = db.query(Post).filter_by(id=pid).first()
@@ -166,7 +195,6 @@ def yank(u=None):
 			db.commit()
 			
 			db.close()
-			cache.delete_memoized(list_posts)
 			return redirect(f'/post/view?pid={pid}')
 		else:
 			boards = db.query(Board).filter_by(user_id=u.id).options(joinedload('user_info')).all()
@@ -197,7 +225,6 @@ def delete(u=None):
 			'body':'[deleted]'})
 		db.commit()
 		db.close()
-		cache.delete_memoized(list_posts)
 		return '',200
 	except XaieconException as e:
 		return jsonify({'error':e}),400
@@ -254,7 +281,6 @@ def edit(u=None):
 			db.commit()
 			
 			db.close()
-			cache.delete_memoized(list_posts)
 			return redirect(f'/post/view?pid={pid}')
 		else:
 			db.close()
@@ -320,9 +346,11 @@ def write(u=None):
 			db.commit()
 			
 			db.refresh(post)
-			
+
+			csam_thread = threading.Thread(target=csam_check_post, args=(id,post.link_url,))
+			csam_thread.start()
+
 			db.close()
-			cache.delete_memoized(list_posts)
 			return redirect(f'/post/view?pid={post.id}')
 		else:
 			db = open_db()
@@ -533,5 +561,34 @@ def search(u=None):
 			return render_template('post/list.html',u=u,title='Post frontpage')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title='Whoops!',err=e)
+
+# Check user for csam, if so ban the user
+def csam_check_post(id: id,link: str):
+	db = open_db()
+
+	# Let's see if this is csam
+	user = db.query(User).filter_by(id=id).first()
+
+	headers = {'User-Agent':'xaiecon-csam-check'}
+	for i in range(10):
+		x = requests.get(link,headers=headers)
+		if x.status_code in [200, 451]:
+			break
+		else:
+			time.sleep(10)
+	if x.status_code != 451:
+		return
+
+	# Ban user
+	db.query(User).filter_by(id=id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.commit()
+	db.refresh(user)
+
+	os.remove(os.path.join('user_data',user.image_file))
+	
+	db.close()
+	return
 
 print('Post share ... ok')

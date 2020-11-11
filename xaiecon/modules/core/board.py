@@ -206,6 +206,10 @@ def unsubscribe(u=None):
 def new(u=None):
 	try:
 		db = open_db()
+
+		if u.can_make_board == False:
+			raise XaieconException('You are not allowed to make boards')
+
 		if request.method == 'POST':
 			name = request.values.get('name')
 			descr = request.values.get('descr')

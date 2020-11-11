@@ -29,6 +29,7 @@ CREATE TABLE xaiecon_user(
 	is_nsfw BOOLEAN DEFAULT FALSE,
 	is_admin BOOLEAN DEFAULT FALSE,
 	is_banned BOOLEAN DEFAULT FALSE,
+	can_make_board BOOLEAN DEFAULT FALSE,
 	ban_reason VARCHAR(255),
 	creation_date INT
 );
@@ -65,6 +66,7 @@ CREATE TABLE xaiecon_post(
 	downvote_count INT DEFAULT 0,
 	upvote_count INT DEFAULT 0,
 	total_vote_count INT DEFAULT 0,
+	nuked BOOLEAN DEFAULT FALSE,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	board_id INT REFERENCES xaiecon_board(id) ON UPDATE CASCADE

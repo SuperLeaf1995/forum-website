@@ -12,9 +12,6 @@ WORKDIR /app
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-# Create user with sufficient privileges on database, but without privileges to cause havoc ;)
-RUN useradd --create-home --shell /bin/bash xaiuser
-
 # Setup PostgreSQL
 USER postgres
 
@@ -53,7 +50,5 @@ COPY . /app
 
 # Run the server with final sh script
 RUN chmod 777 run.sh
-
-USER xaiuser
 ENV DOCKER=True
 CMD service postgresql start && ./run.sh

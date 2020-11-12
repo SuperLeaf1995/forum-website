@@ -35,6 +35,7 @@ post = Blueprint('post',__name__,template_folder='templates/post')
 @post.route('/post/vote', methods = ['POST'])
 @login_required
 def vote(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
 		val = int(request.values.get('value',''))
@@ -43,8 +44,6 @@ def vote(u=None):
 			abort(404)
 		if val not in [-1,1]:
 			abort(400)
-		
-		db = open_db()
 		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
@@ -74,16 +73,17 @@ def vote(u=None):
 		cache.delete_memoized(ballot)
 		return '',200
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return jsonify({'error':e}),400
 
 @post.route('/post/ballot', methods = ['GET','POST'])
 @login_wanted
 @cache.memoize(0)
 def ballot(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
-		
-		db = open_db()
 		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
@@ -94,15 +94,16 @@ def ballot(u=None):
 		db.close()
 		return render_template('post/voters.html',u=u,title = 'Ballot',votes=vote)
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',e=e)
 
 @post.route('/post/nuke', methods = ['GET','POST'])
 @login_required
 def nuke(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
-
-		db = open_db()
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
@@ -110,10 +111,12 @@ def nuke(u=None):
 		# User must be also mod of the post's origin board
 		board = db.query(Board).filter_by(id=post.board_id).first()
 		
-		# Check that post is not already kicked and that user mods
+		# Check that post is not already nuked and that user mods
 		# the guild
 		if board is None:
 			raise XaieconException('Post cannot be nuked because it is not in any board')
+		if post.is_deleted == True or post.nuked == True:
+			raise XaieconException('Post already nuked/deleted by user or someone else')
 		if not u.mods(board.id) and u.is_admin == False:
 			raise XaieconException('You do not mod the origin board')
 		
@@ -124,14 +127,16 @@ def nuke(u=None):
 		db.close()
 		return redirect(f'/post/view?pid={pid}')
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/kick', methods = ['GET','POST'])
 @login_required
 def kick(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
-		db = open_db()
 		if request.method == 'POST':
 			post = db.query(Post).filter_by(id=pid).first()
 			
@@ -159,14 +164,16 @@ def kick(u=None):
 			db.close()
 			return render_template('post/kick.html',u=u,title='Kick post',post=post)
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/yank', methods = ['GET','POST'])
 @login_required
 def yank(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
-		db = open_db()
 		if request.method == 'POST':
 			bid = request.values.get('bid')
 			
@@ -199,15 +206,16 @@ def yank(u=None):
 			db.close()
 			return render_template('post/yank.html',u=u,title='Yank post',post=post,boards=boards)
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/delete', methods = ['GET','POST'])
 @login_required
 def delete(u=None):
+	db = open_db()
 	try:
 		pid = request.values.get('pid')
-		
-		db = open_db()
 		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post == None:
@@ -219,19 +227,22 @@ def delete(u=None):
 		# Set is_deleted to true
 		db.query(Post).filter_by(id=pid).update({
 			'is_deleted':True,
-			'body':'[deleted]'})
+			'body':'Deleted by user',
+			'is_link':False,
+			'link_url':''})
 		db.commit()
 		db.close()
 		return '',200
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return jsonify({'error':e}),400
 
 @post.route('/post/edit', methods = ['POST','GET'])
 @login_required
 def edit(u=None):
+	db = open_db()
 	try:
-		db = open_db()
-		
 		pid = request.values.get('pid')
 		
 		post = db.query(Post).filter_by(id=pid).first()
@@ -283,15 +294,16 @@ def edit(u=None):
 			db.close()
 			return render_template('post/edit.html',u=u,title = 'Edit',post = post)
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/write', methods = ['POST','GET'])
 @login_required
 def write(u=None):
+	db = open_db()
 	try:
 		if request.method == 'POST':
-			db = open_db()
-			
 			body = request.form.get('body','')
 			title = request.form.get('title')
 			keywords = request.form.get('keywords')
@@ -350,12 +362,13 @@ def write(u=None):
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')
 		else:
-			db = open_db()
 			board = db.query(Board).options(joinedload('user_info')).all()
 			categories = db.query(Category).all()
 			db.close()
 			return render_template('post/write.html',u=u,title = 'New post', boards = board, categories=categories)
 	except XaieconException as e:
+		db.rollback()
+		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/view', methods = ['GET'])
@@ -376,7 +389,7 @@ def view(u=None):
 	if post.is_nsfw == True and u.is_nsfw == False:
 		abort(403)
 
-	comment = db.query(Comment).filter_by(post_id=post.id).order_by(desc(Comment.id)).all()
+	comment = db.query(Comment).filter_by(post_id=post.id).options(joinedload('*')).order_by(desc(Comment.id)).all()
 	
 	# This is how we get replies, pardon for so many cringe
 	comments = []
@@ -399,7 +412,7 @@ def view(u=None):
 					l.depth_level = 3
 
 					# Deepest comments, check if they have even more children
-					if db.query(Comment).filter_by(comment_id=l.id).first() is not None:
+					if db.query(Comment).filter_by(comment_id=l.id).options(joinedload('*')).first() is not None:
 						l.more_children = True
 
 					comments.append(l)
@@ -411,10 +424,9 @@ def view(u=None):
 			db.add(view)
 			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 			db.commit()
-	
-	res = render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
+
 	db.close()
-	return res, 200
+	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
@@ -429,6 +441,8 @@ def list_posts(u=None, sort='new'):
 	category_obj = None
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
+		if category_obj is None:
+			category_obj = db.query(Category).filter_by(name='All').first()
 	
 	is_nsfw = False
 	if u is not None:
@@ -467,6 +481,8 @@ def list_nuked(u=None, sort='new'):
 	category_obj = None
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
+		if category_obj is None:
+			category_obj = db.query(Category).filter_by(name='All').first()
 	
 	is_nsfw = False
 	if u is not None:
@@ -505,6 +521,8 @@ def feed_posts(u=None, sort='new'):
 	category_obj = None
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
+		if category_obj is None:
+			category_obj = db.query(Category).filter_by(name='All').first()
 	
 	is_nsfw = False
 	if u is not None:

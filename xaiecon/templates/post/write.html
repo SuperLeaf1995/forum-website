@@ -19,14 +19,14 @@
 			{% for board in boards %}
 			<option value='{{ board.id }}'>{{ board.name | truncate(25,True) }} - /u/{{ board.user_info.username }}</option>
 			{% endfor %}
-		</select>
+		</select></br>
 	{% endif %}
 	<label for='category'>Category</label>
 	<select name='category'>
 	{% for category in categories %}
 		<option value='{{ category.id }}'>{{ category.name }}</option>
 	{% endfor %}
-	</select>
+	</select></br>
 	<input class='form-btn' type='submit' value='Write'></br>
 </form>
 {% endblock %}

@@ -16,6 +16,12 @@
 	<input class='textbar-normal' type='text' name='link' value='{{ post.link_url }}'></br>
 	<label for='is_nsfw'>Is post NSFW?</label>
 	<input type='checkbox' name='is_nsfw' value='{{ post.is_nsfw }}'></input></br>
+	<label for='category'>Category</label>
+	<select name='category'>
+	{% for category in categories %}
+		<option value='{{ category.id }}'>{{ category.name }}</option>
+	{% endfor %}
+	</select></br>
 	<input class='form-btn' type='submit' value='Edit'></br>
 </form>
 {% endblock %}

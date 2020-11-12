@@ -18,6 +18,9 @@ class Post(Base):
 	number_comments = Column(Integer, default=0)
 	creation_date = Column(Integer, default=time.time())
 
+	body_html = Column(String(16000), nullable=False)
+	embed_html = Column(String(16000), nullable=True)
+
 	nuked = Column(Boolean, default=False)
 	
 	downvote_count = Column(Integer, default=1)

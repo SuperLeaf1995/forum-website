@@ -269,6 +269,9 @@ def edit(u=None):
 			is_link = False
 			if link != '':
 				is_link = True
+				embed_html = ''
+				if link.startswith('https://lbry.tv/'):
+					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 			
@@ -276,7 +279,9 @@ def edit(u=None):
 				raise XaieconException('Empty body')
 			if title == None or title == '':
 				raise XaieconException('Empty title')
-			
+
+			body_html = ''
+
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
 						'keywords':keywords,
@@ -285,14 +290,17 @@ def edit(u=None):
 						'is_nsfw':is_nsfw,
 						'title':title,
 						'link_url':link,
-						'category_id':category.id})
+						'category_id':category.id,
+						'body_html':body_html,
+						'embed_html':embed_html})
 			db.commit()
 			
 			db.close()
 			return redirect(f'/post/view?pid={pid}')
 		else:
+			categories = db.query(Category).all()
 			db.close()
-			return render_template('post/edit.html',u=u,title = 'Edit',post = post)
+			return render_template('post/edit.html',u=u,title='Edit',post=post,categories=categories)
 	except XaieconException as e:
 		db.rollback()
 		db.close()
@@ -330,6 +338,10 @@ def write(u=None):
 			is_link = False
 			if link != '':
 				is_link = True
+				embed_html = ''
+
+				if link.startswith('https://lbry.tv/') or link.startswith('https://www.lbry.tv/'):
+					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 
@@ -338,6 +350,8 @@ def write(u=None):
 			if title is None or title == '':
 				raise XaieconException('Empty title')
 			
+			body_html = ''
+
 			post = Post(keywords=keywords,
 						title=title,
 						body=body,
@@ -349,7 +363,9 @@ def write(u=None):
 						upvote_count=0,
 						total_vote_count=0,
 						category_id=category.id,
-						board_id=bid)
+						board_id=bid,
+						embed_html='',
+						body_html=body_html)
 			
 			db.add(post)
 			db.commit()

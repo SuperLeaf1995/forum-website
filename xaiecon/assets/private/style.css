@@ -194,6 +194,17 @@ textarea {
   box-shadow: 0 0 2px grey;
 }
 
+.post-brief-thumb {
+  float: left;
+  overflow: hidden;
+}
+
+.post-brief-thumb img {
+  flex: 1;
+  height: 100%;
+  width: 128px;
+}
+
 .post-option, .post-option:visited {
   float: left;
   color: grey;

@@ -19,7 +19,10 @@
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
-	<p>{{ post.body }}</p>
+	<div>
+		<p>{{ post.body }}</p>
+		{{ post.embed_html|safe }}
+	</div>
 
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 	

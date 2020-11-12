@@ -270,7 +270,15 @@ def edit(u=None):
 			if link != '':
 				is_link = True
 				embed_html = ''
-				if link.startswith('https://lbry.tv/'):
+
+				# LBRY direct embed url (user did our work)
+				if link.startswith('https://lbry.tv/$/embed/'):
+					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
+				# LBRY raw url (we do the work for the user)
+				elif link.startswith('https://lbry.tv/') or link.startswith('https://open.lbry.tv/'):
+					url, last = link.split('@')
+					video = last.split('/',1)[1]
+					link = f'{url}$/embed/{video}'
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
@@ -340,7 +348,14 @@ def write(u=None):
 				is_link = True
 				embed_html = ''
 
-				if link.startswith('https://lbry.tv/') or link.startswith('https://www.lbry.tv/'):
+				# LBRY direct embed url (user did our work)
+				if link.startswith('https://lbry.tv/$/embed/'):
+					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
+				# LBRY raw url (we do the work for the user)
+				elif link.startswith('https://lbry.tv/') or link.startswith('https://open.lbry.tv/'):
+					url, last = link.split('@')
+					last, video = link.split('/')
+					link = f'{url}$/embed/{video}'
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))

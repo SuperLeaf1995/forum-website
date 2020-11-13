@@ -22,6 +22,7 @@ class Post(Base):
 	embed_html = Column(String(16000), nullable=True)
 
 	image_file = Column(String(255), nullable=True)
+	thumb_file = Column(String(255), nullable=True)
 	is_image = Column(Boolean, default=False)
 
 	is_nuked = Column(Boolean, default=False)

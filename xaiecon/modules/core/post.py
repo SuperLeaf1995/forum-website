@@ -286,6 +286,34 @@ def edit(u=None):
 
 			body_html = ''
 
+			file = request.files['image']
+			if file:
+				# Remove old image
+				if post.is_image == True:
+					os.remove(os.path.join('user_data',post.image_file))
+					os.remove(os.path.join('user_data',post.thumb_file))
+
+				# Create image + thumbnail
+				filename = f'{secrets.token_hex(32)}.jpeg'
+				filename = secure_filename(filename)
+				final_filename = os.path.join('user_data',filename)
+				file.save(final_filename)
+
+				img_filename = f'{secrets.token_hex(32)}.jpeg'
+				img_filename = secure_filename(filename)
+				img_filename = os.path.join('user_data',img_filename)
+				file.save(img_filename)
+
+				image = Image.open(final_filename)
+				image.thumbnail((120,120))
+				os.remove(final_filename)
+				image.save(final_filename)
+
+				db.query(Post).filter_by(id=id).update({
+					'image_file':img_filename,
+					'thumb_file':filename})
+				db.commit()
+
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
 						'keywords':keywords,
@@ -415,16 +443,24 @@ def write(u=None):
 @user.route('/post/thumb', methods = ['GET'])
 @login_wanted
 def thumb(u=None):
-	try:
-		id = int(request.values.get('pid',''))
-		db = open_db()
-		post = db.query(Post).filter_by(id=id).first()
-		if post is None:
-			abort(404)
-		db.close()
-		return send_from_directory('../user_data',post.image_file)
-	except XaieconException as e:
-		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+	id = int(request.values.get('pid',''))
+	db = open_db()
+	post = db.query(Post).filter_by(id=id).first()
+	if post is None:
+		abort(404)
+	db.close()
+	return send_from_directory('../user_data',post.thumb_file)
+
+@user.route('/post/image', methods = ['GET'])
+@login_wanted
+def image(u=None):
+	id = int(request.values.get('pid',''))
+	db = open_db()
+	post = db.query(Post).filter_by(id=id).first()
+	if post is None:
+		abort(404)
+	db.close()
+	return send_from_directory('../user_data',post.image_file)
 
 @post.route('/post/view', methods = ['GET'])
 @login_wanted
@@ -700,10 +736,11 @@ def csam_check_post(uid: int, pid: int):
 
 	# Remove all posts with offending url
 	offensive_posts = db.query(Post).filter_by(link_url=post.link_url).all()
-
-	# Remove all images of the posts
 	for p in offensive_posts:
-		os.remove(os.path.join('user_data',offensive_posts.image_file))
+		if post.is_image == True:
+			# Remove images
+			os.remove(os.path.join('user_data',p.thumb_file))
+			os.remove(os.path.join('user_data',p.image_file))
 
 		# Ban everyone involved
 		user = db.query(User).filter_by(id=p.user_id).first()

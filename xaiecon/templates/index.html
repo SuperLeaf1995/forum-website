@@ -5,12 +5,13 @@
 		{% include 'common/navbar.html' %}
 		<div>
 			<div class='index-intro'>
+				<br>
 				<h1 class='index-intro-title'>A federation for everyone.</h1>
 				<p class='index-intro-brief'>An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds.</p>
 
 				{% if u != None %}
 				<form method='GET' action='/post/feed/new'>
-					<input class='index-intro-btn' type='submit' value="Go to the action"></br>
+					<input class='index-intro-btn' type='submit' value="Get started"></br>
 				</form>
 				{% else %}
 				<form method='GET' action='/user/signup'>

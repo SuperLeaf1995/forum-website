@@ -3,10 +3,31 @@
   color: white;
 }
 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-right {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  100% {
+    left: 0px;
+    opacity: 1;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+  background-color: #f5f5f5;
 }
 
 a {
@@ -19,6 +40,8 @@ a:visited, a:active, a:hover, a:focus {
 }
 
 .index-intro {
+  top: 48px;
+  position: absolute;
   background: #3cabf0;
   background: linear-gradient(225deg,#3cabf0 0%,#3126d1 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3cabf0',endColorstr='#3126d1');
@@ -28,13 +51,14 @@ a:visited, a:active, a:hover, a:focus {
   height: 100vh;
   background-image: url('/assets/landscape/2.jpeg');
   background-size: cover;
+  animation: slide-right ease 1.5s;
 }
 
 .index-intro-title {
-  float: left;
   color: white;
   padding: 8px;
   font-size: xxx-large;
+  animation: fade-in ease 1.5s;
 }
 
 .index-intro-brief {
@@ -43,13 +67,15 @@ a:visited, a:active, a:hover, a:focus {
   width: 30%;
   font-size: larger;
   clear: both;
+  animation: fade-in ease 1.5s;
 }
 
 .header-nav {
   list-style-type: none;
-  border: 1px solid grey;
   padding: 12px;
   margin: 12px;
+  background-color: white;
+  border-radius: 4px;
 }
 
 .header-nav li a {
@@ -68,18 +94,20 @@ a:visited, a:active, a:hover, a:focus {
 
 .index-intro-btn {
   border: none;
-  color: #3126d1;
-  background-color: white;
+  color: white;
+  background: none;
   padding: 12px 18px;
-  border-radius: 20px;
+  border-radius: 12px;
   font-weight: bold;
   margin-left: 16px;
+  border: 1px solid white;
   transition: 0.3s;
 }
 
 .index-intro-btn:hover {
   background-color: #3126d1;
   color: white;
+  border: 1px solid #3126d1;
   cursor: pointer;
 }
 
@@ -106,9 +134,9 @@ a:visited, a:active, a:hover, a:focus {
   list-style-type: none;
   overflow: hidden;
   background-color: white;
-  border-bottom: 1px solid grey;
   margin: 0;
   padding: 2px;
+  z-index: 2;
 }
 
 .nav-element, .nav-dropdown {
@@ -187,6 +215,8 @@ textarea {
   margin: 12px;
   padding: 12px;
   border-color: #f5f5f5;
+  background-color: white;
+  border-radius: 4px;
 }
 
 .post-brief {
@@ -263,4 +293,8 @@ textarea {
    .nav-top {
      position: sticky;
    }
+}
+
+img {
+  animation: slide-in ease 2s;
 }

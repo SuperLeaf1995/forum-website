@@ -166,13 +166,11 @@ def view_by_id(u=None):
 def thumb(u=None):
 	try:
 		id = int(request.values.get('uid',''))
-
 		db = open_db()
-
 		user = db.query(User).filter_by(id=id).first()
-
+		if user is None:
+			abort(404)
 		db.close()
-
 		return send_from_directory('../user_data',user.image_file)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
@@ -257,7 +255,7 @@ def csam_check_profile(id: int):
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
 	for i in range(10):
-		x = requests.get(f'https://localhost:5000/user/thumb?uid={id}',headers=headers)
+		x = requests.get(f'https://localhost:5000/user/thumb?uid={uid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

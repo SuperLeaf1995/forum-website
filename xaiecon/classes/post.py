@@ -13,7 +13,7 @@ class Post(Base):
 	link_url = Column(String(4095), nullable=False)
 	is_link = Column(Boolean, default=False)
 	is_nsfw = Column(Boolean, default=False)
-	keywords = Column(String(255), nullable=False)
+	keywords = Column(String(255), nullable=True)
 	views = Column(Integer, default=1)
 	number_comments = Column(Integer, default=0)
 	creation_date = Column(Integer, default=time.time())
@@ -21,7 +21,10 @@ class Post(Base):
 	body_html = Column(String(16000), nullable=False)
 	embed_html = Column(String(16000), nullable=True)
 
-	nuked = Column(Boolean, default=False)
+	image_file = Column(String(255), nullable=True)
+	is_image = Column(Boolean, default=False)
+
+	is_nuked = Column(Boolean, default=False)
 	
 	downvote_count = Column(Integer, default=1)
 	upvote_count = Column(Integer, default=1)
@@ -63,7 +66,7 @@ class Post(Base):
 			'is_deleted':self.is_deleted,
 			'category_id':self.category_id,
 			'user_id':self.user_id,
-			'board_id':self.board_id,
+			'board_id':self.board_id
 		}
 
 	def from_json(self, json):

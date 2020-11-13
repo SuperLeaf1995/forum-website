@@ -122,7 +122,7 @@ def nuke(u=None):
 			raise XaieconException('You do not mod the origin board')
 		
 		# "Nuke" post
-		db.query(Post).filter_by(id=pid).update({'nuked':True,'nuker_id':u.id})
+		db.query(Post).filter_by(id=pid).update({'is_nuked':True,'nuker_id':u.id})
 		db.commit()
 		
 		db.close()
@@ -377,9 +377,27 @@ def write(u=None):
 			db.add(post)
 			db.commit()
 			
+			file = request.files['image']
+			if file:
+				# Create thumbnail
+				filename = f'{secrets.token_hex(32)}.jpeg'
+				filename = secure_filename(filename)
+
+				final_filename = os.path.join('user_data',filename)
+
+				file.save(final_filename)
+
+				image = Image.open(final_filename)
+				image.thumbnail((120,120))
+				os.remove(final_filename)
+				image.save(final_filename)
+
+				db.query(Post).filter_by(id=id).update({'image_file':filename})
+				db.commit()
+
 			db.refresh(post)
 
-			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.link_url,))
+			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.id,))
 			csam_thread.start()
 
 			db.close()
@@ -392,6 +410,20 @@ def write(u=None):
 	except XaieconException as e:
 		db.rollback()
 		db.close()
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+@user.route('/post/thumb', methods = ['GET'])
+@login_wanted
+def thumb(u=None):
+	try:
+		id = int(request.values.get('pid',''))
+		db = open_db()
+		post = db.query(Post).filter_by(id=id).first()
+		if post is None:
+			abort(404)
+		db.close()
+		return send_from_directory('../user_data',post.image_file)
+	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @post.route('/post/view', methods = ['GET'])
@@ -637,31 +669,51 @@ def search(u=None):
 		return render_template('user_error.html',u=u,title='Whoops!',err=e)
 
 # Check user for csam, if so ban the user
-def csam_check_post(id: id,link: str):
+def csam_check_post(uid: int, pid: int):
 	db = open_db()
 
-	# Let's see if this is csam
-	user = db.query(User).filter_by(id=id).first()
+	post = db.query(Post).filter_by(link_url=link).first()
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
-	for i in range(10):
-		x = requests.get(link,headers=headers)
-		if x.status_code in [200, 451]:
-			break
-		else:
-			time.sleep(10)
+
+	# Check link of post
+	if post.is_link == True:
+		for i in range(10):
+			x = requests.get(post.link_url,headers=headers)
+			if x.status_code in [200, 451]:
+				break
+			else:
+				time.sleep(10)
+
+	# And check image if it has one...
+	if post.is_image == True:
+		for i in range(10):
+			x = requests.get(f'/post/thumb?pid={post.id}',headers=headers)
+			if x.status_code in [200, 451]:
+				break
+			else:
+				time.sleep(10)
+
+	# If status code is not 451, else...
 	if x.status_code != 451:
 		return
 
-	# Ban user
-	db.query(User).filter_by(id=id).update({
-		'ban_reason':'CSAM Automatic Removal',
-		'is_banned':True})
-	db.commit()
-	db.refresh(user)
+	# Remove all posts with offending url
+	offensive_posts = db.query(Post).filter_by(link_url=post.link_url).all()
 
-	# Remove all posts with url
-	offensive_posts = db.query(Post).filter_by(link_url=link).all()
+	# Remove all images of the posts
+	for p in offensive_posts:
+		os.remove(os.path.join('user_data',offensive_posts.image_file))
+
+		# Ban everyone involved
+		user = db.query(User).filter_by(id=p.user_id).first()
+		db.query(User).filter_by(id=p.user_id).update({
+			'ban_reason':'CSAM Automatic Removal',
+			'is_banned':True})
+		db.commit()
+		db.refresh(user)
+
+	# Blank posts
 	db.query(Post).filter_by(link_url=link).update({
 		'link_url':'',
 		'body':'[deleted by automatic csam detection]',

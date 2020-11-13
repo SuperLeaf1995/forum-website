@@ -298,6 +298,9 @@ def edit(u=None):
 						'body_html':body_html,
 						'embed_html':embed_html})
 			db.commit()
+
+			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.link_url,))
+			csam_thread.start()
 			
 			db.close()
 			return redirect(f'/post/view?pid={pid}')
@@ -376,7 +379,7 @@ def write(u=None):
 			
 			db.refresh(post)
 
-			csam_thread = threading.Thread(target=csam_check_post, args=(id,post.link_url,))
+			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.link_url,))
 			csam_thread.start()
 
 			db.close()
@@ -584,21 +587,18 @@ def title_by_url():
 	# Used by javascript for getting title and put it as title
 	# for using url'ed posts
 	url = request.values.get('url')
-	if url is None:
+	if url == '':
 		return '',400
 
-	html = urllib.request.urlopen(url)
-	if html is None:
-		return '',400
+	headers = {'User-Agent':'xaiecon-busy'}
+	x = requests.get(url, headers=headers)
 
-	html = html.read().decode('utf8')
-
-	soup = BeautifulSoup(html, 'html.parser')
+	soup = BeautifulSoup(x.content,'html.parser')
 	title = soup.find('title')
 	if title is None:
 		return '',400
 
-	return title, 200
+	return title,200
 
 @post.route('/post/search', methods = ['GET','POST'])
 @login_wanted
@@ -660,7 +660,13 @@ def csam_check_post(id: id,link: str):
 	db.commit()
 	db.refresh(user)
 
-	os.remove(os.path.join('user_data',user.image_file))
+	# Remove all posts with url
+	offensive_posts = db.query(Post).filter_by(link_url=link).all()
+	db.query(Post).filter_by(link_url=link).update({
+		'link_url':'',
+		'body':'[deleted by automatic csam detection]',
+		'body_html':'[deleted by automatic csam detection]'
+	})
 	
 	db.close()
 	return

@@ -1,18 +1,19 @@
 {% extends "default_layout.html" %}
 {% block content %}
 <h1>New post</h1>
-<hr>
 <form enctype='multipart/form-data' method='POST' action='/post/write'>
 	<label for='title'>Title</label>
-	<input id='title' class='textbar-normal' type='text' name='title' placeholder='Title of post'></br>
+	<input id='title' class='textbar-normal' type='text' name='title' id='title'></br>
 	<label for='body'>Body</label>
-	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='body' placeholder='Body'></textarea></br>
+	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='body' id='body'></textarea></br>
+	<label for='image'>Image upload</label>
+	<input class='textbar-normal' type='file' name='image' id='image'><br>
 	<label for='keywords'>Keywords</label>
-	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords'></br>
+	<input class='textbar-normal' type='text' name='keywords' id='keywords'></br>
 	<label for='link'>Link</label>
-	<input class='textbar-normal' type='text' name='link'></br>
+	<input class='textbar-normal' type='text' name='link' id='link'></br>
 	<label for='is_nsfw'>Is post NSFW?</label>
-	<input type='checkbox' name='is_nsfw'></input></br>
+	<input type='checkbox' name='is_nsfw' id='is_nsfw'></input></br>
 	{% if boards %}
 		<label for='bid'>Board to post to</label>
 		<select name='bid'>

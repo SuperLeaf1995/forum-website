@@ -370,6 +370,8 @@ def write(u=None):
 			if u.is_banned_from_board(bid) == True:
 				raise XaieconException(f'You\'re banned from /b/{board.name}')
 			
+			is_link = False
+			embed_html = ''
 			if link != '':
 				is_link = True
 				parsed_link = urllib.parse.urlparse(link)
@@ -440,7 +442,7 @@ def write(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@user.route('/post/thumb', methods = ['GET'])
+@post.route('/post/thumb', methods = ['GET'])
 @login_wanted
 def thumb(u=None):
 	id = int(request.values.get('pid',''))
@@ -451,7 +453,7 @@ def thumb(u=None):
 	db.close()
 	return send_from_directory('../user_data',post.thumb_file)
 
-@user.route('/post/image', methods = ['GET'])
+@post.route('/post/image', methods = ['GET'])
 @login_wanted
 def image(u=None):
 	id = int(request.values.get('pid',''))

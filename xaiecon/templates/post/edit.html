@@ -7,15 +7,17 @@
 <form enctype='multipart/form-data' method='POST' action='/post/edit'>
 	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 	<label for='title'>Title</label>
-	<input class='textbar-normal' type='text' name='title' placeholder='Title of resource' value='{{ post.title }}'></br>
-	<label for='description'>Description</label>
-	<textarea class='textbar-normal' maxlength='4095' name='body' placeholder='Body of post'>{{ post.body }}</textarea></br>
-	<label for='description'>Keywords</label>
-	<input class='textbar-normal' type='text' name='keywords' placeholder='Comma separated list of keywords' value='{{ post.keywords }}'></br>
+	<input class='textbar-normal' type='text' name='title' id='title' value='{{ post.title }}'></br>
+	<label for='body'>Body</label>
+	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='body' id='body'>{{ post.body }}</textarea></br>
+	<label for='image'>Image upload</label>
+	<input class='textbar-normal' type='file' name='image' id='image'><br>
+	<label for='keywords'>Keywords</label>
+	<input class='textbar-normal' type='text' name='keywords' id='keywords' value='{{ post.keywords }}'></br>
 	<label for='link'>Link</label>
-	<input class='textbar-normal' type='text' name='link' value='{{ post.link_url }}'></br>
+	<input class='textbar-normal' type='text' name='link' id='link' value='{{ post.link_url }}'></br>
 	<label for='is_nsfw'>Is post NSFW?</label>
-	<input type='checkbox' name='is_nsfw' value='{{ post.is_nsfw }}'></input></br>
+	<input type='checkbox' name='is_nsfw' id='is_nsfw' value='{{ post.is_nsfw }}'></input></br>
 	<label for='category'>Category</label>
 	<select name='category'>
 	{% for category in categories %}

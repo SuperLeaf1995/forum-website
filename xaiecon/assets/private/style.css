@@ -174,24 +174,27 @@ textarea {
 /* Post */
 .block-content {
   overflow: auto;
-  border: 1px solid grey;
   color: black;
   word-break: break-all;
   margin: 12px;
   padding: 12px;
+  border-color: #f5f5f5;
 }
 
 .post-brief {
   color: black;
   width: -moz-available;
   float: left;
-  padding: 2px;
+  padding: 4px;
   margin: 8px;
+  padding-top: 12px;
+  border-radius: 4px;
+  box-shadow: 0 0 2px grey;
   transition: 0.3s;
 }
 
 .post-brief:hover {
-  box-shadow: 0 0 2px grey;
+  box-shadow: 0 0 4px grey;
 }
 
 .post-brief-thumb {
@@ -208,13 +211,13 @@ textarea {
 .post-option, .post-option:visited {
   float: left;
   color: grey;
-  padding: 0 8px;
+  padding: 2px 12px;
   border-right: solid 1px black;
   transition: 0.3s;
 }
 
 .post-option:hover {
-  color: #6fc9a1;
+  color: #3126d1;
 }
 
 /* Upvotes */

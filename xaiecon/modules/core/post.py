@@ -459,6 +459,7 @@ def view(u=None):
 	db.close()
 	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 
+@post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
 def list_posts(u=None, sort='new'):

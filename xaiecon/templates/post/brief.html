@@ -1,13 +1,15 @@
 <article class='post-brief' style='overflow:auto;'>
 	<div class='post-brief-thumb'>
 	{% if post.is_link == True %}
+		<a href='{{ post.link_url }}'>
 		{% if post.link_url.startswith('lbry://') or post.link_url.startswith('https://lbry.tv') or post.link_url.startswith('https://www.lbry.tv') %}
 			<img src='/assets/embed_lbry.png'></img>
 		{% endif %}
+		</a>
 	{% endif %}
 	</div>
 
-	<div style='height:100%;float:left;'>
+	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
@@ -19,18 +21,12 @@
 	{% endif %}
 	</div>
 	
-	{% if post.is_link == True %}
-	<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
-	{% else %}
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
-	{% endif %}
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
-
-	<p><a href='/post/view?pid={{ post.id }}' style='color:black;'>{{ post.body | truncate(1000,true) }}</a></p>
 	
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 

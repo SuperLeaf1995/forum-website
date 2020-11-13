@@ -1,6 +1,6 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<div style='height:100%;float:left;'>
+	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>

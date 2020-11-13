@@ -6,6 +6,7 @@ import requests
 import threading
 import time
 import urllib
+import urllib.parse
 
 from bs4 import BeautifulSoup
 from os import path, remove
@@ -267,18 +268,13 @@ def edit(u=None):
 				raise XaieconException('Not a valid category')
 			
 			is_link = False
+			embed_html = ''
 			if link != '':
 				is_link = True
-				embed_html = ''
+				parsed_link = urllib.parse.urlparse(link)
+				link = urllib.parse.quote(link,safe='/:$#')
 
-				# LBRY direct embed url (user did our work)
-				if link.startswith('https://lbry.tv/$/embed/'):
-					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
-				# LBRY raw url (we do the work for the user)
-				elif link.startswith('https://lbry.tv/') or link.startswith('https://open.lbry.tv/'):
-					url, last = link.split('@')
-					video = last.split('/',1)[1]
-					link = f'{url}$/embed/{video}'
+				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
@@ -343,19 +339,12 @@ def write(u=None):
 			if u.is_banned_from_board(bid) == True:
 				raise XaieconException(f'You\'re banned from /b/{board.name}')
 			
-			is_link = False
 			if link != '':
 				is_link = True
-				embed_html = ''
+				parsed_link = urllib.parse.urlparse(link)
+				link = urllib.parse.quote(link,safe='/:$#')
 
-				# LBRY direct embed url (user did our work)
-				if link.startswith('https://lbry.tv/$/embed/'):
-					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
-				# LBRY raw url (we do the work for the user)
-				elif link.startswith('https://lbry.tv/') or link.startswith('https://open.lbry.tv/'):
-					url, last = link.split('@')
-					last, video = link.split('/')
-					link = f'{url}$/embed/{video}'
+				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
 			
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))

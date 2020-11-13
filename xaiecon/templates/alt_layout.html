@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+	{% include 'common/head.html' %}
+	<body>
+		{% include 'common/navbar.html' %}
+		<div>
+			<!--{% include 'common/gdprnotice.html' %}-->
+			{% block content %}{% endblock %}
+			{% block panel %}{% endblock %}
+		</div>
+	</body>
+</html>

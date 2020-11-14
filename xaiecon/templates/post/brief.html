@@ -6,6 +6,8 @@
 			<img src='/assets/embed_lbry.png'></img>
 		{% endif %}
 		</a>
+	{% elif post.is_image == True %}
+		<a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a>
 	{% endif %}
 	</div>
 

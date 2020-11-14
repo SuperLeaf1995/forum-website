@@ -327,7 +327,6 @@ def edit(u=None):
 
 				link = urllib.parse.quote(link,safe='/:$#')
 				parsed_link = urllib.parse.urlparse(link)
-				print('link')
 
 				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
@@ -440,8 +439,9 @@ def write(u=None):
 			embed_html = ''
 			if link != '':
 				is_link = True
-				parsed_link = urllib.parse.urlparse(link)
+
 				link = urllib.parse.quote(link,safe='/:$#')
+				parsed_link = urllib.parse.urlparse(link)
 
 				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'

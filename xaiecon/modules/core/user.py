@@ -175,16 +175,15 @@ def edit(u=None):
 	try:
 		id = int(request.values.get('uid',''))
 
+		db = open_db()
 		user = db.query(User).filter_by(id=id).first()
 		if user is None:
 			abort(404)
 
+		if u.id != id and u.is_admin == False:
+			raise XaieconException('Not authorized')
+
 		if request.method == 'POST':
-			db = open_db()
-
-			if u.id != id and u.is_admin == False:
-				raise XaieconException('Not authorized')
-
 			# Get stuff
 			email = request.form.get('email')
 			fax = request.form.get('fax')
@@ -206,13 +205,13 @@ def edit(u=None):
 						'phone':phone,
 						'is_show_phone':is_show_phone,
 						'is_nsfw':is_nsfw})
-			
 			db.commit()
+			db.refresh(user)
 
 			file = request.files['profile']
 			if file:
 				# Remove old image
-				if user.image_file != '':
+				if user.image_file is not None:
 					try:
 						os.remove(os.path.join('user_data',user.image_file))
 					except FileNotFoundError:
@@ -240,13 +239,6 @@ def edit(u=None):
 			db.close()
 			return redirect(f'/user/view?uid={id}')
 		else:
-			db = open_db()
-			user = db.query(User).filter_by(id=id).first()
-			if user is None:
-				abort(404)
-
-			if u.id != id and u.is_admin == False:
-				raise XaieconException('Not authorized')
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)
 	except XaieconException as e:

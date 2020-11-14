@@ -2,7 +2,15 @@
 # Board module, place where posts can be put and yanked off
 #
 
-from flask import Blueprint, render_template, session, redirect, request, abort
+import PIL
+import secrets
+import os
+import threading
+import requests
+
+from flask import Blueprint, render_template, session, redirect, request, abort, send_from_directory
+from werkzeug.utils import secure_filename
+
 from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
@@ -88,12 +96,21 @@ def edit(u=None):
 
 			file = request.files['icon']
 			if file:
+				# Remove old image
+				if board.has_icon == True:
+					try:
+						os.remove(os.path.join('user_data',board.icon_file))
+					except FileNotFoundError:
+						pass
+
 				# Create thumbnail
 				filename = f'{secrets.token_hex(32)}.jpeg'
 				filename = secure_filename(filename)
 				final_filename = os.path.join('user_data',filename)
 				file.save(final_filename)
-				image = Image.open(final_filename)
+
+				image = PIL.Image.open(final_filename)
+				image = image.convert('RGB')
 				image.thumbnail((120,120))
 				os.remove(final_filename)
 				image.save(final_filename)
@@ -106,11 +123,11 @@ def edit(u=None):
 				db.query(Board).filter_by(id=bid).update({'has_icon':False})
 
 			db.query(Board).filter_by(id=bid).update({'name':name,'descr':descr,
-				'category_id':category_id,'keywords':keywords})
+				'category_id':category.id,'keywords':keywords})
 			db.commit()
 			
 			db.close()
-			return redirect(f'/board/view/{bid}')
+			return redirect(f'/board/view?bid={bid}')
 		else:
 			category = db.query(Category).all()
 			db.close()
@@ -295,6 +312,8 @@ def csam_check_profile(bid: int):
 	db.query(User).filter_by(id=board.user_id).update({
 		'ban_reason':'CSAM Automatic Removal',
 		'is_banned':True})
+
+	# Ban board
 	db.query(Board).filter_by(id=board.id).update({
 		'ban_reason':'CSAM Automatic Removal',
 		'is_banned':True})

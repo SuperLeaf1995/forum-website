@@ -8,12 +8,12 @@
 	<h2>Moderated</h2>
 	<hr>
 	{% for board in u.moderated_boards() %}
-		<a href='/board/view?bid={{ board.id }}'>/b/{{ board.name | truncate(8,true) }}</a></br>
+		<img style='border-radius:12px;' src='/board/thumb?bid={{ board.id }}' width='24px' height='24px'><a href='/board/view?bid={{ board.id }}'>/b/{{ board.name | truncate(8,true) }}</a></br>
 	{% endfor %}
 	<h2>Subscribed</h2>
 	<hr>
 	{% for board in u.subscribed_boards() %}
-		<a href='/board/view?bid={{ board.id }}'>/b/{{ board.name | truncate(8,true) }}</a></br>
+		<img style='border-radius:12px;' src='/board/thumb?bid={{ board.id }}' width='24px' height='24px'><a href='/board/view?bid={{ board.id }}'><a href='/board/view?bid={{ board.id }}'>/b/{{ board.name | truncate(8,true) }}</a></br>
 	{% endfor %}
 	{% else %}
 	<h1>Get back</br>the internet.</h1>

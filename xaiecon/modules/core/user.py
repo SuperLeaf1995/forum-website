@@ -174,6 +174,11 @@ def thumb(u=None):
 def edit(u=None):
 	try:
 		id = int(request.values.get('uid',''))
+
+		user = db.query(User).filter_by(id=id).first()
+		if user is None:
+			abort(404)
+
 		if request.method == 'POST':
 			db = open_db()
 
@@ -206,6 +211,12 @@ def edit(u=None):
 
 			file = request.files['profile']
 			if file:
+				# Remove old image
+				if user.image_file != '':
+					try:
+						os.remove(os.path.join('user_data',user.image_file))
+					except FileNotFoundError:
+						pass
 				# Create thumbnail
 				filename = f'{secrets.token_hex(32)}.jpeg'
 				filename = secure_filename(filename)
@@ -215,6 +226,7 @@ def edit(u=None):
 				file.save(final_filename)
 
 				image = Image.open(final_filename)
+				image = image.convert('RGB')
 				image.thumbnail((120,120))
 				os.remove(final_filename)
 				image.save(final_filename)

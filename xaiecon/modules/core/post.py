@@ -267,13 +267,13 @@ def delete(u=None):
 		if u.id != post.user_id and u.is_admin == False:
 			raise XaieconException('User is not authorized')
 
-		try:
-			if post.is_image == True:
-				# Remove old image
+		# Remove old image
+		if post.is_image == True:
+			try:
 				os.remove(os.path.join('user_data',post.image_file))
 				os.remove(os.path.join('user_data',post.thumb_file))
-		except FileNotFoundError:
-			pass
+			except FileNotFoundError:
+				pass
 		
 		# Set is_deleted to true
 		db.query(Post).filter_by(id=pid).update({

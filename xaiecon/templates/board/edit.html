@@ -5,6 +5,8 @@
 	<input type='text' name='pid' style='display:none;' value='{{ board.id }}'>
 	<label for='name'>Name</label>
 	<input class='textbar-normal' type='text' id='name' name='name' placeholder='Name of your board' value='{{ board.name }}'></br>
+	<label for='icon'>Icon of board</label>
+	<input class='textbar-normal' type='file' name='icon' id='icon'><br>
 	<label>Description</label>
 	<textarea class='textbar-normal' maxlength='4095' id='descr' name='descr' placeholder='Description'>{{ board.descr }}</textarea></br>
 	<label>Keywords</label>

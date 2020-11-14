@@ -9,10 +9,15 @@ class Board(Base):
 	
 	id = Column(Integer, primary_key=True)
 	name = Column(String(255), nullable=False)
-	image_file = Column(String(255), nullable=True)
 	descr = Column(String(255), nullable=False)
 	keywords = Column(String(255), nullable=False)
 	creation_date = Column(Integer, default=time.time())
+
+	is_banned = Column(Boolean, default=False)
+	ban_reason = Column(String(255), nullable=True)
+
+	has_icon = Column(Boolean, default=False)
+	icon_file = Column(String(255), nullable=True)
 	
 	category_id = Column(Integer, ForeignKey('xaiecon_category.id'))
 	category_info = relationship('Category', foreign_keys=[category_id])

@@ -47,7 +47,10 @@ CREATE TABLE xaiecon_board(
 	name VARCHAR(255),
 	descr VARCHAR(4095),
 	keywords VARCHAR(255),
-	image_file VARCHAR(255),
+	is_banned BOOLEAN DEFAULT FALSE,
+	ban_reason VARCHAR(255),
+	has_icon BOOLEAN DEFAULT FALSE,
+	icon_file VARCHAR(255),
 	creation_date INT,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE

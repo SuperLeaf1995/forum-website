@@ -109,6 +109,38 @@ def ballot(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',e=e)
 
+@post.route('/post/unnuke', methods = ['GET','POST'])
+@login_required
+def unnuke(u=None):
+	db = open_db()
+	try:
+		if u.is_admin == False:
+			raise XaieconException('Only admins can un-nuke')
+
+		pid = request.values.get('pid')
+		post = db.query(Post).filter_by(id=pid).first()
+		if post is None:
+			abort(404)
+		
+		# User must be also mod of the post's origin board
+		board = db.query(Board).filter_by(id=post.board_id).first()
+		
+		# Check that post is not already nuked and that user mods
+		# the guild
+		if post.is_deleted == True or post.is_nuked == False:
+			raise XaieconException('Post already deleted or has been unnuked by user or someone else')
+		
+		# "Un-Nuke" post
+		db.query(Post).filter_by(id=pid).update({'is_nuked':False})
+		db.commit()
+		
+		db.close()
+		return redirect(f'/post/view?pid={pid}')
+	except XaieconException as e:
+		db.rollback()
+		db.close()
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
 @post.route('/post/nuke', methods = ['GET','POST'])
 @login_required
 def nuke(u=None):
@@ -126,7 +158,7 @@ def nuke(u=None):
 		# the guild
 		if board is None:
 			raise XaieconException('Post cannot be nuked because it is not in any board')
-		if post.is_deleted == True or post.nuked == True:
+		if post.is_deleted == True or post.is_nuked == True:
 			raise XaieconException('Post already nuked/deleted by user or someone else')
 		if not u.mods(board.id) and u.is_admin == False:
 			raise XaieconException('You do not mod the origin board')
@@ -235,10 +267,13 @@ def delete(u=None):
 		if u.id != post.user_id and u.is_admin == False:
 			raise XaieconException('User is not authorized')
 
-		if post.is_image == True:
-			# Remove old image
-			os.remove(os.path.join('user_data',post.image_file))
-			os.remove(os.path.join('user_data',post.thumb_file))
+		try:
+			if post.is_image == True:
+				# Remove old image
+				os.remove(os.path.join('user_data',post.image_file))
+				os.remove(os.path.join('user_data',post.thumb_file))
+		except FileNotFoundError:
+			pass
 		
 		# Set is_deleted to true
 		db.query(Post).filter_by(id=pid).update({
@@ -251,7 +286,7 @@ def delete(u=None):
 			'link_url':''})
 		db.commit()
 		db.close()
-		return '',200
+		return redirect(f'/post/view?pid={pid}')
 	except XaieconException as e:
 		db.rollback()
 		db.close()
@@ -289,8 +324,10 @@ def edit(u=None):
 			embed_html = ''
 			if link != '':
 				is_link = True
-				parsed_link = urllib.parse.urlparse(link)
+
 				link = urllib.parse.quote(link,safe='/:$#')
+				parsed_link = urllib.parse.urlparse(link)
+				print('link')
 
 				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
 					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
@@ -306,36 +343,41 @@ def edit(u=None):
 
 			file = request.files['image']
 			if file:
-				if post.is_image == True:
-					# Remove old image
-					os.remove(os.path.join('user_data',post.image_file))
-					os.remove(os.path.join('user_data',post.thumb_file))
+				try:
+					try:
+						if post.is_image == True:
+							# Remove old image
+							os.remove(os.path.join('user_data',post.image_file))
+							os.remove(os.path.join('user_data',post.thumb_file))
+					except FileNotFoundError:
+						pass
 
-				# Build paths and filenames
-				image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
-				image_filepath = os.path.join('user_data',image_filename)
+					# Build paths and filenames
+					image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
+					image_filepath = os.path.join('user_data',image_filename)
 
-				thumb_filename = secure_filename(f'thumb_{image_filename}')
-				thumb_filepath = os.path.join('user_data',thumb_filename)
+					thumb_filename = secure_filename(f'thumb_{image_filename}')
+					thumb_filepath = os.path.join('user_data',thumb_filename)
 
-				# Save full image file
-				file.save(image_filepath)
+					# Save full image file
+					file.save(image_filepath)
 
-				# Create thumbnail for image
-				image = PIL.Image.open(image_filepath)
-				image = image.convert('RGB')
-				image.thumbnail((120,120))
-				image.save(thumb_filepath)
+					# Create thumbnail for image
+					image = PIL.Image.open(image_filepath)
+					image = image.convert('RGB')
+					image.thumbnail((120,120))
+					image.save(thumb_filepath)
 
-				post.image_file = image_filename
-				post.thumb_file = thumb_filename
-
-				db.query(Post).filter_by(id=id).update({
-					'image_file':image_filename,
-					'thumb_file':thumb_filename,
-					'is_image':True})
+					db.query(Post).filter_by(id=pid).update({
+						'image_file':image_filename,
+						'thumb_file':thumb_filename,
+						'is_image':True})
+				except PIL.UnidentifiedImageError:
+					# Failure creating image!
+					db.query(Post).filter_by(id=pid).update({
+						'is_image':False})
 			else:
-				db.query(Post).filter_by(id=id).update({
+				db.query(Post).filter_by(id=pid).update({
 					'is_image':False})
 
 			# Update post entry on database
@@ -464,7 +506,7 @@ def write(u=None):
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')
 		else:
-			board = db.query(Board).options(joinedload('user_info')).all()
+			board = db.query(Board).filter_by(is_banned=False).options(joinedload('user_info')).all()
 			categories = db.query(Category).all()
 			db.close()
 			return render_template('post/write.html',u=u,title = 'New post', boards = board, categories=categories)
@@ -587,7 +629,7 @@ def list_posts(u=None, sort='new'):
 	else:
 		abort(401)
 	
-	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
+	post = post.filter_by(is_nuked=False,is_deleted=False).options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 	
 	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
@@ -627,7 +669,7 @@ def list_nuked(u=None, sort='new'):
 	else:
 		abort(401)
 	
-	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
+	post = post.filter_by(is_nuked=True).options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 	
 	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,

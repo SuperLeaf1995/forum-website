@@ -26,6 +26,8 @@ class Post(Base):
 	is_image = Column(Boolean, default=False)
 
 	is_nuked = Column(Boolean, default=False)
+	nuker_id = Column(Integer, ForeignKey('xaiecon_user.id'))
+	nuker_info = relationship('User', foreign_keys=[nuker_id])
 	
 	downvote_count = Column(Integer, default=1)
 	upvote_count = Column(Integer, default=1)

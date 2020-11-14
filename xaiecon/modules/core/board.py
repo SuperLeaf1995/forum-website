@@ -69,6 +69,9 @@ def edit(u=None):
 		board = db.query(Board).filter_by(id=bid).first()
 		if board is None:
 			abort(404)
+
+		if u.can_make_board == False:
+			raise XaieconException('You cannot edit or make boards')	
 		
 		if request.method == 'POST':
 			name = request.values.get('name')
@@ -82,20 +85,32 @@ def edit(u=None):
 			category = db.query(Category).filter_by(name=category).first()
 			if category is None:
 				raise XaieconException('Not a valid category')
-			
-			board = Board(
-				name=name,
-				descr=descr,
-				category_id=category.id,
-				keywords=keywords)
-			
-			db.add(board)
+
+			file = request.files['icon']
+			if file:
+				# Create thumbnail
+				filename = f'{secrets.token_hex(32)}.jpeg'
+				filename = secure_filename(filename)
+				final_filename = os.path.join('user_data',filename)
+				file.save(final_filename)
+				image = Image.open(final_filename)
+				image.thumbnail((120,120))
+				os.remove(final_filename)
+				image.save(final_filename)
+
+				db.query(Board).filter_by(id=bid).update({'icon_file':filename,'has_icon':True})
+
+				csam_thread = threading.Thread(target=csam_check_profile, args=(bid,))
+				csam_thread.start()
+			else:
+				db.query(Board).filter_by(id=bid).update({'has_icon':False})
+
+			db.query(Board).filter_by(id=bid).update({'name':name,'descr':descr,
+				'category_id':category_id,'keywords':keywords})
 			db.commit()
 			
-			db.refresh(board)
-			
 			db.close()
-			return redirect(f'/board/view/{board.id}')
+			return redirect(f'/board/view/{bid}')
 		else:
 			category = db.query(Category).all()
 			db.close()
@@ -159,6 +174,17 @@ def unban(u=None):
 
 	db.close()
 	return '',200
+
+@board.route('/board/thumb', methods = ['GET','POST'])
+@login_wanted
+def thumb(u=None):
+	bid = int(request.values.get('bid',''))
+	db = open_db()
+	board = db.query(Board).filter_by(id=bid).first()
+	if board is None:
+		abort(404)
+	db.close()
+	return send_from_directory('../user_data',board.icon_file)
 
 @board.route('/board/subscribe', methods = ['POST'])
 @login_required
@@ -244,5 +270,37 @@ def new(u=None):
 	except XaieconException as e:
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
+# Check user for csam, if so ban the user
+def csam_check_profile(bid: int):
+	db = open_db()
+
+	# Let's see if this is csam
+	board = db.query(Board).filter_by(id=bid).first()
+
+	headers = {'User-Agent':'xaiecon-csam-check'}
+
+	DOMAIN_NAME = os.environ.get('DOMAIN_NAME','localhost:5000')
+	for i in range(10):
+		x = requests.get(f'https://{DOMAIN_NAME}/board/thumb?bid={bid}',headers=headers)
+		if x.status_code in [200, 451]:
+			break
+		else:
+			time.sleep(10)
+	
+	if x.status_code != 451:
+		return
+
+	# Ban user
+	db.query(User).filter_by(id=board.user_id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.query(Board).filter_by(id=board.id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.commit()
+	os.remove(os.path.join('user_data',board.image_file))
+	db.close()
+	return
 
 print('Board pages ... ok')

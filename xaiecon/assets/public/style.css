@@ -12,14 +12,12 @@
   }
 }
 
-@keyframes slide-right {
+@keyframes fade-out {
   0% {
-    left: -100%;
-    opacity: 0;
+    opacity: 1;
   }
   100% {
-    left: 0px;
-    opacity: 1;
+    opacity: 0;
   }
 }
 
@@ -40,8 +38,6 @@ a:visited, a:active, a:hover, a:focus {
 }
 
 .index-intro {
-  top: 48px;
-  position: absolute;
   background: #3cabf0;
   background: linear-gradient(225deg,#3cabf0 0%,#3126d1 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3cabf0',endColorstr='#3126d1');
@@ -49,25 +45,45 @@ a:visited, a:active, a:hover, a:focus {
   margin: 0; padding: 0;
   width: 100%;
   height: 100vh;
-  background-image: url('/assets/landscape/2.jpeg');
+  background-image: url('/assets/landscape/4.jpeg');
   background-size: cover;
-  animation: slide-right ease 1.5s;
+}
+
+.index-block {
+  padding-left: 30%;
+  padding-right: 30%;
+  text-align: center;
 }
 
 .index-intro-title {
   color: white;
-  padding: 8px;
   font-size: xxx-large;
   animation: fade-in ease 1.5s;
 }
 
 .index-intro-brief {
   color: white;
-  padding: 8px;
-  width: 30%;
   font-size: larger;
   clear: both;
   animation: fade-in ease 1.5s;
+}
+
+.index-intro-btn {
+  border: none;
+  color: white;
+  background: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  border: 1px solid white;
+  transition: 0.3s;
+}
+
+.index-intro-btn:hover {
+  background-color: #3126d1;
+  color: white;
+  border: 1px solid #3126d1;
+  cursor: pointer;
 }
 
 .header-nav {
@@ -92,23 +108,19 @@ a:visited, a:active, a:hover, a:focus {
   box-shadow: 0 0 4px grey;
 }
 
-.index-intro-btn {
-  border: none;
-  color: white;
-  background: none;
-  padding: 12px 18px;
-  border-radius: 12px;
-  font-weight: bold;
-  margin-left: 16px;
-  border: 1px solid white;
-  transition: 0.3s;
-}
-
-.index-intro-btn:hover {
-  background-color: #3126d1;
-  color: white;
-  border: 1px solid #3126d1;
-  cursor: pointer;
+.alert {
+  position: fixed;
+  background-color: white;
+  top: 8px;
+  z-index: 1;
+  padding: 0 16px;
+  border-radius: 8px;
+  width: 20%;
+  left: 40%;
+  box-shadow: 0 0 4px grey;
+  text-align: center;
+  opacity: 0;
+  animation: fade-out ease 8s 1s;
 }
 
 .form-btn {

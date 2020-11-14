@@ -3,21 +3,28 @@
 	{% include 'common/head.html' %}
 	<body>
 		{% include 'common/navbar.html' %}
+
+		<div class='alert'>
+			<p>Post published sucessfuly!</p>
+		</div>
+
 		<div>
 			<div class='index-intro'>
-				<br>
-				<h1 class='index-intro-title'>A federation for everyone.</h1>
-				<p class='index-intro-brief'>An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds.</p>
+				<div class='index-block'>
+					<br>
+					<h1 class='index-intro-title'>A federation for everyone.</h1>
+					<p class='index-intro-brief'>An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds.</p>
 
-				{% if u != None %}
-				<form method='GET' action='/post/feed/new'>
-					<input class='index-intro-btn' type='submit' value="Get started"></br>
-				</form>
-				{% else %}
-				<form method='GET' action='/user/signup'>
-					<input class='index-intro-btn' type='submit' value="Get started"></br>
-				</form>
-				{% endif %}
+					{% if u != None %}
+					<form method='GET' action='/post/feed/new'>
+						<input class='index-intro-btn' type='submit' value='Get started'>
+					</form>
+					{% else %}
+					<form method='GET' action='/user/signup'>
+						<input class='index-intro-btn' type='submit' value='Get started'>
+					</form>
+					{% endif %}
+				</div>
 			</div>
 		</div>
 	</body>

@@ -2,11 +2,14 @@
 # Simple post-sharing base module
 #
 
+import os
 import requests
 import threading
 import time
 import urllib
 import urllib.parse
+import secrets
+import PIL
 
 from bs4 import BeautifulSoup
 from os import path, remove
@@ -53,8 +56,10 @@ def vote(u=None):
 		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
 		
 		if vote is not None and vote.value == val:
+			real_val = (-val)
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 		else:
+			real_val = val
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 			# Create vote relation
 			vote = Vote(user_id=u.id,post_id=post.id,value=val)
@@ -67,6 +72,11 @@ def vote(u=None):
 			'downvote_count':downvotes,
 			'upvote_count':upvotes,
 			'total_vote_count':upvotes-downvotes})
+
+		# Give user fake internet points
+		user = db.query(User).filter_by(id=post.user_id).first()
+		db.query(User).filter_by(id=post.user_id).update({
+			'net_points':user.net_points+val})
 		
 		db.commit()
 		
@@ -217,19 +227,27 @@ def delete(u=None):
 	db = open_db()
 	try:
 		pid = request.values.get('pid')
-		
+
 		post = db.query(Post).filter_by(id=pid).first()
 		if post == None:
 			abort(404)
-		
+
 		if u.id != post.user_id and u.is_admin == False:
 			raise XaieconException('User is not authorized')
+
+		if post.is_image == True:
+			# Remove old image
+			os.remove(os.path.join('user_data',post.image_file))
+			os.remove(os.path.join('user_data',post.thumb_file))
 		
 		# Set is_deleted to true
 		db.query(Post).filter_by(id=pid).update({
 			'is_deleted':True,
 			'body':'Deleted by user',
 			'is_link':False,
+			'is_image':False,
+			'image_file':'',
+			'thumb_file':'',
 			'link_url':''})
 		db.commit()
 		db.close()
@@ -288,31 +306,37 @@ def edit(u=None):
 
 			file = request.files['image']
 			if file:
-				# Remove old image
 				if post.is_image == True:
+					# Remove old image
 					os.remove(os.path.join('user_data',post.image_file))
 					os.remove(os.path.join('user_data',post.thumb_file))
 
-				# Create image + thumbnail
-				filename = f'{secrets.token_hex(32)}.jpeg'
-				filename = secure_filename(filename)
-				final_filename = os.path.join('user_data',filename)
-				file.save(final_filename)
+				# Build paths and filenames
+				image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
+				image_filepath = os.path.join('user_data',image_filename)
 
-				img_filename = f'{secrets.token_hex(32)}.jpeg'
-				img_filename = secure_filename(filename)
-				img_filename = os.path.join('user_data',img_filename)
-				file.save(img_filename)
+				thumb_filename = secure_filename(f'thumb_{image_filename}')
+				thumb_filepath = os.path.join('user_data',thumb_filename)
 
-				image = Image.open(final_filename)
+				# Save full image file
+				file.save(image_filepath)
+
+				# Create thumbnail for image
+				image = PIL.Image.open(image_filepath)
+				image = image.convert('RGB')
 				image.thumbnail((120,120))
-				os.remove(final_filename)
-				image.save(final_filename)
+				image.save(thumb_filepath)
+
+				post.image_file = image_filename
+				post.thumb_file = thumb_filename
 
 				db.query(Post).filter_by(id=id).update({
-					'image_file':img_filename,
-					'thumb_file':filename})
-				db.commit()
+					'image_file':image_filename,
+					'thumb_file':thumb_filename,
+					'is_image':True})
+			else:
+				db.query(Post).filter_by(id=id).update({
+					'is_image':False})
 
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
@@ -404,26 +428,33 @@ def write(u=None):
 						embed_html='',
 						body_html=body_html)
 			
-			db.add(post)
-			db.commit()
-			
 			file = request.files['image']
 			if file:
-				# Create thumbnail
-				filename = f'{secrets.token_hex(32)}.jpeg'
-				filename = secure_filename(filename)
+				# Build paths and filenames
+				image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
+				image_filepath = os.path.join('user_data',image_filename)
 
-				final_filename = os.path.join('user_data',filename)
+				thumb_filename = secure_filename(f'thumb_{image_filename}')
+				thumb_filepath = os.path.join('user_data',thumb_filename)
 
-				file.save(final_filename)
+				# Save full image file
+				file.save(image_filepath)
 
-				image = Image.open(final_filename)
+				# Create thumbnail for image
+				image = PIL.Image.open(image_filepath)
+				image = image.convert('RGB')
 				image.thumbnail((120,120))
-				os.remove(final_filename)
-				image.save(final_filename)
+				image.save(thumb_filepath)
 
-				db.query(Post).filter_by(id=id).update({'image_file':filename})
-				db.commit()
+				post.image_file = image_filename
+				post.thumb_file = thumb_filename
+
+				post.is_image = True
+			else:
+				post.is_image = False
+
+			db.add(post)
+			db.commit()
 
 			db.refresh(post)
 
@@ -710,7 +741,11 @@ def search(u=None):
 def csam_check_post(uid: int, pid: int):
 	db = open_db()
 
-	post = db.query(Post).filter_by(link_url=link).first()
+	post = db.query(Post).filter_by(id=pid).first()
+
+	# Nothing to scan
+	if post.is_link == False and post.is_image == False:
+		return
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
@@ -724,9 +759,16 @@ def csam_check_post(uid: int, pid: int):
 				time.sleep(10)
 
 	# And check image if it has one...
+	DOMAIN_NAME = os.environ.get('DOMAIN_NAME','localhost:5000')
 	if post.is_image == True:
 		for i in range(10):
-			x = requests.get(f'/post/thumb?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{DOMAIN_NAME}/post/thumb?pid={post.id}',headers=headers)
+			if x.status_code in [200, 451]:
+				break
+			else:
+				time.sleep(10)
+		for i in range(10):
+			x = requests.get(f'https://{DOMAIN_NAME}/post/image?pid={post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:
@@ -736,13 +778,25 @@ def csam_check_post(uid: int, pid: int):
 	if x.status_code != 451:
 		return
 
+	print(f'Offensive post {post.id} found!')
+
 	# Remove all posts with offending url
 	offensive_posts = db.query(Post).filter_by(link_url=post.link_url).all()
 	for p in offensive_posts:
-		if post.is_image == True:
+		if p.is_image == True:
 			# Remove images
 			os.remove(os.path.join('user_data',p.thumb_file))
 			os.remove(os.path.join('user_data',p.image_file))
+
+		# Blank posts
+		db.query(Post).filter_by(id=p.id).update({
+			'link_url':'',
+			'is_image':False,
+			'image_file':'',
+			'thumb_file':'',
+			'body':'[deleted by automatic csam detection]',
+			'body_html':'[deleted by automatic csam detection]'
+		})
 
 		# Ban everyone involved
 		user = db.query(User).filter_by(id=p.user_id).first()
@@ -751,13 +805,6 @@ def csam_check_post(uid: int, pid: int):
 			'is_banned':True})
 		db.commit()
 		db.refresh(user)
-
-	# Blank posts
-	db.query(Post).filter_by(link_url=link).update({
-		'link_url':'',
-		'body':'[deleted by automatic csam detection]',
-		'body_html':'[deleted by automatic csam detection]'
-	})
 	
 	db.close()
 	return

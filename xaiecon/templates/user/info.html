@@ -2,29 +2,36 @@
 {% block content %}
 	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ user.id }}'></img>
 	<h1>{{ user.username }}</h1>
-	<p>{{ user.biography }}</p>
-	
-	{% if u != None %}
-		{% if user.is_show_email == True or u.id == user.id %}
-			<p>Electronic Mail Address: {{ user.email }}</p>
-		{% else %}
-			<p>Electronic Mail Address: Unknown</p>
-		{% endif %}
+
+	{% if user.is_banned == True %}
+		<p>This user has been banned for: {{ user.ban_reason }}</p>
+	{% else %}
+		<b>Network Points: {{ user.net_points }}</b>
+
+		<p>{{ user.biography }}</p>
 		
-		{% if user.is_show_fax == True or u.id == user.id %}
-			<p>Telefax: {{ user.fax }}</p>
-		{% else %}
-			<p>Telefax: Unknown</p>
-		{% endif %}
-		
-		{% if user.is_show_phone == True or u.id == user.id %}
-			<p>Telephone: {{ user.phone }}</p>
-		{% else %}
-			<p>Telephone: Unknown</p>
-		{% endif %}
-		
-		{% if u.id == user.id %}
-			<a href='/user/edit?uid={{ user.id }}'>Edit details</a>
+		{% if u != None %}
+			{% if user.is_show_email == True or u.id == user.id %}
+				<p>Electronic Mail Address: {{ user.email }}</p>
+			{% else %}
+				<p>Electronic Mail Address: Unknown</p>
+			{% endif %}
+			
+			{% if user.is_show_fax == True or u.id == user.id %}
+				<p>Telefax: {{ user.fax }}</p>
+			{% else %}
+				<p>Telefax: Unknown</p>
+			{% endif %}
+			
+			{% if user.is_show_phone == True or u.id == user.id %}
+				<p>Telephone: {{ user.phone }}</p>
+			{% else %}
+				<p>Telephone: Unknown</p>
+			{% endif %}
+			
+			{% if u.id == user.id %}
+				<a href='/user/edit?uid={{ user.id }}'>Edit details</a>
+			{% endif %}
 		{% endif %}
 	{% endif %}
 {% endblock %}

@@ -32,7 +32,8 @@ CREATE TABLE xaiecon_user(
 	is_banned BOOLEAN DEFAULT FALSE,
 	can_make_board BOOLEAN DEFAULT FALSE,
 	ban_reason VARCHAR(255),
-	creation_date INT
+	creation_date INT,
+	net_points INT
 );
 
 CREATE TABLE xaiecon_category(

@@ -1,4 +1,4 @@
-from flask import session, redirect
+from flask import session, redirect, abort
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from functools import wraps

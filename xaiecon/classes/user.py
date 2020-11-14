@@ -32,6 +32,7 @@ class User(Base):
 	ban_reason = Column(String(255), nullable=True)
 
 	creation_date = Column(Integer, default=time.time())
+	net_points = Column(Integer, default=0)
 	
 	def __init__(self, **kwargs):
 		super(User, self).__init__(**kwargs)

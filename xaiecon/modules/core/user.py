@@ -30,9 +30,6 @@ user = Blueprint('user',__name__,template_folder='templates/user')
 def login(u=None):
 	try:
 		if request.method == 'POST':
-			if session.get('agreed_gdpr') is None:
-				raise XaieconException('To login, we require to set cookies on your browser, please be kind and allow us to store cookies.')
-
 			if len(request.form.get('password')) == 0:
 				raise XaieconException('Please input a password')
 			if len(request.form.get('username')) == 0:
@@ -82,9 +79,6 @@ def signup(u=None):
 			#if not hcaptcha.verify():
 			#	raise XaieconException('Please complete hcaptcha')
 			
-			if session.get('agreed_gdpr') is None:
-				raise XaieconException('To signup, we require to set cookies on your browser, please be kind and allow us to store cookies.')
-
 			# Validate form data
 			if len(request.form.get('password')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')
@@ -254,12 +248,15 @@ def csam_check_profile(id: int):
 	user = db.query(User).filter_by(id=id).first()
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
+
+	DOMAIN_NAME = os.environ.get('DOMAIN_NAME','localhost:5000')
 	for i in range(10):
-		x = requests.get(f'https://localhost:5000/user/thumb?uid={uid}',headers=headers)
+		x = requests.get(f'https://{DOMAIN_NAME}/user/thumb?uid={uid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:
 			time.sleep(10)
+	
 	if x.status_code != 451:
 		return
 

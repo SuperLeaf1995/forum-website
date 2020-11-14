@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 	{% include 'common/head.html' %}
-	<body>
+	<body class='body-white'>
 		{% include 'common/navbar.html' %}
-		<div>
+		<div style='width:100%;height:100vh;overflow:hidden;'>
 			<!--{% include 'common/gdprnotice.html' %}-->
 			{% block content %}{% endblock %}
 			{% block panel %}{% endblock %}

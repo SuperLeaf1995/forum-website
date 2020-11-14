@@ -25,7 +25,28 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+}
+
+.body-grey {
   background-color: #f5f5f5;
+}
+
+.body-white {
+  background-color: white;
+}
+
+.left-panel {
+  width: 22%;
+  float: left;
+  padding: 4%;
+}
+
+.right-panel {
+  float: left;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 70%;
+  height: 100vh;
 }
 
 a {
@@ -149,6 +170,7 @@ a:visited, a:active, a:hover, a:focus {
   margin: 0;
   padding: 2px;
   z-index: 2;
+  box-shadow: 0 0 8px grey;
 }
 
 .nav-element, .nav-dropdown {
@@ -194,9 +216,8 @@ a:visited, a:active, a:hover, a:focus {
 /* Normal input stylization */
 .textbar-normal {
   color: black;
-  background-color: white;
+  background-color: #e4f1f7;
   border: none;
-  border-bottom: 1px solid grey;
   padding: 8px 16px;
   margin: 4px;
 }

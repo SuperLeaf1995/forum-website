@@ -216,6 +216,7 @@ def edit(u=None):
 						os.remove(os.path.join('user_data',user.image_file))
 					except FileNotFoundError:
 						pass
+				
 				# Create thumbnail
 				filename = f'{secrets.token_hex(32)}.jpeg'
 				filename = secure_filename(filename)

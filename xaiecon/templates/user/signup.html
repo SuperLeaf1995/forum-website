@@ -1,28 +1,28 @@
 {% extends "alt_layout.html" %}
 {% block content %}
-<div style='width:40%;float:left;'>
+<div class='left-panel'>
 	<h1>Signup</h1>
 	{% if signup_error %}
 	<p>{{ signup_error }}</p>
 	{% endif %}
 	<form enctype='multipart/form-data' method='POST' action='/user/signup'>
-		<label for='name'>Name</label>
+		<label for='name'>Name</label><br>
 		<input class='textbar-normal' type='text' id='name' name='name' value='{{ request.form.name }}'></br>
-		<label for='username'>Username</label>
-		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'></br>
-		<label for='password'>Passsword</label>
-		<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'></br>
-		<label for='password_double'>Repeat password</label>
-		<input class='textbar-normal' type='password' id='password_double' name='password_double' value='{{ request.form.password }}'></br>
+		<label for='username'>Username</label><br>
+		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'><br>
+		<label for='password'>Passsword</label><br>
+		<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'><br>
+		<label for='password_double'>Repeat password</label><br>
+		<input class='textbar-normal' type='password' id='password_double' name='password_double' value='{{ request.form.password }}'><br>
 		
-		<label><input type='checkbox' name='agree_tos'></input>I agree with the <a href='/legal/terms'>Terms of Service</a>, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></label>
+		<label><input type='checkbox' name='agree_tos'></input>I agree with the <a href='/legal/terms'>Terms of Service</a>, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></label><br>
 
-		{{ hcaptcha }}
+		{{ hcaptcha }}<br>
 
 		<input class='form-btn' type='submit' value='Signup'></br>
 	</form>
 </div>
 {% endblock %}
 {% block panel %}
-<div style='float:left;background-image:url("/assets/landscape/3.jpeg");background-repeat:no-repeat;background-size:cover;width:60%;height:100vh;'></div>
+<div class='right-panel' style='background-image:url("/assets/landscape/3.jpeg");'></div>
 {% endblock %}

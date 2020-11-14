@@ -1,19 +1,19 @@
 {% extends "alt_layout.html" %}
 {% block content %}
-<div style='width:40%;float:left;'>
+<div class='left-panel'>
 	<h1>Login</h1>
 	{% if login_error %}
 	<p>{{ login_error }}</p>
 	{% endif %}
 	<form enctype='multipart/form-data' method='POST' action='/user/login'>
-		<label for='username'>Username</label>
-		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'></br>
-		<label for='password'>Passsword</label>
-		<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'></br>
-		<input class='form-btn' type='submit' value='Login'></br>
+		<label for='username'>Username</label><br>
+		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'><br>
+		<label for='password'>Passsword</label><br>
+		<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'><br><br><br>
+		<input class='form-btn' type='submit' value='Login'><br>
 	</form>
 </div>
 {% endblock %}
 {% block panel %}
-<div style='float:left;background-image:url("/assets/landscape/1.jpeg");background-repeat:no-repeat;background-size:cover;width:60%;height:100vh;'></div>
+<div class='right-panel' style='background-image:url("/assets/landscape/1.jpeg");'></div>
 {% endblock %}

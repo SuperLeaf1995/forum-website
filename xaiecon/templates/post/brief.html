@@ -27,7 +27,7 @@
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
-	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
+	Posted on <a href='/board/view?bid={{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb?bid={{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>

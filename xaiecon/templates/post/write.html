@@ -2,32 +2,32 @@
 {% block content %}
 <h1>New post</h1>
 <form enctype='multipart/form-data' method='POST' action='/post/write'>
-	<label for='title'>Title</label>
-	<input id='title' class='textbar-normal' type='text' name='title' id='title'></br>
-	<label for='body'>Body</label>
-	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='body' id='body'></textarea></br>
-	<label for='image'>Image upload</label>
+	<label for='title'>Title</label><br>
+	<input id='title' class='textbar-normal' type='text' name='title' id='title'><br>
+	<label for='body'>Body</label><br>
+	<textarea rows=6 cols=60 class='textbar-normal' maxlength='4095' name='body' id='body'></textarea><br>
+	<label for='image'>Image upload</label><br>
 	<input class='textbar-normal' type='file' name='image' id='image'><br>
-	<label for='keywords'>Keywords</label>
-	<input class='textbar-normal' type='text' name='keywords' id='keywords'></br>
-	<label for='link'>Link</label>
-	<input class='textbar-normal' type='text' name='link' id='link'></br>
-	<label for='is_nsfw'>Is post NSFW?</label>
-	<input type='checkbox' name='is_nsfw' id='is_nsfw'></input></br>
+	<label for='keywords'>Keywords</label><br>
+	<input class='textbar-normal' type='text' name='keywords' id='keywords'><br>
+	<label for='link'>Link</label><br>
+	<input class='textbar-normal' type='text' name='link' id='link'><br>
+	<label for='is_nsfw'>Is post NSFW?</label><br>
+	<input type='checkbox' name='is_nsfw' id='is_nsfw'></input><br>
 	{% if boards %}
-		<label for='bid'>Board to post to</label>
+		<label for='bid'>Board to post to</label><br>
 		<select name='bid'>
 			{% for board in boards %}
 			<option value='{{ board.id }}'>{{ board.name | truncate(25,True) }} - /u/{{ board.user_info.username }}</option>
 			{% endfor %}
-		</select></br>
+		</select><br>
 	{% endif %}
-	<label for='category'>Category</label>
+	<label for='category'>Category</label><br>
 	<select name='category'>
 	{% for category in categories %}
 		<option value='{{ category.id }}'>{{ category.name }}</option>
 	{% endfor %}
-	</select></br>
-	<input class='form-btn' type='submit' value='Write'></br>
+	</select><br>
+	<input class='form-btn' type='submit' value='Write'>
 </form>
 {% endblock %}

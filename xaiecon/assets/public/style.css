@@ -98,6 +98,7 @@ a:visited, a:active, a:hover, a:focus {
   font-weight: bold;
   border: 1px solid white;
   transition: 0.3s;
+  animation: fade-in ease 1.5s;
 }
 
 .index-intro-btn:hover {
@@ -215,6 +216,7 @@ a:visited, a:active, a:hover, a:focus {
 
 /* Normal input stylization */
 .textbar-normal {
+  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
   color: black;
   background-color: #e4f1f7;
   border: none;
@@ -226,13 +228,12 @@ select {
   color: black;
   border: none;
   background-color: white;
-  border-bottom:1px solid grey;
-  padding:8px 16px;
-  margin:4px;
+  padding: 8px 16px;
+  margin: 4px;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url(http://www.stackoverflow.com/favicon.ico) 95% / 20% no-repeat #fff;
+  background-color: #e4f1f7;
 }
 
 textarea {

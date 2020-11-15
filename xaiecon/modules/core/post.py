@@ -90,7 +90,6 @@ def vote(u=None):
 
 @post.route('/post/ballot', methods = ['GET','POST'])
 @login_wanted
-@cache.memoize(0)
 def ballot(u=None):
 	db = open_db()
 	try:

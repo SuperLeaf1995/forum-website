@@ -3,7 +3,7 @@
 	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ u.id }}'></img>
 	<h1>Your notifications</h1>
 
-	{% for notif in u.unread_notifications %}
+	{% for notif in notifications %}
 	<i>{{ notif.creation_date }}</i><br>
 	<p>{{ notif.body }}</p><br><br>
 	{% endfor %}

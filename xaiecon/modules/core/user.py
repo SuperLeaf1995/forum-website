@@ -139,11 +139,18 @@ def notifications(u=None):
 	
 	# Mark all notifications as read
 	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).all()
-	db.query(Notification).filter_by(user_id=u.id).update({'is_read':True})
-	db.commit()
 	
 	db.close()
 	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)
+
+@user.route('/user/mark_all', methods = ['GET'])
+@login_required
+def mark_all_as_read(u=None):
+	db = open_db()
+	db.query(Notification).filter_by(user_id=u.id).update({'is_read':True})
+	db.commit()
+	db.close()
+	return redirect('/user/notifications')
 
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted

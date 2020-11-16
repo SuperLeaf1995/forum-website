@@ -190,7 +190,11 @@ a:visited, a:active, a:hover, a:focus {
   color: #3126d1;
 }
 
-.nav-top li img {
+.nav-top .nav-logo {
+  float: left;
+}
+
+.nav-top .nav-logo img {
   width: 258px;
   height: 36px;
   margin: 1px;

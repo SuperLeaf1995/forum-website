@@ -9,6 +9,7 @@ class Notification(Base):
 	__tablename__ = 'xaiecon_notification'
 	
 	id = Column(Integer, primary_key=True)
+	is_read = Column(Boolean, default=False)
 	body = Column(String(128), primary_key=True)
 	creation_date = Column(Integer, default=time.time())
 	

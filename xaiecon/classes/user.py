@@ -118,7 +118,7 @@ class User(Base):
 		from xaiecon.classes.notification import Notification
 		
 		db = open_db()
-		ret = db.query(Notification).filter_by(target_id=self.id,is_read=False).all()
+		ret = db.query(Notification).filter_by(user_id=self.id,is_read=False).all()
 		db.close()
 		return ret
 	
@@ -127,7 +127,7 @@ class User(Base):
 		from xaiecon.classes.notification import Notification
 		
 		db = open_db()
-		count = db.query(Notification).filter_by(target_id=self.id,is_read=False).count()
+		count = db.query(Notification).filter_by(user_id=self.id,is_read=False).count()
 		db.close()
 		return count
 

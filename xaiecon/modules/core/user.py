@@ -134,15 +134,16 @@ def logout():
 
 @user.route('/user/notifications', methods = ['GET'])
 @login_required
-def notifications(u=None,username=None):
+def notifications(u=None):
 	db = open_db()
 	
 	# Mark all notifications as read
-	db.query(Notification).filter_by(target_id=u.id).update({'is_read':True})
+	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).all()
+	db.query(Notification).filter_by(user_id=u.id).update({'is_read':True})
 	db.commit()
 	
 	db.close()
-	return render_template('user/notification.html',u=u,title=username,username=username,user=user,len=len(user))
+	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)
 
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted

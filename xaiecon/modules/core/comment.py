@@ -61,7 +61,7 @@ def vote(u=None):
 
 @comment.route('/comment/reply', methods = ['POST'])
 @login_required
-def reply(u=None, cid=None):
+def write_reply(u=None, cid=None):
 	try:
 		db = open_db()
 		
@@ -92,7 +92,7 @@ def reply(u=None, cid=None):
 		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',comment.user_id)
 		
 		db.close()
-		return redirect(f'/comment/view?cid={reply.id}')
+		return redirect(f'/comment/view?cid={cid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
@@ -176,7 +176,7 @@ def create(u=None):
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
 		
-		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
+		send_notification(f'{comment.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
 		
 		db.close()
 		return redirect(f'/post/view?pid={pid}')

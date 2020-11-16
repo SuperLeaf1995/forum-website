@@ -1,6 +1,6 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ user.id }}'></img>
+	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ u.id }}'></img>
 	<h1>Your notifications</h1>
 
 	{% for notif in u.unread_notifications %}

@@ -1,11 +1,16 @@
 <ul class='nav-top'>
-	<li style='float:left;'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
+	<li class='nav-logo'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
+	
 	{% if u == None %}
 	<li class='nav-element'><a href='/user/signup'>Sign-up</a></li>
 	<li class='nav-element'><a href='/user/login'>Login</a></li>
 	{% else %}
+	{% if u.unread_notifications_number > 0 %}
+	<li class='nav-element' style='background-color:red;border-radius:12px;margin:0;padding:0;margin-top:6px;margin-left:4px;'><a style='color:white;height:12px;padding:8px;margin:0;' href='/user/notifications'>{{ u.unread_notifications_number }}</a></li>
+	{% endif %}
+	<li class='nav-element'><img style='border-radius:22px;float:right;' width='44px' height='44px' src='/user/thumb?uid={{ u.id }}'></img></li>
+	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
 	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
-	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a>
 	{% endif %}
 	<li class='nav-dropdown'><a href='/post/list/new'>Frontpage</a>
 		<div class='nav-dropdown-content'>
@@ -37,10 +42,6 @@
 			<a href='/post/list?category=Sports'>Sports</a>
 		</div>
 	</li>
-	
-	{% if u != None %}
-	<li class='nav-element'><a href='/user/notifications'>{% u.unread_notifications_number %}</a></li>
-	{% endif %}
 
 	<li class='nav-element'><a href='/'>Home</a></li>
 		<li class='nav-element'>

@@ -4,9 +4,13 @@
 #
 
 from PIL import Image
+
+import os
 import threading
 import requests
 import secrets
+import time
+import random
 
 from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
 from werkzeug.utils import secure_filename
@@ -135,9 +139,10 @@ def view_by_username(u=None,username=None):
 		abort(404)
 	db.close()
 	
-	if len(user) == 1:
-		return redirect(f'/user/view?uid={user.id}')
-	return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
+	if len(user) > 1:
+		user = random.shuffle(user)
+		return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
+	return redirect(f'/user/view?uid={user[0].id}')
 
 @user.route('/user/view', methods = ['GET'])
 @login_wanted
@@ -244,11 +249,11 @@ def edit(u=None):
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 # Check user for csam, if so ban the user
-def csam_check_profile(id: int):
+def csam_check_profile(uid: int):
 	db = open_db()
 
 	# Let's see if this is csam
-	user = db.query(User).filter_by(id=id).first()
+	user = db.query(User).filter_by(id=uid).first()
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
 

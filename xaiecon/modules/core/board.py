@@ -7,6 +7,8 @@ import secrets
 import os
 import threading
 import requests
+import time
+import random
 
 from flask import Blueprint, render_template, redirect, request, abort, send_from_directory
 from werkzeug.utils import secure_filename
@@ -15,6 +17,7 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.board import Board, BoardBan, BoardSub
 from xaiecon.classes.post import Post
 from xaiecon.classes.category import Category
+from xaiecon.classes.user import User
 from xaiecon.classes.exception import XaieconException
 
 from xaiecon.modules.core.wrappers import login_wanted, login_required
@@ -59,10 +62,11 @@ def view_by_name(u=None,name=None):
 	
 	# Multiple boards
 	if len(board) > 1:
+		board = random.shuffle(board)
 		return render_template('board/pick.html',u=u,title=name,boards=board)
 	
 	# Only 1 board exists with that name
-	return redirect(f'/board/view/{board[0].unique_identifier}')
+	return redirect(f'/board/view?bid={board[0].id}')
 
 @board.route('/board/edit', methods = ['GET','POST'])
 @login_required

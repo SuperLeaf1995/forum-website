@@ -12,15 +12,13 @@ import secrets
 import PIL
 
 from bs4 import BeautifulSoup
-from os import path, remove
-from flask import Blueprint, render_template, request, session, jsonify, redirect, send_from_directory, abort, send_file
+from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
 from werkzeug.utils import secure_filename
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.post import Post
-from xaiecon.classes.log import Log
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.category import Category
 from xaiecon.classes.vote import Vote
@@ -29,7 +27,7 @@ from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
-from distutils.util import *
+from distutils.util import strtobool
 
 from sqlalchemy.orm import joinedload
 from sqlalchemy import desc, asc

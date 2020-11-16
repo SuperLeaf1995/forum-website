@@ -1,7 +1,6 @@
 import os
 
-from flask import Blueprint, Flask, render_template, request, redirect, session
-from flask_caching import Cache
+from flask import Flask, render_template, request
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha

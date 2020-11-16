@@ -5,3 +5,7 @@ prun.sh
 *.pyc
 __pycache__/
 user_data/*
+
+# Some editor's stuff
+.spyproject/
+.spyproject/*

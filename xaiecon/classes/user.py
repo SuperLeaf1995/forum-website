@@ -3,7 +3,7 @@ import typing
 
 from flask import session
 from sqlalchemy import *
-from sqlalchemy.orm import relation, sessionmaker
+from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base, open_db
 from xaiecon.classes.vote import Vote

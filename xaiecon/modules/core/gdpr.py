@@ -5,8 +5,7 @@
 # This is to comply to EU's GDPR
 #
 
-from flask import Blueprint, render_template, session, redirect
-from xaiecon.modules.core.cache import cache
+from flask import Blueprint, session
 
 gdpr = Blueprint('gdpr',__name__,template_folder='templates')
 

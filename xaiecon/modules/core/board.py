@@ -8,10 +8,8 @@ import os
 import threading
 import requests
 
-from flask import Blueprint, render_template, session, redirect, request, abort, send_from_directory
+from flask import Blueprint, render_template, redirect, request, abort, send_from_directory
 from werkzeug.utils import secure_filename
-
-from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.board import Board, BoardBan, BoardSub

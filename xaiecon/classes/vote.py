@@ -1,7 +1,7 @@
 import time
 
 from sqlalchemy import *
-from sqlalchemy.orm import relation, sessionmaker, relationship
+from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base
 

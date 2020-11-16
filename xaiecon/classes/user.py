@@ -112,6 +112,24 @@ class User(Base):
 		
 		db.close()
 		return ret
+	
+	@property
+	def unread_notifications(self):
+		from xaiecon.classes.notification import Notification
+		
+		db = open_db()
+		ret = db.query(Notification).filter_by(target_id=self.id,is_read=False).all()
+		db.close()
+		return ret
+	
+	@property
+	def unread_notifications_number(self):
+		from xaiecon.classes.notification import Notification
+		
+		db = open_db()
+		count = db.query(Notification).filter_by(target_id=self.id,is_read=False).count()
+		db.close()
+		return count
 
 	def json(self):
 		return {

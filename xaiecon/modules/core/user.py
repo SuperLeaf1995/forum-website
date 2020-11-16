@@ -18,6 +18,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
+from xaiecon.classes.notification import Notification
+
 from xaiecon.classes.exception import XaieconException
 
 from xaiecon.modules.core.hcaptcha import hcaptcha
@@ -129,6 +131,18 @@ def logout():
 	session.pop('username', None)
 	session.pop('id', None)
 	return redirect('/')
+
+@user.route('/user/notifications', methods = ['GET'])
+@login_required
+def notifications(u=None,username=None):
+	db = open_db()
+	
+	# Mark all notifications as read
+	db.query(Notification).filter_by(target_id=u.id).update({'is_read':True})
+	db.commit()
+	
+	db.close()
+	return render_template('user/notification.html',u=u,title=username,username=username,user=user,len=len(user))
 
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted

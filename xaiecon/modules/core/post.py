@@ -25,6 +25,8 @@ from xaiecon.classes.vote import Vote
 from xaiecon.classes.view import View
 from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
+
+from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from distutils.util import strtobool
@@ -118,9 +120,6 @@ def unnuke(u=None):
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
-		
-		# User must be also mod of the post's origin board
-		board = db.query(Board).filter_by(id=post.board_id).first()
 		
 		# Check that post is not already nuked and that user mods
 		# the guild
@@ -499,6 +498,9 @@ def write(u=None):
 
 			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.id,))
 			csam_thread.start()
+
+			# Alert boardmaster of the posts in the guild
+			send_notification(f'{post.title} - /u/{post.user_info.username} on /b/{board.name}',board.user_id)
 
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')

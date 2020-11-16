@@ -11,6 +11,7 @@ from xaiecon.classes.comment import Comment
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from sqlalchemy.orm import joinedload
@@ -76,10 +77,19 @@ def reply(u=None, cid=None):
 		db.refresh(reply)
 		
 		# Increment number of comments
-		post = db.query(Post).filter_by(id=pid).first()
+		post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
 		if post is None:
 			abort(404)
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
+		
+		# Notify user who was replied, and post poster alert boardmaster of
+		# the posts in the guild
+		# Notify post poster
+		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
+		
+		# Notify user of comment which we replied
+		comment = db.query(Comment).filter_by(id=reply.comment_id).first()
+		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',comment.user_id)
 		
 		db.close()
 		return redirect(f'/comment/view?cid={reply.id}')
@@ -154,7 +164,7 @@ def create(u=None):
 		pid = request.form.get('pid')
 		
 		# Post exists in first place?
-		post = db.query(Post).filter_by(id=pid).first()
+		post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
 		if post is None:
 			abort(404)
 		
@@ -165,6 +175,8 @@ def create(u=None):
 		# Increment number of comments
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
+		
+		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
 		
 		db.close()
 		return redirect(f'/post/view?pid={pid}')

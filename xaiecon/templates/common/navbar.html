@@ -37,6 +37,11 @@
 			<a href='/post/list?category=Sports'>Sports</a>
 		</div>
 	</li>
+	
+	{% if u != None %}
+	<li class='nav-element'><a href='/user/notifications'>{% u.unread_notifications_number %}</a>
+	</li>
+	{% endif %}
 
 	<li class='nav-element'><a href='/'>Home</a></li>
 		<li class='nav-element'>

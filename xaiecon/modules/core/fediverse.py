@@ -11,8 +11,6 @@ from flask import Blueprint, render_template, request, jsonify
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from cryptography.fernet import Fernet
-from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post
 from xaiecon.classes.user import User

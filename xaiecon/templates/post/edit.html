@@ -21,7 +21,7 @@
 	<label for='category'>Category</label>
 	<select name='category'>
 	{% for category in categories %}
-		<option value='{{ category.id }}'>{{ category.name }}</option>
+		<option {% if post.category_id == category.id %}selected="selected"{% endif %} value='{{ category.id }}'>{{ category.name }}</option>
 	{% endfor %}
 	</select></br>
 	<input class='form-btn' type='submit' value='Edit'></br>

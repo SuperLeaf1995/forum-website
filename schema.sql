@@ -183,6 +183,7 @@ INSERT INTO xaiecon_category(name) VALUES
 	('Mathematics'),
 	('Nonsense'),
 	('Videogames'),
-	('Other');
+	('Other'),
+	('Sports');
 
 INSERT INTO xaiecon_user(name,username,biography,password,auth_token) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable')

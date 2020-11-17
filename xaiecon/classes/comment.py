@@ -8,6 +8,8 @@ class Comment(Base):
 	__tablename__ = 'xaiecon_comment'
 	
 	id = Column(Integer, primary_key=True)
+	
+	body_html = Column(String(4095), nullable=False)
 	body = Column(String(4095), nullable=False)
 	
 	creation_date = Column(Integer, default=time.time())

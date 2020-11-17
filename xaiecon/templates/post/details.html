@@ -63,7 +63,7 @@
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
 				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb?uid={{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted by: <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
-				<p>{{ c.body }}</p>
+				<p>{{ c.body_html | safe }}</p>
 				<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
 				{% if c.more_children == True %}
 				<a href='/comment/view?cid={{ c.id }}'>View entire discussion</a>

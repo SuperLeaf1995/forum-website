@@ -3,9 +3,9 @@
 #
 
 from flask import Blueprint, render_template, request, jsonify, redirect,  abort
+from flask_misaka import markdown
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import User
 from xaiecon.classes.post import Post
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.vote import Vote
@@ -70,7 +70,7 @@ def write_reply(u=None, cid=None):
 		pid = int(request.form.get('pid',''))
 		
 		# Add reply
-		reply = Comment(body=body,user_id=u.id,comment_id=cid)
+		reply = Comment(body=body,body_html=markdown(body),user_id=u.id,comment_id=cid)
 		db.add(reply)
 		db.commit()
 		
@@ -169,7 +169,7 @@ def create(u=None):
 			abort(404)
 		
 		# Add comment
-		comment = Comment(body=body,user_id=u.id,post_id=pid)
+		comment = Comment(body=body,body_html=markdown(body),user_id=u.id,post_id=pid)
 		db.add(comment)
 		
 		# Increment number of comments

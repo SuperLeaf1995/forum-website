@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 #
 # Module that asks user for permission to store cookies, redirects it
 # to a "allow cookie" route and then returns to index.

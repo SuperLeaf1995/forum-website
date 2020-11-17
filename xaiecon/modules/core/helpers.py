@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from flask import request, session
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User

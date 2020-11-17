@@ -1,4 +1,7 @@
- #
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+#
 # Simple post-sharing base module
 #
 
@@ -13,7 +16,7 @@ import PIL
 import io
 
 from bs4 import BeautifulSoup
-from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort, current_app
+from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
 from flask_misaka import markdown
 from werkzeug.utils import secure_filename
 

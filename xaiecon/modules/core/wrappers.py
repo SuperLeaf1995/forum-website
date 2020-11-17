@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from flask import redirect
 from functools import wraps
 from xaiecon.modules.core.helpers import obtain_logged_user

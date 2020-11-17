@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 #
 # Simple user log-in and sign-up module if you want to remove this
 # module, make sure to also remove the posts module
@@ -12,7 +15,7 @@ import secrets
 import time
 import random
 
-from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory, current_app
+from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -25,7 +28,7 @@ from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
-from sqlalchemy import desc, asc
+from sqlalchemy import desc
 
 from distutils.util import strtobool
 
@@ -82,8 +85,8 @@ def login(u=None):
 def signup(u=None):
 	try:
 		if request.method == 'POST':
-			#if not hcaptcha.verify():
-			#	raise XaieconException('Please complete hcaptcha')
+			if not hcaptcha.verify():
+				raise XaieconException('Please complete hcaptcha')
 			
 			# Validate form data
 			if len(request.form.get('password')) < 6:

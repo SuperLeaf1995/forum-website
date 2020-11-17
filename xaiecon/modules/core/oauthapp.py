@@ -11,7 +11,6 @@ Created on Mon Nov 16 23:29:08 2020
 import secrets
 
 from flask import Blueprint, render_template, request, redirect
-from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.oauthapp import OAuthApp

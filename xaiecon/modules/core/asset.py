@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 #
 # Serves assets to all pages that uses them, i.e site-logo.png, style.css, etc
 #
 
 import os
 
-from flask import Blueprint, send_file, abort
+from flask import Blueprint, send_file
 from werkzeug.utils import secure_filename
 
 asset = Blueprint('asset',__name__,template_folder='templates')

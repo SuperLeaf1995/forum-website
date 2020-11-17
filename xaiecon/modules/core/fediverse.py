@@ -1,16 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 #
 # Module that allows fediverse with other instances
 #
 
 import requests
-import os
-import json
-import pprint
 import time
 
 from flask import Blueprint, render_template, request, jsonify
-
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post
@@ -19,14 +17,13 @@ from xaiecon.classes.board import Board
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.serverchain import Serverchain
-from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import login_wanted, login_required
+from xaiecon.modules.core.wrappers import login_required
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
 
 @fediverse.route('/fediverse/add', methods = ['GET','POST'])
-@login_wanted
+@login_required
 def add_instance(u=None):
 	return render_template('fediverse/add.html',u=u,title='Add instance')
 

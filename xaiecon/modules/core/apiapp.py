@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import secrets
 
 from flask import Blueprint, render_template, request, redirect
-from xaiecon.modules.core.cache import cache
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.apiapp import APIApp

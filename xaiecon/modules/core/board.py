@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 #
 # Board module, place where posts can be put and yanked off
 #

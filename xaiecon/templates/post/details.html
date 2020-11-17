@@ -55,7 +55,7 @@
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
 		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
-		<input class='form-btn' type='submit'>
+		<input class='form-btn' type='submit' value='Comment'>
 	</form>
 	
 	{% if comment %}
@@ -67,6 +67,12 @@
 				<p style='color:grey;'>Submitted by: <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
 				<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
+				{% if u != None %}
+					{% if c.user_id == u.id or u.is_admin == True %}
+					<a href='/comment/edit?cid={{ c.id }}'>Edit</a>
+					<a href='/comment/delete?cid={{ c.id }}'>Delete</a>
+					{% endif %}
+				{% endif %}
 				{% if c.more_children == True %}
 				<a href='/comment/view?cid={{ c.id }}'>View entire discussion</a>
 				{% endif %}

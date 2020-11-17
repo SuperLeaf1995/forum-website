@@ -18,6 +18,63 @@ from sqlalchemy.orm import joinedload
 
 comment = Blueprint('comment',__name__,template_folder='templates/comment')
 
+# AKA. Blanking the comment ;)
+@comment.route('/comment/delete', methods = ['GET','POST'])
+@login_required
+def delete(u=None):
+	db = open_db()
+	cid = int(request.values.get('cid',''))
+	
+	# Query comment from id
+	comment = db.query(Comment).filter_by(id=cid).first()
+	if comment is None:
+		abort(404)
+	if comment.user_id != u.id and u.is_admin == False:
+		abort(403)
+	
+	# Update comment
+	db.query(Comment).filter_by(id=cid).update({
+		'body':'[deleted by user]',
+		'body_html':'[deleted by user]'})
+	db.commit()
+	
+	db.close()
+	return redirect(f'/comment/view?cid={cid}')
+
+@comment.route('/comment/edit', methods = ['GET','POST'])
+@login_required
+def edit(u=None):
+	try:
+		db = open_db()
+		cid = int(request.values.get('cid',''))
+		
+		# Query comment from id
+		comment = db.query(Comment).filter_by(id=cid).first()
+		if comment is None:
+			abort(404)
+		if comment.user_id != u.id and u.is_admin == False:
+			abort(403)
+		
+		if request.method == 'POST':
+			body = request.form.get('body')
+			
+			if len(body) == 0:
+				raise XaieconException('Body too short')
+			
+			# Update comment
+			db.query(Comment).filter_by(id=cid).update({
+				'body':body,
+				'body_html':markdown(body)})
+			db.commit()
+			
+			db.close()
+			return redirect(f'/comment/view?cid={cid}')
+		else:
+			db.close()
+			return render_template('post/edit_comment.html',u=u,title='Edit comment',comment=comment)
+	except XaieconException as e:
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+
 @comment.route('/comment/vote', methods = ['GET','POST'])
 @login_required
 def vote(u=None):
@@ -68,6 +125,9 @@ def write_reply(u=None, cid=None):
 		body = request.form.get('body')
 		cid = int(request.form.get('cid',''))
 		pid = int(request.form.get('pid',''))
+		
+		if len(body) == 0:
+			raise XaieconException('Body too short')
 		
 		# Add reply
 		reply = Comment(body=body,body_html=markdown(body),user_id=u.id,comment_id=cid)
@@ -162,6 +222,9 @@ def create(u=None):
 		
 		body = request.form.get('body')
 		pid = request.form.get('pid')
+		
+		if len(body) == 0:
+			raise XaieconException('Body too short')
 		
 		# Post exists in first place?
 		post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()

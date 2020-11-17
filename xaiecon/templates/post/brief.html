@@ -1,12 +1,6 @@
 <article class='post-brief' style='overflow:auto;'>
 	<div class='post-brief-thumb'>
-	{% if post.is_link == True %}
-		<a href='{{ post.link_url }}'>
-		{% if post.link_url.startswith('lbry://') or post.link_url.startswith('https://lbry.tv') or post.link_url.startswith('https://www.lbry.tv') %}
-			<img src='/assets/embed_lbry.png'></img>
-		{% endif %}
-		</a>
-	{% elif post.is_image == True %}
+	{% if post.is_thumb == True %}
 		<a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a>
 	{% endif %}
 	</div>
@@ -23,7 +17,11 @@
 	{% endif %}
 	</div>
 	
+	{% if post.is_link == True %}
+	<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
+	{% else %}
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
+	{% endif %}
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>

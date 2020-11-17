@@ -203,6 +203,10 @@ def thumb(u=None):
 	if board is None:
 		abort(404)
 	db.close()
+	if board.icon_file is None:
+		abort(404)
+	if os.path.isfile(os.path.join('./user_data',board.icon_file)) == False:
+		abort(404)
 	return send_from_directory('../user_data',board.icon_file)
 
 @board.route('/board/subscribe', methods = ['POST'])
@@ -300,7 +304,7 @@ def csam_check_profile(bid: int):
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
 	for i in range(10):
-		x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/board/thumb?bid={bid}',headers=headers)
+		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/board/thumb?bid={bid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

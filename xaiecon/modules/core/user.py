@@ -196,16 +196,17 @@ def view_by_id(u=None):
 @user.route('/user/thumb', methods = ['GET','POST'])
 @login_wanted
 def thumb(u=None):
-	try:
-		id = int(request.values.get('uid',''))
-		db = open_db()
-		user = db.query(User).filter_by(id=id).first()
-		if user is None:
-			abort(404)
-		db.close()
-		return send_from_directory('../user_data',user.image_file)
-	except XaieconException as e:
-		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+	id = int(request.values.get('uid',''))
+	db = open_db()
+	user = db.query(User).filter_by(id=id).first()
+	if user is None:
+		abort(404)
+	db.close()
+	if user.image_file is None:
+		abort(404)
+	if os.path.isfile(os.path.join('./user_data',user.image_file)) == False:
+		abort(404)
+	return send_from_directory('../user_data',user.image_file)
 
 @user.route('/user/edit', methods = ['GET','POST'])
 @login_required
@@ -293,7 +294,7 @@ def csam_check_profile(uid: int):
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
 	for i in range(10):
-		x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/user/thumb?uid={uid}',headers=headers)
+		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/user/thumb?uid={uid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

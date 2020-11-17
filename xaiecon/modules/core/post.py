@@ -10,6 +10,7 @@ import urllib
 import urllib.parse
 import secrets
 import PIL
+import io
 
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort, current_app
@@ -36,6 +37,49 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import desc, asc
 
 post = Blueprint('post',__name__,template_folder='templates/post')
+
+# Returns list of posts
+def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
+	# Select data of SQL
+	db = open_db()
+	
+	if num > 50:
+		num = 50
+	
+	# Obtain category by name, if category does not exist then use All as
+	# fallback
+	category_obj = None
+	if category != 'All':
+		category_obj = db.query(Category).filter_by(name=category).first()
+	
+	is_nsfw = False
+	if u is not None:
+		is_nsfw = u.is_nsfw
+	
+	post = db.query(Post)
+	
+	if is_nsfw == False:
+		post = post.filter_by(is_nsfw=False)
+	
+	# Only filter when category exists
+	if category_obj is not None:
+		post = post.filter_by(category_id=category_obj.id)
+	
+	# TODO: Use filter instead of array slice
+	if sort == 'new':
+		post = post.order_by(desc(Post.id))
+		#post = post.filter(Post.id>=(page*num),Post.id>=((page+1)*num))
+	elif sort == 'old':
+		post = post.order_by(asc(Post.id))
+		#post = post.filter(Post.id>=(page*num),Post.id<=((page+1)*num))
+	else:
+		abort(401)
+	
+	# Do query
+	post = post.filter_by(is_nuked=False,is_deleted=False).options(joinedload('*')).all()
+	
+	db.close()
+	return post
 
 @post.route('/post/vote', methods = ['POST'])
 @login_required
@@ -334,18 +378,18 @@ def edit(u=None):
 				raise XaieconException('Empty title')
 
 			body_html = ''
-
+			
+			# Remove old image
+			try:
+				if post.is_image == True:
+					os.remove(os.path.join('user_data',post.image_file))
+					os.remove(os.path.join('user_data',post.thumb_file))
+			except FileNotFoundError:
+				pass
+			
 			file = request.files['image']
 			if file:
 				try:
-					try:
-						if post.is_image == True:
-							# Remove old image
-							os.remove(os.path.join('user_data',post.image_file))
-							os.remove(os.path.join('user_data',post.thumb_file))
-					except FileNotFoundError:
-						pass
-
 					# Build paths and filenames
 					image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
 					image_filepath = os.path.join('user_data',image_filename)
@@ -359,7 +403,7 @@ def edit(u=None):
 					# Create thumbnail for image
 					image = PIL.Image.open(image_filepath)
 					image = image.convert('RGB')
-					image.thumbnail((120,120))
+					image.resize((128,128))
 					image.save(thumb_filepath)
 
 					db.query(Post).filter_by(id=pid).update({
@@ -373,6 +417,19 @@ def edit(u=None):
 			else:
 				db.query(Post).filter_by(id=pid).update({
 					'is_image':False})
+				if is_link == True:
+					img = obtain_post_thumb(link)
+					if img is not None:
+						thumb_filename = secure_filename(f'thumb_{secrets.token_hex(12)}.jpeg')
+						thumb_filepath = os.path.join('user_data',thumb_filename)
+						
+						img = img.convert('RGB')
+						img.resize((128,128))
+						img.save(thumb_filepath)
+						
+						db.query(Post).filter_by(id=pid).update({
+							'is_thumb':True,
+							'thumb_file':thumb_filename})
 			
 			body_html = markdown(body)
 			
@@ -470,29 +527,45 @@ def write(u=None):
 			
 			file = request.files['image']
 			if file:
-				# Build paths and filenames
-				image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
-				image_filepath = os.path.join('user_data',image_filename)
-
-				thumb_filename = secure_filename(f'thumb_{image_filename}')
-				thumb_filepath = os.path.join('user_data',thumb_filename)
-
-				# Save full image file
-				file.save(image_filepath)
-
-				# Create thumbnail for image
-				image = PIL.Image.open(image_filepath)
-				image = image.convert('RGB')
-				image.thumbnail((120,120))
-				image.save(thumb_filepath)
-
-				post.image_file = image_filename
-				post.thumb_file = thumb_filename
-
-				post.is_image = True
+				try:
+					# Build paths and filenames
+					image_filename = secure_filename(f'{secrets.token_hex(12)}.jpeg')
+					image_filepath = os.path.join('user_data',image_filename)
+	
+					thumb_filename = secure_filename(f'thumb_{image_filename}')
+					thumb_filepath = os.path.join('user_data',thumb_filename)
+	
+					# Save full image file
+					file.save(image_filepath)
+	
+					# Create thumbnail for image
+					image = PIL.Image.open(image_filepath)
+					image = image.convert('RGB')
+					image.resize((128,128))
+					image.save(thumb_filepath)
+	
+					post.image_file = image_filename
+					post.thumb_file = thumb_filename
+	
+					post.is_image = True
+					post.is_thumb = True
+				except PIL.UnidentifiedImageError:
+					pass
 			else:
 				post.is_image = False
-
+				if is_link == True:
+					img = obtain_post_thumb(link)
+					if img is not None:
+						thumb_filename = secure_filename(f'thumb_{secrets.token_hex(12)}.jpeg')
+						thumb_filepath = os.path.join('user_data',thumb_filename)
+						
+						img = img.convert('RGB')
+						img.resize((128,128))
+						img.save(thumb_filepath)
+						
+						post.thumb_file = thumb_filename
+						post.is_thumb = True
+			
 			db.add(post)
 			db.commit()
 
@@ -524,6 +597,8 @@ def thumb(u=None):
 	post = db.query(Post).filter_by(id=id).first()
 	if post is None:
 		abort(404)
+	if post.thumb_file is None:
+		abort(404)
 	db.close()
 	return send_from_directory('../user_data',post.thumb_file)
 
@@ -534,6 +609,8 @@ def image(u=None):
 	db = open_db()
 	post = db.query(Post).filter_by(id=id).first()
 	if post is None:
+		abort(404)
+	if post.image_file is None:
 		abort(404)
 	db.close()
 	return send_from_directory('../user_data',post.image_file)
@@ -599,134 +676,60 @@ def view(u=None):
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
 def list_posts(u=None, sort='new'):
-	# Select data of SQL
-	db = open_db()
-
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
 	num = int(request.values.get('num','15'))
 	
-	if num > 50:
-		num = 50
+	# Obtain posts
+	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
 	
-	category_obj = None
-	if category != 'All':
-		category_obj = db.query(Category).filter_by(name=category).first()
-		if category_obj is None:
-			category_obj = db.query(Category).filter_by(name='All').first()
+	# Slice out useless posts
+	posts = posts[(page*num):((page+1)*num)]
 	
-	is_nsfw = False
-	if u is not None:
-		is_nsfw = u.is_nsfw
-	
-	post = db.query(Post)
-	
-	if is_nsfw == False:
-		post = post.filter_by(is_nsfw=False)
-	if category_obj is not None:
-		post = post.filter_by(category_id=category_obj.id)
-	
-	if sort == 'new':
-		post = post.order_by(desc(Post.id))
-	elif sort == 'old':
-		post = post.order_by(asc(Post.id))
-	else:
-		abort(401)
-	
-	post = post.filter_by(is_nuked=False,is_deleted=False).options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
-	
-	db.close()
-	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
+	return render_template('post/list.html',u=u,title='Post frontpage',posts=posts,
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/nuked/<sort>', methods = ['GET'])
 @login_required
 def list_nuked(u=None, sort='new'):
-	# Select data of SQL
-	db = open_db()
-
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
 	num = int(request.values.get('num','15'))
 	
-	category_obj = None
-	if category != 'All':
-		category_obj = db.query(Category).filter_by(name=category).first()
-		if category_obj is None:
-			category_obj = db.query(Category).filter_by(name='All').first()
+	# Obtain posts
+	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
 	
-	is_nsfw = False
-	if u is not None:
-		is_nsfw = u.is_nsfw
+	# Slice out useless posts
+	posts = posts[(page*num):((page+1)*num)]
 	
-	post = db.query(Post)
-	
-	if is_nsfw == False:
-		post = post.filter_by(is_nsfw=False)
-	if category_obj is not None:
-		post = post.filter_by(category_id=category_obj.id)
-	
-	if sort == 'new':
-		post = post.order_by(desc(Post.id))
-	elif sort == 'old':
-		post = post.order_by(asc(Post.id))
-	else:
-		abort(401)
-	
-	post = post.filter_by(is_nuked=True).options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
-	
-	db.close()
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/feed/<sort>', methods = ['GET'])
 @login_required
 def feed_posts(u=None, sort='new'):
-	# Select data of SQL
-	db = open_db()
-
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
 	num = int(request.values.get('num','15'))
 	
-	category_obj = None
-	if category != 'All':
-		category_obj = db.query(Category).filter_by(name=category).first()
-		if category_obj is None:
-			category_obj = db.query(Category).filter_by(name='All').first()
+	# Obtain posts
+	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
 	
-	is_nsfw = False
-	if u is not None:
-		is_nsfw = u.is_nsfw
-	
-	post = db.query(Post)
-	
-	if is_nsfw == False:
-		post = post.filter_by(is_nsfw=False)
-	if category_obj is not None:
-		post = post.filter_by(category_id=category_obj.id)
-	
-	if sort == 'new':
-		post = post.order_by(desc(Post.id))
-	elif sort == 'old':
-		post = post.order_by(asc(Post.id))
-	else:
-		abort(401)
-	
-	post = post.options(joinedload('*')).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
-
-	# If only show user feed then remove all posts
-	# That are not in their subscription
+	# Remove all posts not in subscribed boards
 	subs = u.subscribed_boards()
 	subs_id = []
 	for s in subs:
 		subs_id.append(s.id)
-	for i in range(0,len(post)):
-		if post[i].board_id not in subs_id:
-			post.pop(i)
 	
-	db.close()
-	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
+	for p in posts:
+		if p.board_id not in subs_id:
+			posts.remove(p)
+			continue
+	
+	# Slice out useless posts
+	posts = posts[(page*num):((page+1)*num)]
+	
+	return render_template('post/list.html',u=u,title='My feed',posts=post,
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/title_by_url', methods = ['GET'])
@@ -750,10 +753,10 @@ def title_by_url():
 @post.route('/post/search', methods = ['GET','POST'])
 @login_wanted
 def search(u=None):
-	try:
-		page = int(request.values.get('page','0'))
-		num = int(request.values.get('num','15'))
-		if request.method == 'POST':
+	page = int(request.values.get('page','0'))
+	num = int(request.values.get('num','15'))
+	if request.method == 'POST':
+		try:
 			# Select data of SQL
 			db = open_db()
 			
@@ -771,17 +774,40 @@ def search(u=None):
 			
 			posts = []
 			for q in query:
-				ps = post.options(joinedload('*')).order_by(desc(Post.id)).filter_by(title=q).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
+				ps = post.options(joinedload('*')).order_by(desc(Post.creation_date)).filter_by(title=q).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
 				for p in ps:
 					posts.append(p)
 			
 			# Close the database
 			db.close()
 			return render_template('post/list.html',u=u,title='Post frontpage',posts=posts)
-		else:
-			return render_template('post/list.html',u=u,title='Post frontpage')
-	except XaieconException as e:
-		return render_template('user_error.html',u=u,title='Whoops!',err=e)
+		except XaieconException as e:
+			return render_template('user_error.html',u=u,title='Whoops!',err=e)
+	else:
+		return render_template('post/list.html',u=u,title='Post frontpage')
+
+# Obtain thumbnail for post
+def obtain_post_thumb(link: str):
+	headers = {'User-Agent':'xaiecon-thumbnail-getter'}
+	x = requests.get(link,headers=headers)
+	if x.status_code not in [200,451]:
+		return
+	html = x.text
+	soup = BeautifulSoup(html, 'html.parser')
+	
+	# Get image from img tag
+	for img in soup.find_all('img'):
+		try:
+			# Get image by GET'ing it via HTTP and then Pillow'ing it
+			x = requests.get(img['src'],headers=headers)
+			im = PIL.Image.open(io.BytesIO(x.content))
+			w, h = im.size
+			if w <= 128 or h <= 128:
+				continue
+			return im
+		except KeyError:
+			continue
+	return None
 
 # Check user for csam, if so ban the user
 def csam_check_post(uid: int, pid: int):
@@ -807,13 +833,13 @@ def csam_check_post(uid: int, pid: int):
 	# And check image if it has one...
 	if post.is_image == True:
 		for i in range(10):
-			x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/post/thumb?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/thumb?pid={post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:
 				time.sleep(10)
 		for i in range(10):
-			x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/post/image?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/image?pid={post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:

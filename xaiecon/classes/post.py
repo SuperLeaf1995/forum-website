@@ -24,6 +24,7 @@ class Post(Base):
 	image_file = Column(String(255), nullable=True)
 	thumb_file = Column(String(255), nullable=True)
 	is_image = Column(Boolean, default=False)
+	is_thumb = Column(Boolean, default=False)
 
 	is_nuked = Column(Boolean, default=False)
 	nuker_id = Column(Integer, ForeignKey('xaiecon_user.id'))

@@ -74,6 +74,7 @@ CREATE TABLE xaiecon_post(
 	body_html VARCHAR(16000) NOT NULL,
 	embed_html VARCHAR(16000),
 	is_image BOOLEAN DEFAULT FALSE,
+	is_thumb BOOLEAN DEFAULT FALSE,
 	image_file VARCHAR(255),
 	thumb_file VARCHAR(255),
 	is_nuked BOOLEAN DEFAULT FALSE,

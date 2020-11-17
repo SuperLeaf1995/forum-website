@@ -12,7 +12,9 @@
 	{% endif %}
 	</div>
 	
-	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
+	{% if post.is_link == True %}
+	<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
+	{% endif %}
 	
 	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>

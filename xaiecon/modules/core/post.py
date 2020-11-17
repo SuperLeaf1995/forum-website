@@ -317,7 +317,8 @@ def delete(u=None):
 		# Set is_deleted to true
 		db.query(Post).filter_by(id=pid).update({
 			'is_deleted':True,
-			'body':'Deleted by user',
+			'body':'[deleted by user]',
+			'body_html':'[deleted by user]',
 			'is_link':False,
 			'is_image':False,
 			'image_file':'',

@@ -52,6 +52,7 @@ CREATE TABLE xaiecon_board(
 	has_icon BOOLEAN DEFAULT FALSE,
 	icon_file VARCHAR(255),
 	creation_date INT,
+	sub_count INT,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
 );

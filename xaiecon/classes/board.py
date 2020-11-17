@@ -1,5 +1,5 @@
 import time
-from sqlalchemy import *
+from sqlalchemy import Column, Integer, ForeignKey, String, Boolean
 from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base
@@ -15,6 +15,8 @@ class Board(Base):
 
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
+	
+	sub_count = Column(Integer, default=0)
 
 	has_icon = Column(Boolean, default=False)
 	icon_file = Column(String(255), nullable=True)

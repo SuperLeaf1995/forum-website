@@ -3,6 +3,7 @@
 <h1>/b/{{ board.name }}</h1>
 <p>{{ board.descr }}</p>
 <p>Category: {{ board.category_info.name }}</p>
+<b>Subscribers: {{ board.sub_count }}</b>
 <b>Board created by: <a href='/user/view?uid={{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></br>
 {% if u != None %}
 {% if u.is_subscribed(board.id) %}

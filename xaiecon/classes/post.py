@@ -1,5 +1,5 @@
 import time
-from sqlalchemy import *
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base
@@ -49,7 +49,7 @@ class Post(Base):
 		super(Post, self).__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.descr,
+		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.descr,
 		self.link_url,self.is_link,self.is_nsfw,self.is_admin,self.keywords,
 		self.user_id,self.downvote_count,self.upvote_count,self.total_vote_count,
 		self.is_deleted,self.category_id)

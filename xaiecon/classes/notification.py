@@ -1,6 +1,6 @@
 import time
 
-from sqlalchemy import *
+from sqlalchemy import Column, Boolean, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base

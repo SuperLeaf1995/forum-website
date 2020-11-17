@@ -10,7 +10,7 @@ import requests
 import time
 import random
 
-from flask import Blueprint, render_template, redirect, request, abort, send_from_directory, current_app
+from flask import Blueprint, render_template, redirect, request, abort, send_from_directory
 from werkzeug.utils import secure_filename
 
 from xaiecon.classes.base import open_db
@@ -225,6 +225,11 @@ def subscribe(u=None):
 
 	sub = BoardSub(user_id=u.id,board_id=bid)
 	db.add(sub)
+	
+	board = db.query(Board).filter_by(id=bid).first()
+	db.query(Board).filter_by(id=bid).update({
+		'sub_count':board.sub_count+1})
+	
 	db.commit()
 
 	db.close()
@@ -243,10 +248,15 @@ def unsubscribe(u=None):
 	# Not subscribed
 	if u.is_subscribed(bid) == False:
 		return '',400
-
+	
 	db.query(BoardSub).filter_by(user_id=u.id,board_id=bid).delete()
+	
+	board = db.query(Board).filter_by(id=bid).first()
+	db.query(Board).filter_by(id=bid).update({
+		'sub_count':board.sub_count-1})
+	
 	db.commit()
-
+	
 	db.close()
 	return '',200
 

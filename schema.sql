@@ -86,7 +86,7 @@ CREATE TABLE xaiecon_post(
 CREATE TABLE xaiecon_flag(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
-	reason VARCHAR(4095),
+	reason VARCHAR(16000),
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
 );
@@ -94,7 +94,8 @@ CREATE TABLE xaiecon_flag(
 CREATE TABLE xaiecon_comment(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
-	body VARCHAR(4095),
+	body VARCHAR(16000),
+	body_html VARCHAR(16000),
 	downvote_count INT DEFAULT 0,
 	upvote_count INT DEFAULT 0,
 	total_vote_count INT DEFAULT 0,
@@ -130,6 +131,8 @@ CREATE TABLE xaiecon_serverchain(
 	name VARCHAR(255) NOT NULL,
 	ip_addr VARCHAR(255) NOT NULL,
 	endpoint_url VARCHAR(255) NOT NULL,
+	internal_token VARCHAR(255) NOT NULL,
+	external_token VARCHAR(255) NOT NULL,
 	is_banned BOOLEAN DEFAULT FALSE,
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,
@@ -152,6 +155,7 @@ CREATE TABLE xaiecon_board_sub(
 	user_id INT REFERENCES xaiecon_user(id)
 );
 
+-- API App
 CREATE TABLE xaiecon_apiapp(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(128),
@@ -160,10 +164,40 @@ CREATE TABLE xaiecon_apiapp(
 	user_id INT REFERENCES xaiecon_user(id)
 );
 
+-- OAuth App
+CREATE TABLE xaiecon_oauthapp(
+	id SERIAL PRIMARY KEY,
+	client_id VARCHAR(128) NOT NULL,
+	client_secret VARCHAR(128) NOT NULL,
+	name VARCHAR(128) NOT NULL,
+	redirect_uri VARCHAR(128) NOT NULL,
+	creation_date INT,
+	user_id INT REFERENCES xaiecon_user(id)
+);
+
+CREATE TABLE xaiecon_oauthclient(
+	id SERIAL PRIMARY KEY,
+	oauth_code VARCHAR(128) NOT NULL,
+	access_token VARCHAR(128) NOT NULL,
+	refresh_token VARCHAR(128) NOT NULL,
+	scope_read BOOLEAN DEFAULT FALSE,
+	scope_vote BOOLEAN DEFAULT FALSE,
+	scope_comment BOOLEAN DEFAULT FALSE,
+	scope_nuke BOOLEAN DEFAULT FALSE,
+	scope_yank BOOLEAN DEFAULT FALSE,
+	scope_kick BOOLEAN DEFAULT FALSE,
+	scope_post BOOLEAN DEFAULT FALSE,
+	scope_update BOOLEAN DEFAULT FALSE,
+	scope_board BOOLEAN DEFAULT FALSE,
+	scope_write BOOLEAN DEFAULT FALSE,
+	oauthapp_id INT REFERENCES xaiecon_oauthapp(id),
+	user_id INT REFERENCES xaiecon_user(id)
+);
+
 CREATE TABLE xaiecon_notification(
 	id SERIAL PRIMARY KEY,
 	is_read BOOLEAN DEFAULT FALSE,
-	body VARCHAR(128),
+	body VARCHAR(16000),
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id)
 );

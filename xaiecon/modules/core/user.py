@@ -12,7 +12,7 @@ import secrets
 import time
 import random
 
-from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
+from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory, current_app
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -292,9 +292,8 @@ def csam_check_profile(uid: int):
 
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
-	DOMAIN_NAME = os.environ.get('DOMAIN_NAME','localhost:5000')
 	for i in range(10):
-		x = requests.get(f'https://{DOMAIN_NAME}/user/thumb?uid={uid}',headers=headers)
+		x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/user/thumb?uid={uid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

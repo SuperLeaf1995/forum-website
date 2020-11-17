@@ -23,7 +23,8 @@ def create_app() -> Flask:
 	app.config['CACHE_DEFAULT_TIMEOUT'] = 300
 	app.config['HCAPTCHA_SITE_KEY'] = os.environ.get('HCAPTCHA_SITE_KEY','')
 	app.config['HCAPTCHA_SECRET_KEY'] = os.environ.get('HCAPTCHA_SECRET_KEY','')
-	app.config['DOMAIN_NAME'] = 'localhost:5000'
+	app.config['SQLALCHEMY_URL'] = os.environ.get('SQLALCHEMY_URL','')
+	app.config['DOMAIN_NAME'] = os.environ.get('DOMAIN_NAME','localhost:5000')
 
 	@app.errorhandler(XaieconDatabaseException)
 	def handle_database_exception(e=None):

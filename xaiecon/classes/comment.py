@@ -9,8 +9,8 @@ class Comment(Base):
 	
 	id = Column(Integer, primary_key=True)
 	
-	body_html = Column(String(4095), nullable=False)
-	body = Column(String(4095), nullable=False)
+	body_html = Column(String(16000), nullable=False)
+	body = Column(String(16000), nullable=False)
 	
 	creation_date = Column(Integer, default=time.time())
 	
@@ -31,6 +31,7 @@ class Comment(Base):
 	def json(self):
 		return {
 			'body':self.body,
+			'body_html':self.body_html,
 			'creation_date':self.creation_date,
 			'comment_id':self.comment_id,
 			'post_id':self.post_id,
@@ -39,6 +40,7 @@ class Comment(Base):
 
 	def from_json(self, json):
 		self.body = json.body
+		self.body_html = json.body_html
 		self.creation_date = json.creation_date
 		if json.comment_id != 0:
 			self.comment_id = json.comment_id

@@ -1,0 +1,12 @@
+{% extends "default_layout.html" %}
+{% block content %}
+<h1>Add instance</h1>
+<p>Join a fediverse or create your own, and let your users meet others without barriers</p>
+<form enctype='multipart/form-data' method='POST' action='/fediverse/chain'>
+	<label for='ip_addr'>IP Address</label>
+	<input class='textbar-normal' type='text' id='ip_addr' name='ip_addr' placeholder='127.0.0.1:8000'></br>
+	<label for='internal_token'>Secret password</label>
+	<input class='textbar-normal' type='text' id='internal_token' name='internal_token'
+	<input type='submit' value='Add instance'></br>
+</form>
+{% endblock %}

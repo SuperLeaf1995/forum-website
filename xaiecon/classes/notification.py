@@ -10,7 +10,7 @@ class Notification(Base):
 	
 	id = Column(Integer, primary_key=True)
 	is_read = Column(Boolean, default=False)
-	body = Column(String(128), primary_key=True)
+	body = Column(String(16000), primary_key=True)
 	creation_date = Column(Integer, default=time.time())
 	
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))

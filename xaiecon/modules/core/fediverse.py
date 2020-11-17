@@ -25,6 +25,11 @@ from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
 
+@fediverse.route('/fediverse/add', methods = ['GET','POST'])
+@login_wanted
+def add_instance(u=None):
+	return render_template('fediverse/add.html',u=u,title='Add instance')
+
 @fediverse.route('/fediverse/recv', methods = ['GET','POST'])
 def recv():
 	db = open_db()

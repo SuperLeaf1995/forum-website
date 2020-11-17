@@ -1,7 +1,3 @@
-#
-# Simple post-sharing base module
-#
-
 import secrets
 
 from flask import Blueprint, render_template, request, redirect
@@ -32,14 +28,12 @@ def new(u=None):
 			db.add(aapp)
 			db.commit()
 			
-			# db.refresh(oauth)
-			
 			db.close()
 			return redirect('/apiapp/view')
 		else:
 			return render_template('apiapp/new.html',u=u,title='New OAuth App')
 	except XaieconException as e:
-		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+		return render_template('user_error.html',u=u,title='Whoops!',err=e)
 
 @apiapp.route('/apiapp/view', methods = ['GET','POST'])
 @login_required
@@ -90,4 +84,4 @@ def reroll(u=None):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-print('Post share ... ok')
+print('APIApp routes ... ok')

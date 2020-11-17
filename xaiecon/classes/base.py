@@ -1,6 +1,7 @@
-import os
 import time
 import sqlalchemy
+
+from flask import current_app
 from sqlalchemy.ext.declarative import declarative_base
 
 from xaiecon.classes.exception import XaieconDatabaseException
@@ -11,7 +12,7 @@ def open_db():
 	i = 0
 	while 1:
 		try:
-			engine = sqlalchemy.create_engine(os.environ.get('SQLALCHEMY_URL',''))
+			engine = sqlalchemy.create_engine(current_app.config['SQLALCHEMY_URL'])
 			engine.execute('SELECT 1')
 		except sqlalchemy.exc.OperationalError:
 			print('Waiting for database to start ...')

@@ -56,6 +56,7 @@ class Post(Base):
 	def json(self):
 		return {
 			'body':self.body,
+			'body_html':self.body_html,
 			'title':self.title,
 			'link_url':self.link_url,
 			'is_link':self.is_link,
@@ -74,6 +75,7 @@ class Post(Base):
 
 	def from_json(self, json):
 		self.body = json.body
+		self.body_html = json.body_html
 		self.title = json.title
 		self.link_url = json.link_url
 		self.is_link = json.is_link
@@ -87,4 +89,4 @@ class Post(Base):
 		self.is_deleted = json.is_deleted
 		self.category_id = json.category_id
 		self.user_id = json.user_id
-		self.board_id = board_id
+		self.board_id = json.board_id

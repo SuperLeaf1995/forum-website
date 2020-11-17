@@ -12,7 +12,7 @@ import secrets
 import PIL
 
 from bs4 import BeautifulSoup
-from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
+from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort, current_app
 from flask_misaka import markdown
 from werkzeug.utils import secure_filename
 
@@ -805,16 +805,15 @@ def csam_check_post(uid: int, pid: int):
 				time.sleep(10)
 
 	# And check image if it has one...
-	DOMAIN_NAME = os.environ.get('DOMAIN_NAME','localhost:5000')
 	if post.is_image == True:
 		for i in range(10):
-			x = requests.get(f'https://{DOMAIN_NAME}/post/thumb?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/post/thumb?pid={post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:
 				time.sleep(10)
 		for i in range(10):
-			x = requests.get(f'https://{DOMAIN_NAME}/post/image?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{current_app.config["DOMAIN_NAME"]}/post/image?pid={post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:

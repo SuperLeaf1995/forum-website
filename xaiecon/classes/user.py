@@ -91,7 +91,7 @@ class User(Base):
 			return False
 		return True
 	
-	def moderated_boards(self) -> list[Board]:
+	def moderated_boards(self):
 		from xaiecon.classes.board import Board
 
 		db = open_db()
@@ -99,7 +99,7 @@ class User(Base):
 		db.close()
 		return ret
 
-	def subscribed_boards(self) -> list[Board]:
+	def subscribed_boards(self):
 		from xaiecon.classes.board import Board, BoardSub
 
 		db = open_db()
@@ -113,7 +113,7 @@ class User(Base):
 		return ret
 	
 	@property
-	def unread_notifications(self) -> list[Notification]:
+	def unread_notifications(self):
 		from xaiecon.classes.notification import Notification
 		
 		db = open_db()

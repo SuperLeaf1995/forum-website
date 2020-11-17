@@ -25,6 +25,8 @@ from xaiecon.classes.exception import XaieconException
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
+from sqlalchemy import desc, asc
+
 from distutils.util import strtobool
 
 user = Blueprint('user',__name__,template_folder='templates/user')
@@ -152,17 +154,28 @@ def mark_all_as_read(u=None):
 	db.close()
 	return redirect('/user/notifications')
 
+@user.route('/user/leaderboard', methods = ['GET'])
+@login_wanted
+def netpoint_leaderboard(u=None,username=None):
+	db = open_db()
+	user = db.query(User).order_by(desc(User.net_points)).limit(50).all()
+	if user is None:
+		abort(404)
+	db.close()
+	
+	return render_template('user/leaderboard.html',u=u,title='Network Points Leaderboard',users=user)
+
 @user.route('/u/<username>', methods = ['GET'])
 @login_wanted
 def view_by_username(u=None,username=None):
 	db = open_db()
-	user = db.query(User).filter_by(username=username).all()
+	user = db.query(User).filter(User.username.ilike(username)).all()
 	if user is None:
 		abort(404)
 	db.close()
 	
 	if len(user) > 1:
-		user = random.shuffle(user)
+		random.shuffle(user)
 		return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 	return redirect(f'/user/view?uid={user[0].id}')
 

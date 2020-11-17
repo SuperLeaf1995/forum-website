@@ -3,8 +3,16 @@
 	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ u.id }}'></img>
 	<h1>Your notifications</h1>
 
+	{% if notifications != None %}
+	<a href='/user/mark_all'>Mark all notifications as read</a><br>
+	{% else %}
+	<p>No notifications yet</p>
+	{% endif %}
+
 	{% for notif in notifications %}
-	<i>{{ notif.creation_date }}</i><br>
-	<p>{{ notif.body }}</p><br><br>
+	<div class='comment-block-details'>
+		<i style='color:grey;'>{{ notif.creation_date }}</i><br>
+		<p>{{ notif.body }}</p><br>
+	</div>
 	{% endfor %}
 {% endblock %}

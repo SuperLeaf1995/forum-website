@@ -1,5 +1,4 @@
 import time
-import typing
 
 from flask import session
 from sqlalchemy import *
@@ -92,7 +91,7 @@ class User(Base):
 			return False
 		return True
 	
-	def moderated_boards(self):
+	def moderated_boards(self) -> list[Board]:
 		from xaiecon.classes.board import Board
 
 		db = open_db()
@@ -100,7 +99,7 @@ class User(Base):
 		db.close()
 		return ret
 
-	def subscribed_boards(self):
+	def subscribed_boards(self) -> list[Board]:
 		from xaiecon.classes.board import Board, BoardSub
 
 		db = open_db()
@@ -114,7 +113,7 @@ class User(Base):
 		return ret
 	
 	@property
-	def unread_notifications(self):
+	def unread_notifications(self) -> list[Notification]:
 		from xaiecon.classes.notification import Notification
 		
 		db = open_db()
@@ -123,7 +122,7 @@ class User(Base):
 		return ret
 	
 	@property
-	def unread_notifications_number(self):
+	def unread_notifications_number(self) -> int:
 		from xaiecon.classes.notification import Notification
 		
 		db = open_db()

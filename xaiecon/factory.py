@@ -4,12 +4,13 @@ from flask import Flask, render_template, request
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
+from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.wrappers import login_wanted
 
 from xaiecon.classes.exception import XaieconDatabaseException, XaieconException
 from distutils.util import strtobool
 
-def create_app():
+def create_app() -> Flask:
 	# Create the global app
 	app = Flask(__name__,instance_relative_config=True)
 	app.config['DOCKER'] = strtobool(os.environ.get('DOCKER','False'))
@@ -62,6 +63,7 @@ def create_app():
 	# And also initialize hcaptcha
 	cache.init_app(app)
 	hcaptcha.init_app(app)
+	md.init_app(app)
 
 	# Register modules
 	from xaiecon.modules.core.legal import legal

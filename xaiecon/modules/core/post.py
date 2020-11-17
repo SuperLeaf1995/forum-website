@@ -13,6 +13,7 @@ import PIL
 
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
+from flask_misaka import markdown
 from werkzeug.utils import secure_filename
 
 from xaiecon.modules.core.cache import cache
@@ -56,10 +57,8 @@ def vote(u=None):
 		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
 		
 		if vote is not None and vote.value == val:
-			real_val = (-val)
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 		else:
-			real_val = val
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 			# Create vote relation
 			vote = Vote(user_id=u.id,post_id=post.id,value=val)
@@ -374,11 +373,14 @@ def edit(u=None):
 			else:
 				db.query(Post).filter_by(id=pid).update({
 					'is_image':False})
-
+			
+			body_html = markdown(body)
+			
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
 						'keywords':keywords,
 						'body':body,
+						'body_html':body_html,
 						'is_link':is_link,
 						'is_nsfw':is_nsfw,
 						'title':title,
@@ -449,7 +451,7 @@ def write(u=None):
 			if title is None or title == '':
 				raise XaieconException('Empty title')
 			
-			body_html = ''
+			body_html = markdown(body)
 
 			post = Post(keywords=keywords,
 						title=title,
@@ -463,7 +465,7 @@ def write(u=None):
 						total_vote_count=0,
 						category_id=category.id,
 						board_id=bid,
-						embed_html='',
+						embed_html=embed_html,
 						body_html=body_html)
 			
 			file = request.files['image']
@@ -603,6 +605,9 @@ def list_posts(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
 	num = int(request.values.get('num','15'))
+	
+	if num > 50:
+		num = 50
 	
 	category_obj = None
 	if category != 'All':

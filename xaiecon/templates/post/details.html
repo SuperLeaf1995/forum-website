@@ -20,7 +20,7 @@
 	</p>
 	
 	<div>
-		<p>{{ post.body }}</p>
+		<p>{{ post.body_html | safe }}</p>
 		{{ post.embed_html|safe }}
 		{% if post.is_image == True %}
 		<a href='{{ post.link_url }}'><img src='/post/image?pid={{ post.id }}'></img></a>

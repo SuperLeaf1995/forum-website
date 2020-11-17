@@ -55,14 +55,14 @@ def view(u=None):
 @login_wanted
 def view_by_name(u=None,name=None):
 	db = open_db()
-	board = db.query(Board).filter_by(name=name).options(joinedload('*')).all()
-	if board is None or len(board) == 0:
+	board = db.query(Board).filter(Board.name.ilike(name)).options(joinedload('*')).all()
+	if board is None:
 		abort(404)
 	db.close()
 	
 	# Multiple boards
 	if len(board) > 1:
-		board = random.shuffle(board)
+		random.shuffle(board)
 		return render_template('board/pick.html',u=u,title=name,boards=board)
 	
 	# Only 1 board exists with that name

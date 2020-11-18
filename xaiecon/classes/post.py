@@ -29,6 +29,8 @@ class Post(Base):
 	is_image = Column(Boolean, default=False)
 	is_thumb = Column(Boolean, default=False)
 
+	show_votes = Column(Boolean, default=True)
+
 	is_nuked = Column(Boolean, default=False)
 	nuker_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	nuker_info = relationship('User', foreign_keys=[nuker_id])
@@ -49,7 +51,7 @@ class Post(Base):
 	board_info = relationship('Board', foreign_keys=[board_id])
 	
 	def __init__(self, **kwargs):
-		super(Post, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.descr,

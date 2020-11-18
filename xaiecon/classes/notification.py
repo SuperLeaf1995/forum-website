@@ -13,14 +13,15 @@ class Notification(Base):
 	
 	id = Column(Integer, primary_key=True)
 	is_read = Column(Boolean, default=False)
-	body = Column(String(16000), primary_key=True)
+	body = Column(String(16000), nullable=False)
+	body_html = Column(String(16000), nullable=False)
 	creation_date = Column(Integer, default=time.time())
 	
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):
-		super(Notification, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Notification(%r,%r)' % (self.user_id,self.body)

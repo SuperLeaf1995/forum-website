@@ -36,7 +36,7 @@ class User(Base):
 	net_points = Column(Integer, default=0)
 	
 	def __init__(self, **kwargs):
-		super(User, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 
 	def __repr__(self):
 		return 'User(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,

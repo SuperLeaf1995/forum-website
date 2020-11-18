@@ -145,6 +145,9 @@ def ballot(u=None):
 		if post is None:
 			abort(404)
 		
+		if post.show_votes == False:
+			raise XaieconException('Poster disabled to see who voted')
+		
 		vote = db.query(Vote).filter_by(post_id=post.id).options(joinedload('user_info')).all()
 		
 		db.close()
@@ -477,6 +480,7 @@ def write(u=None):
 			link = request.form.get('link','')
 			bid = request.form.get('bid')
 			category = int(request.values.get('category',''))
+			show_votes = strtobool(request.form.get('show_votes','False'))
 
 			if len(title) > 255:
 				raise XaieconException('Too long title')
@@ -527,7 +531,8 @@ def write(u=None):
 						category_id=category.id,
 						board_id=bid,
 						embed_html=embed_html,
-						body_html=body_html)
+						body_html=body_html,
+						show_votes=show_votes)
 			
 			file = request.files['image']
 			if file:

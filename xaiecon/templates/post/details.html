@@ -18,7 +18,7 @@
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
 	{% endif %}
 	
-	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
+	<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
@@ -48,7 +48,9 @@
 	{% endif %}
 	<a class='post-option' href='/post/yank?pid={{ post.id }}'>Yank</a>
 {% endif %}
+{% if post.show_votes == True %}
 	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>Voters</a>
+{% endif %}
 	<a class='post-option' href='/post/flag?pid={{ post.id }}'>Flag</a>
 	
 	</br>
@@ -66,7 +68,7 @@
 		{% for c in comment %}
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
 				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb?uid={{ c.user_id }}'></img>
-				<p style='color:grey;'>Submitted by: <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
+				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
 				<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
 				{% if u != None %}
@@ -91,4 +93,7 @@
 	{% else %}
 		<h2>No comments yet</h2>
 	{% endif %}
+<script type='text/javascript'>
+setInterval(update_content_time,1000);
+</script>
 {% endblock %}

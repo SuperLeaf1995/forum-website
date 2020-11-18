@@ -20,7 +20,7 @@ class Serverchain(Base):
 	creation_date = Column(Integer, default=time.time())
 	
 	def __init__(self, **kwargs):
-		super(Serverchain, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Serverchain(%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.ip_addr,

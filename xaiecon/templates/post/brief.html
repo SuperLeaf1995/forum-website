@@ -1,4 +1,4 @@
-<article class='post-brief' style='overflow:auto;'>
+<article class='post-brief'>
 	<div class='post-brief-thumb'>
 	{% if post.is_thumb == True %}
 		<a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a>
@@ -23,7 +23,7 @@
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
 	{% endif %}
 	
-	<p style='color:gray;'>Submitted {{ post.creation_date }} by 
+	<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb?bid={{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
@@ -49,6 +49,8 @@
 	{% endif %}
 	<a class='post-option' href='/post/yank?pid={{ post.id }}'>Yank</a>
 {% endif %}
+{% if post.show_votes == True %}
 	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>Voters</a>
+{% endif %}
 	<a class='post-option' href='/post/flag?pid={{ post.id }}'>Flag</a>
 </article>

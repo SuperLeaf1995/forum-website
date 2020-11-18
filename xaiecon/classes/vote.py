@@ -25,7 +25,7 @@ class Vote(Base):
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):
-		super(Vote, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Vote(%r,%r,%r,%r)' % (self.value,self.user_id,self.post_id,self.comment_id)

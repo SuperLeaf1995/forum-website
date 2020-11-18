@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from flask import request, session
+from flask_misaka import markdown
+
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.apiapp import APIApp
@@ -45,6 +47,7 @@ def send_notification(msg: str, target_id: int):
 	
 	notification = Notification(
 		body=msg,
+		body_html=markdown(msg),
 		user_id=target_id)
 	db.add(notification)
 	db.commit()

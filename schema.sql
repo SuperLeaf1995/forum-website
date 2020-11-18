@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS xaiecon_oauthclient;
+DROP TABLE IF EXISTS xaiecon_oauthapp;
 DROP TABLE IF EXISTS xaiecon_flag;
 DROP TABLE IF EXISTS xaiecon_notification;
 DROP TABLE IF EXISTS xaiecon_log;
@@ -79,6 +81,7 @@ CREATE TABLE xaiecon_post(
 	image_file VARCHAR(255),
 	thumb_file VARCHAR(255),
 	is_nuked BOOLEAN DEFAULT FALSE,
+	show_votes BOOLEAN DEFAULT TRUE,
 	nuker_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
@@ -199,7 +202,8 @@ CREATE TABLE xaiecon_oauthclient(
 CREATE TABLE xaiecon_notification(
 	id SERIAL PRIMARY KEY,
 	is_read BOOLEAN DEFAULT FALSE,
-	body VARCHAR(16000),
+	body VARCHAR(16000) NOT NULL,
+	body_html VARCHAR(16000) NOT NULL,
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id)
 );

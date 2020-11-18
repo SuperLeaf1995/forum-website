@@ -24,4 +24,7 @@
 {% else %}
 There are no posts yet on /b/{{ board.name }}.
 {% endif %}
+<script type='text/javascript'>
+setInterval(update_content_time,1000);
+</script>
 {% endblock %}

@@ -26,7 +26,7 @@ class Comment(Base):
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	def __init__(self, **kwargs):
-		super(Comment, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Comment(%r,%r,%r,%r)' % (self.body,self.user_id,self.post_id,self.comment_id)

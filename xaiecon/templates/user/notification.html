@@ -11,8 +11,11 @@
 
 	{% for notif in notifications %}
 	<div class='comment-block-details'>
-		<i style='color:grey;'>{{ notif.creation_date }}</i><br>
-		<p>{{ notif.body }}</p><br>
+		<i class='content-datetime' style='color:grey;' value='{{ notif.creation_date }}'>(calculating...)</i><br>
+		<p>{{ notif.body_html | safe }}</p><br>
 	</div>
 	{% endfor %}
+<script type='text/javascript'>
+setInterval(update_content_time,1000);
+</script>
 {% endblock %}

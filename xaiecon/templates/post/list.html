@@ -2,9 +2,11 @@
 {% block content %}
 	<h1>List posts</h1>
 	{% if posts %}
+		<div>
 		{% for post in posts %}
 			{% include 'post/brief.html' %}
 		{% endfor %}
+		</div>
 		<p>
 		<a href='/post/list/{{ sort }}?page={{ page-1 }}&num={{ num }}&category={{ category }}'>&lt;&lt;</a>
 		{{ page }}
@@ -13,4 +15,7 @@
 	{% else %}
 	<p>No posts yet</p>
 	{% endif %}
+<script type='text/javascript'>
+setInterval(update_content_time,1000);
+</script>
 {% endblock %}

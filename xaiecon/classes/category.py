@@ -14,7 +14,7 @@ class Category(Base):
 	creation_date = Column(Integer, default=time.time())
 	
 	def __init__(self, **kwargs):
-		super(Category, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Category(%r,%r)' % (self.name,self.creation_date)

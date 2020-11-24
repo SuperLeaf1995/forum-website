@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS xaiecon_user;
 
 CREATE TABLE xaiecon_user(
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(255) NOT NULL,
+	name VARCHAR(255),
 	username VARCHAR(255) NOT NULL,
 	biography VARCHAR(8000),
 	password VARCHAR(510) NOT NULL,

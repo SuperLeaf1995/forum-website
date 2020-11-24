@@ -738,7 +738,7 @@ def feed_posts(u=None, sort='new'):
 	# Slice out useless posts
 	posts = posts[(page*num):((page+1)*num)]
 	
-	return render_template('post/list.html',u=u,title='My feed',posts=post,
+	return render_template('post/list.html',u=u,title='My feed',post=post,
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/title_by_url', methods = ['GET'])

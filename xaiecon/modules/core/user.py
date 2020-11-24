@@ -85,14 +85,9 @@ def login(u=None):
 def signup(u=None):
 	try:
 		if request.method == 'POST':
-			if not hcaptcha.verify():
-				raise XaieconException('Please complete hcaptcha')
-			
 			# Validate form data
 			if len(request.form.get('password')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')
-			if len(request.form.get('name')) == 0:
-				raise XaieconException('Please input a name')
 			if len(request.form.get('username')) < 4:
 				raise XaieconException('Please input a username atleast of 4 characters')
 			
@@ -107,8 +102,7 @@ def signup(u=None):
 			db = open_db()
 			
 			# Create new user and add it to database
-			new_user = User(name=request.form.get('name'),
-							username=request.form.get('username'),
+			new_user = User(username=request.form.get('username'),
 							password=password,
 							auth_token=auth_token)
 			db.add(new_user)

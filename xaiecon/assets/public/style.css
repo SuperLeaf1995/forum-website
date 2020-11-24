@@ -259,7 +259,9 @@ textarea {
 
 .post-brief {
   color: black;
+  width: -webkit-fill-available;
   width: -moz-available;
+  width: fill-available;
   float: left;
   padding: 4px;
   margin: 8px;

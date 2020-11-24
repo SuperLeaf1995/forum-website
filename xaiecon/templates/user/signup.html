@@ -6,8 +6,6 @@
 	<p>{{ signup_error }}</p>
 	{% endif %}
 	<form enctype='multipart/form-data' method='POST' action='/user/signup'>
-		<label for='name'>Name</label><br>
-		<input class='textbar-normal' type='text' id='name' name='name' value='{{ request.form.name }}'></br>
 		<label for='username'>Username</label><br>
 		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'><br>
 		<label for='password'>Passsword</label><br>
@@ -16,8 +14,6 @@
 		<input class='textbar-normal' type='password' id='password_double' name='password_double' value='{{ request.form.password }}'><br>
 		
 		<label><input type='checkbox' name='agree_tos'></input>I agree with the <a href='/legal/terms'>Terms of Service</a>, the <a href='/legal/privacy'>Privacy Policy</a> and the <a href='/legal/content'>Content Policy</a></label><br>
-
-		{{ hcaptcha }}<br>
 
 		<input class='form-btn' type='submit' value='Signup'></br>
 	</form>

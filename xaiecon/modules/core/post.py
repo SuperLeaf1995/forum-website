@@ -644,6 +644,14 @@ def view(u=None):
 	# Dont let people see nsfw
 	if post.is_nsfw == True and u.is_nsfw == False:
 		abort(403)
+	
+	# Add one view
+	if u is not None:
+		if db.query(View).filter_by(user_id=u.id,post_id=pid).first() is None:
+			view = View(user_id=u.id,post_id=pid)
+			db.add(view)
+			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
+			db.commit()
 
 	comment = db.query(Comment).filter_by(post_id=post.id).options(joinedload('*')).order_by(desc(Comment.id)).all()
 	
@@ -673,19 +681,10 @@ def view(u=None):
 
 					comments.append(l)
 	
-	# Add one view
-	if u is not None:
-		if db.query(View).filter_by(user_id=u.id,post_id=pid).first() is None:
-			view = View(user_id=u.id,post_id=pid)
-			db.add(view)
-			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
-			db.commit()
-			
-			# TODO: Stop being dumbass
-			post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
-
+	ret = render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
+	
 	db.close()
-	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
+	return ret
 
 @post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])

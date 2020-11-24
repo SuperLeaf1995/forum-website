@@ -9,6 +9,7 @@ import requests
 import time
 
 from flask import Blueprint, render_template, request, jsonify
+from flask_babel import gettext
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post

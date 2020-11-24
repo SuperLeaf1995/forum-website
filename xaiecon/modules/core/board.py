@@ -14,6 +14,7 @@ import time
 import random
 
 from flask import Blueprint, render_template, redirect, request, abort, send_from_directory
+from flask_babel import gettext
 from werkzeug.utils import secure_filename
 
 from xaiecon.classes.base import open_db
@@ -207,9 +208,9 @@ def thumb(u=None):
 		abort(404)
 	db.close()
 	if board.icon_file is None:
-		abort(404)
+		return send_from_directory('assets/public/pics',board.fallback_thumb)
 	if os.path.isfile(os.path.join('./user_data',board.icon_file)) == False:
-		abort(404)
+		return send_from_directory('assets/public/pics',board.fallback_thumb)
 	return send_from_directory('../user_data',board.icon_file)
 
 @board.route('/board/subscribe', methods = ['POST'])
@@ -285,12 +286,15 @@ def new(u=None):
 			if category is None:
 				raise XaieconException('Not a valid category')
 			
+			pics = ['board.png']
+			
 			board = Board(
 				name=name,
 				descr=descr,
 				user_id=u.id,
 				category_id=category.id,
-				keywords=keywords)
+				keywords=keywords,
+				fallback_thumb=random.choice(pics))
 			
 			db.add(board)
 			db.commit()

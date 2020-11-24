@@ -9,3 +9,5 @@ user_data/*
 # Some editor's stuff
 .spyproject/
 .spyproject/*
+
+app.zip

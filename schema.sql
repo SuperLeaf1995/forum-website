@@ -35,7 +35,8 @@ CREATE TABLE xaiecon_user(
 	can_make_board BOOLEAN DEFAULT FALSE,
 	ban_reason VARCHAR(255),
 	creation_date INT,
-	net_points INT
+	net_points INT,
+	fallback_thumb VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE xaiecon_category(
@@ -55,6 +56,7 @@ CREATE TABLE xaiecon_board(
 	icon_file VARCHAR(255),
 	creation_date INT,
 	sub_count INT,
+	fallback_thumb VARCHAR(64) NOT NULL,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
 );
@@ -226,4 +228,4 @@ INSERT INTO xaiecon_category(name) VALUES
 	('Other'),
 	('Sports');
 
-INSERT INTO xaiecon_user(name,username,biography,password,auth_token) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable')
+INSERT INTO xaiecon_user(name,username,biography,password,auth_token,fallback_thumb) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable','golden.png')

@@ -2,9 +2,9 @@
 {% block content %}
 	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
-		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'>&#11165;</a>
+		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'></a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
-		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'>&#11167;</a>
+		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'></a>
 	{% else %}
 		<a tabindex=0 class='content-upvote'>&#11165;</a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
@@ -55,14 +55,14 @@
 	
 	</br>
 	
-	{% if u != None %}
+{% if u != None %}
 	<h2>Add comment</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
 		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
 		<input class='form-btn' type='submit' value='Comment'>
 	</form>
-	{% endif %}
+{% endif %}
 	
 	{% if comment %}
 		<h2>Comments</h2>

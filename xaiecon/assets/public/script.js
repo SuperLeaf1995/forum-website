@@ -154,12 +154,15 @@ function update_content_time() {
 		
 		// Convert diff to readable
 		var text = '';
+		
 		if(diff <= 60) {
 			text = diff+' seconds ago';
 		} else if(diff >= 61 && diff <= 60*60) {
 			text = Math.floor(diff/60)+' minutes and '+Math.floor(diff%60)+' seconds ago';
-		} else if(diff >= (60*60)+1) {
+		} else if(diff >= (60*60)+1 && diff <= (60*60*24)) {
 			text = Math.floor(diff/(60*60))+' hours and '+Math.floor((diff/60)%60)+' minutes ago';
+		} else if(diff >= (60*60*24)+1) {
+			text = Math.floor(diff/(60*60*24))+' days and '+Math.floor((diff/24)%24)+' hours ago';
 		}
 		
 		e.innerText = text;

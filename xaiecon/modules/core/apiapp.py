@@ -4,6 +4,7 @@
 import secrets
 
 from flask import Blueprint, render_template, request, redirect
+from flask_babel import gettext
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.apiapp import APIApp

@@ -16,6 +16,8 @@ import time
 import random
 
 from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
+from flask_babel import gettext
+
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -87,10 +89,13 @@ def signup(u=None):
 	try:
 		if request.method == 'POST':
 			# Validate form data
-			if len(request.form.get('password')) < 6:
+			if len(request.form.get('password','')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')
-			if len(request.form.get('username')) < 4:
+			if len(request.form.get('username','')) < 4:
 				raise XaieconException('Please input a username atleast of 4 characters')
+			
+			if len(request.form.get('agree_tos','')) == 0:
+				raise XaieconException('Agree to the terms, privacy policy and content policy')
 			
 			# Hash the password
 			password = generate_password_hash(request.form.get('password'))
@@ -102,10 +107,13 @@ def signup(u=None):
 			# Open the database
 			db = open_db()
 			
+			pics = ['golden.png','blue.png','jelly.png','crab.png']
+			
 			# Create new user and add it to database
 			new_user = User(username=request.form.get('username'),
 							password=password,
-							auth_token=auth_token)
+							auth_token=auth_token,
+							fallback_thumb=random.choice(pics))
 			db.add(new_user)
 			db.commit()
 			
@@ -196,16 +204,18 @@ def view_by_id(u=None):
 @user.route('/user/thumb', methods = ['GET','POST'])
 @login_wanted
 def thumb(u=None):
-	id = int(request.values.get('uid',''))
+	uid = int(request.values.get('uid','0'))
 	db = open_db()
-	user = db.query(User).filter_by(id=id).first()
+	user = db.query(User).filter_by(id=uid).first()
 	if user is None:
 		abort(404)
+	
 	db.close()
+	
 	if user.image_file is None:
-		abort(404)
-	if os.path.isfile(os.path.join('./user_data',user.image_file)) == False:
-		abort(404)
+		return send_from_directory('assets/public/pics',user.fallback_thumb)
+	if os.path.isfile(os.path.join('user_data',user.image_file)) == False:
+		return send_from_directory('assets/public/pics',user.fallback_thumb)
 	return send_from_directory('../user_data',user.image_file)
 
 @user.route('/user/edit', methods = ['GET','POST'])

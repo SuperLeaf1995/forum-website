@@ -15,14 +15,16 @@ class Board(Base):
 	descr = Column(String(255), nullable=False)
 	keywords = Column(String(255), nullable=False)
 	creation_date = Column(Integer, default=time.time())
-
+	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
 	
 	sub_count = Column(Integer, default=0)
-
+	
 	has_icon = Column(Boolean, default=False)
 	icon_file = Column(String(255), nullable=True)
+	
+	fallback_thumb = Column(String(64), nullable=True)
 	
 	category_id = Column(Integer, ForeignKey('xaiecon_category.id'))
 	category_info = relationship('Category', foreign_keys=[category_id])

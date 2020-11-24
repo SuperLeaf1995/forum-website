@@ -18,6 +18,8 @@ import io
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
 from flask_misaka import markdown
+from flask_babel import gettext
+
 from werkzeug.utils import secure_filename
 
 from xaiecon.modules.core.cache import cache
@@ -807,19 +809,25 @@ def obtain_post_thumb(link: str):
 	if x.status_code not in [200,451]:
 		return
 	html = x.text
-	soup = BeautifulSoup(html, 'html.parser')
+	soup = BeautifulSoup(html,'html.parser')
 	
 	# Get image from img tag
 	for img in soup.find_all('img'):
 		try:
 			# Get image by GET'ing it via HTTP and then Pillow'ing it
-			x = requests.get(img['src'],headers=headers)
+			src = img.get('src')
+			if src == '':
+				continue
+			
+			x = requests.get(src,headers=headers)
 			im = PIL.Image.open(io.BytesIO(x.content))
 			w, h = im.size
 			if w <= 128 or h <= 128:
 				continue
 			return im
 		except KeyError:
+			continue
+		except requests.exceptions.InvalidURL:
 			continue
 	return None
 

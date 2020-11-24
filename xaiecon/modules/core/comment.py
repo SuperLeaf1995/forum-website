@@ -7,6 +7,7 @@
 
 from flask import Blueprint, render_template, request, jsonify, redirect,  abort
 from flask_misaka import markdown
+from flask_babel import gettext
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post
@@ -37,8 +38,8 @@ def delete(u=None):
 	
 	# Update comment
 	db.query(Comment).filter_by(id=cid).update({
-		'body':'[deleted by user]',
-		'body_html':'[deleted by user]'})
+		'body':gettext('[deleted by user]'),
+		'body_html':gettext('[deleted by user]')})
 	db.commit()
 	
 	db.close()
@@ -62,7 +63,7 @@ def edit(u=None):
 			body = request.form.get('body')
 			
 			if len(body) == 0:
-				raise XaieconException('Body too short')
+				raise XaieconException(gettext('Body too short'))
 			
 			# Update comment
 			db.query(Comment).filter_by(id=cid).update({

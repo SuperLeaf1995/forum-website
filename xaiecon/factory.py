@@ -5,7 +5,10 @@ from flask import Flask, render_template, request
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.markdown import md
+from xaiecon.modules.core.babel import babel
 from xaiecon.modules.core.wrappers import login_wanted
+
+from flask_babel import gettext
 
 from xaiecon.classes.exception import XaieconDatabaseException, XaieconException
 from distutils.util import strtobool
@@ -26,14 +29,21 @@ def create_app() -> Flask:
 	app.config['SQLALCHEMY_URL'] = os.environ.get('SQLALCHEMY_URL','')
 	app.config['DOMAIN_NAME'] = os.environ.get('DOMAIN_NAME','localhost:5000')
 
+	# Create cache associated with our app
+	# And also initialize hcaptcha
+	cache.init_app(app)
+	hcaptcha.init_app(app)
+	md.init_app(app)
+	babel.init_app(app)
+
 	@app.errorhandler(XaieconDatabaseException)
 	def handle_database_exception(e=None):
-		return render_template("user_error.html",u=None,title='Database Exception',err=e), 500
+		return render_template("user_error.html",u=None,title=gettext('Database Exception'),err=e), 500
 	
 	@app.errorhandler(XaieconException)
 	@login_wanted
 	def handle_exception(e=None,u=None):
-		return render_template("user_error.html",u=None,title='Server Exception',err=e), 500
+		return render_template("user_error.html",u=None,title=gettext('Server Exception'),err=e), 500
 
 	@app.errorhandler(404)
 	@login_wanted
@@ -48,7 +58,7 @@ def create_app() -> Flask:
 	@app.route('/', methods=['GET'])
 	@login_wanted
 	def send_index(u=None):
-		return render_template('index.html',u=u,title='Homepage')
+		return render_template('index.html',u=u,title=gettext('Homepage'))
 
 	@app.after_request
 	def after_request_fn(response):
@@ -59,12 +69,12 @@ def create_app() -> Flask:
 				response.headers.add('X-Content-Type-Options','nosniff')
 				response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
 		return response
-
-	# Create cache associated with our app
-	# And also initialize hcaptcha
-	cache.init_app(app)
-	hcaptcha.init_app(app)
-	md.init_app(app)
+	
+	@babel.localeselector
+	def get_locale():
+		#translations = [str(translation) for translation in babel.list_translations()]
+		#return request.accept_languages.best_match(translations)
+		return 'ru'
 
 	# Register modules
 	from xaiecon.modules.core.legal import legal

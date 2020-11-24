@@ -301,13 +301,23 @@ textarea {
 }
 
 /* Upvotes */
-.content-upvote, .content-downvote, .content-upvote-active, .content-downvote-active {
-  font-size: 35px;
-  line-height: 0.5;
-  letter-spacing: 0.0;
+.content-downvote, .content-downvote-active {
+  display: block;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 24px solid;
   cursor: pointer;
   transition: 0.3s;
 }
+.content-upvote, .content-upvote-active {
+  display: block;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-bottom: 24px solid;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
 .content-upvote, .content-downvote {
   color: grey;
 }

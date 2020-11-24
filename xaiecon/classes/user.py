@@ -31,7 +31,9 @@ class User(Base):
 	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
-
+	
+	fallback_thumb = Column(String(64), nullable=True)
+	
 	creation_date = Column(Integer, default=time.time())
 	net_points = Column(Integer, default=0)
 	

@@ -7,6 +7,8 @@
 #
 
 from flask import Blueprint, render_template
+from flask_babel import gettext
+
 from xaiecon.modules.core.cache import cache
 
 from xaiecon.modules.core.wrappers import login_wanted

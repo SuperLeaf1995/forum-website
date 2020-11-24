@@ -587,7 +587,7 @@ def write(u=None):
 			csam_thread.start()
 
 			# Alert boardmaster of the posts in the guild
-			send_notification(f'{post.title} - /u/{post.user_info.username} on /b/{board.name}',board.user_id)
+			send_notification(f'{post.title} - [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
 
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')
@@ -595,7 +595,7 @@ def write(u=None):
 			board = db.query(Board).filter_by(is_banned=False).options(joinedload('user_info')).all()
 			categories = db.query(Category).all()
 			db.close()
-			return render_template('post/write.html',u=u,title = 'New post', boards = board, categories=categories)
+			return render_template('post/write.html',u=u,title='New post',boards=board,categories=categories)
 	except XaieconException as e:
 		db.rollback()
 		db.close()
@@ -680,6 +680,9 @@ def view(u=None):
 			db.add(view)
 			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 			db.commit()
+			
+			# TODO: Stop being dumbass
+			post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
 
 	db.close()
 	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)

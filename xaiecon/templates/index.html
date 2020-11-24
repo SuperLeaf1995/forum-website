@@ -12,16 +12,16 @@
 			<div class='index-intro'>
 				<div class='index-block'>
 					<br>
-					<h1 class='index-intro-title'>A federation for everyone.</h1>
-					<p class='index-intro-brief'>An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds.</p>
+					<h1 class='index-intro-title'>{% trans %}A federation for everyone.{% endtrans %}</h1>
+					<p class='index-intro-brief'>{% trans %}An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds.{% endtrans %}</p>
 
 					{% if u != None %}
 					<form method='GET' action='/post/feed/new'>
-						<input class='index-intro-btn' type='submit' value='Get started'>
+						<input class='index-intro-btn' type='submit' value='{% trans %}Get started{% endtrans %}'>
 					</form>
 					{% else %}
 					<form method='GET' action='/user/signup'>
-						<input class='index-intro-btn' type='submit' value='Get started'>
+						<input class='index-intro-btn' type='submit' value='{% trans %}Get started{% endtrans %}'>
 					</form>
 					{% endif %}
 				</div>

@@ -1,5 +1,4 @@
-# Custom run
-prun.sh
+# Yep, leaving .mo files is ok; People does not want to pybabel each time they clone this
 
 # Remove python cache stuff
 *.pyc

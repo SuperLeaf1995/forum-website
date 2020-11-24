@@ -6,6 +6,6 @@
 		<p><a href='/user/view?uid={{ vote.user_info.id }}'>/u/{{ vote.user_info.username }}</a> {{ vote.value }}</p>
 	{% endfor %}
 {% else %}
-<p>No downvotes or upvotes yet</p>
+<p>{% trans %}No downvotes or upvotes yet{% endtrans %}</p>
 {% endif %}
 {% endblock %}

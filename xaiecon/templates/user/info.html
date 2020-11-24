@@ -4,33 +4,33 @@
 	<h1>{{ user.username }}</h1>
 
 	{% if user.is_banned == True %}
-		<p>This user has been banned for: {{ user.ban_reason }}</p>
+		<p>{% trans %}This user has been banned for{% endtrans %}: {{ user.ban_reason }}</p>
 	{% else %}
-		<b>Network Points: {{ user.net_points }}</b>
+		<b>{% trans %}Network Points{% endtrans %}: {{ user.net_points }}</b>
 
 		<p>{{ user.biography }}</p>
 		
 		{% if u != None %}
 			{% if user.is_show_email == True or u.id == user.id %}
-				<p>Electronic Mail Address: {{ user.email }}</p>
+				<p>{% trans %}Electronic Mail Address{% endtrans %}: {{ user.email }}</p>
 			{% else %}
-				<p>Electronic Mail Address: Unknown</p>
+				<p>{% trans %}Electronic Mail Address{% endtrans %}: {% trans %}Unknown{% endtrans %}</p>
 			{% endif %}
 			
 			{% if user.is_show_fax == True or u.id == user.id %}
-				<p>Telefax: {{ user.fax }}</p>
+				<p>{% trans %}Telefax{% endtrans %}: {{ user.fax }}</p>
 			{% else %}
-				<p>Telefax: Unknown</p>
+				<p>{% trans %}Telefax{% endtrans %}: {% trans %}Unknown{% endtrans %}</p>
 			{% endif %}
 			
 			{% if user.is_show_phone == True or u.id == user.id %}
-				<p>Telephone: {{ user.phone }}</p>
+				<p>{% trans %}Telephone{% endtrans %}: {{ user.phone }}</p>
 			{% else %}
-				<p>Telephone: Unknown</p>
+				<p>{% trans %}Telephone{% endtrans %}: {% trans %}Unknown{% endtrans %}</p>
 			{% endif %}
 			
 			{% if u.id == user.id %}
-				<a href='/user/edit?uid={{ user.id }}'>Edit details</a>
+				<a href='/user/edit?uid={{ user.id }}'>{% trans %}Edit details{% endtrans %}</a>
 			{% endif %}
 		{% endif %}
 	{% endif %}

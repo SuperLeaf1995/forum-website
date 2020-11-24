@@ -1,0 +1,484 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-24 17:41-0500\n"
+"PO-Revision-Date: 2020-11-24 17:42-0500\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+"X-Generator: Poedit 2.0.6\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../factory.py:41
+msgid "Database Exception"
+msgstr "Исключение базы данных"
+
+#: ../factory.py:46
+msgid "Server Exception"
+msgstr "Исключение сервера"
+
+#: ../factory.py:61
+msgid "Homepage"
+msgstr "Домашняя страница"
+
+#: ../modules/core/comment.py:41 ../modules/core/comment.py:42
+msgid "[deleted by user]"
+msgstr "[удалено пользователем]"
+
+#: ../modules/core/comment.py:66
+msgid "Body too short"
+msgstr "Слишком короткое тело"
+
+#: ../modules/core/user.py:46
+msgid "Please input a password"
+msgstr "Пожалуйста, введите пароль"
+
+#: ../modules/core/user.py:48
+msgid "Please input a username"
+msgstr "Пожалуйста, введите имя пользователя"
+
+#: ../modules/core/user.py:56 ../modules/core/user.py:80
+msgid "Invalid username or password"
+msgstr "Неправильное имя пользователя или пароль"
+
+#: ../modules/core/user.py:127
+msgid ""
+"Thanks for registering, feel free to [create your first post](/post/create) "
+"or [explore the frontpage](/post/list?sort=new)"
+msgstr ""
+
+#: ../modules/core/user.py:233
+msgid "Not authorized"
+msgstr "Не авторизован"
+
+#: ../modules/core/user.py:318
+msgid "CSAM Automatic Removal"
+msgstr "Автоматическое удаление CSAM"
+
+#: ../templates/404.html:5
+msgid "Looks like the resource you wanted is not here."
+msgstr "Похоже, нужного вам ресурса здесь нет."
+
+#: ../templates/500.html:5 ../templates/dev_error.html:5
+msgid "Server is on fire. Hopefully this is not the production one..."
+msgstr "Сервер охренеть. Надеюсь, это не серийный ..."
+
+#: ../templates/dev_error.html:8
+msgid "So what went wrong? Hmmm, maybe take a look at this?"
+msgstr "Так что же пошло не так? Хммм, может взглянуть на это?"
+
+#: ../templates/dev_error.html:12
+msgid "Error Message"
+msgstr "Сообщение об ошибке"
+
+#: ../templates/index.html:15
+msgid "A federation for everyone."
+msgstr "Федерация для всех."
+
+#: ../templates/index.html:16
+msgid ""
+"An open-source fediverse designed to secure everyone's right to free speech. "
+"No censorship, no abuse of power; just traditional forum communities of all "
+"kinds."
+msgstr ""
+"Вселенная с открытым исходным кодом, призванная защитить право каждого на "
+"свободу слова. Никакой цензуры, никакого злоупотребления властью; просто "
+"традиционные форумы всех видов."
+
+#: ../templates/index.html:20 ../templates/index.html:24
+msgid "Get started"
+msgstr "Начать"
+
+#: ../templates/common/gdprnotice.html:17
+msgid ""
+"We use cookies/sessions for login/signup process. Please consent to allow us "
+"to store cookies. If you signup/login you automatically consent that we "
+"store cookies."
+msgstr ""
+
+#: ../templates/common/navbar.html:5
+msgid "Sign-up"
+msgstr "Зарегистрироваться"
+
+#: ../templates/common/navbar.html:6 ../templates/user/login.html:4
+#: ../templates/user/login.html:13
+msgid "Login"
+msgstr "Авторизоваться"
+
+#: ../templates/common/navbar.html:13
+msgid "Logout"
+msgstr "Выйти"
+
+#: ../templates/common/navbar.html:15
+msgid "Frontpage"
+msgstr "Титульная страница"
+
+#: ../templates/common/navbar.html:18
+msgid "My feed"
+msgstr "Моя лента"
+
+#: ../templates/common/navbar.html:20
+msgid "Newest"
+msgstr "Новейшие"
+
+#: ../templates/common/navbar.html:21
+msgid "Oldest"
+msgstr "Самый старый"
+
+#: ../templates/common/navbar.html:25
+msgid "Categories"
+msgstr "Категории"
+
+#: ../templates/common/navbar.html:27
+msgid "Anarchy"
+msgstr "Анархия"
+
+#: ../templates/common/navbar.html:28
+msgid "Animals"
+msgstr ""
+
+#: ../templates/common/navbar.html:29
+msgid "Culture"
+msgstr ""
+
+#: ../templates/common/navbar.html:30
+msgid "Fiction"
+msgstr ""
+
+#: ../templates/common/navbar.html:31
+msgid "Humor"
+msgstr ""
+
+#: ../templates/common/navbar.html:32
+msgid "Mathematics"
+msgstr ""
+
+#: ../templates/common/navbar.html:33
+msgid "News"
+msgstr ""
+
+#: ../templates/common/navbar.html:34
+msgid "Nonsense"
+msgstr ""
+
+#: ../templates/common/navbar.html:35
+msgid "NSFW"
+msgstr ""
+
+#: ../templates/common/navbar.html:36
+msgid "Other"
+msgstr ""
+
+#: ../templates/common/navbar.html:37
+msgid "Pictures"
+msgstr ""
+
+#: ../templates/common/navbar.html:38
+msgid "Politics"
+msgstr ""
+
+#: ../templates/common/navbar.html:39
+msgid "Programming"
+msgstr ""
+
+#: ../templates/common/navbar.html:40
+msgid "Technology"
+msgstr ""
+
+#: ../templates/common/navbar.html:41
+msgid "Videogames"
+msgstr ""
+
+#: ../templates/common/navbar.html:42
+msgid "Sports"
+msgstr ""
+
+#: ../templates/common/userpanel.html:3
+msgid "User panel"
+msgstr ""
+
+#: ../templates/common/userpanel.html:5
+msgid "New board"
+msgstr ""
+
+#: ../templates/common/userpanel.html:6
+msgid "New post"
+msgstr ""
+
+#: ../templates/common/userpanel.html:8
+msgid "Moderated"
+msgstr ""
+
+#: ../templates/common/userpanel.html:13
+msgid "Subscribed"
+msgstr ""
+
+#: ../templates/common/userpanel.html:19
+msgid "Get back"
+msgstr ""
+
+#: ../templates/common/userpanel.html:19
+msgid "the internet."
+msgstr ""
+
+#: ../templates/common/userpanel.html:26
+msgid "Source Code"
+msgstr ""
+
+#: ../templates/logs/loglist.html:3
+msgid "Logs"
+msgstr ""
+
+#: ../templates/post/brief.html:26
+msgid "Submitted"
+msgstr ""
+
+#: ../templates/post/brief.html:26 ../templates/user/notification.html:14
+msgid "calculating"
+msgstr ""
+
+#: ../templates/post/brief.html:33
+msgid "views"
+msgstr "просмотры"
+
+#: ../templates/post/brief.html:34
+msgid "comments"
+msgstr "комментарии"
+
+#: ../templates/post/brief.html:38 ../templates/post/details.html:41
+#: ../templates/post/details.html:83
+msgid "Delete"
+msgstr "Удалять"
+
+#: ../templates/post/brief.html:39 ../templates/post/details.html:42
+#: ../templates/post/details.html:82 ../templates/post/edit_comment.html:6
+#: ../templates/user/edit.html:36
+msgid "Edit"
+msgstr "Редактировать"
+
+#: ../templates/post/brief.html:42 ../templates/post/details.html:45
+#: ../templates/post/kick.html:8
+msgid "Kick"
+msgstr "Удар"
+
+#: ../templates/post/brief.html:44 ../templates/post/details.html:47
+msgid "Nuke"
+msgstr "Ядерная бомба"
+
+#: ../templates/post/brief.html:46 ../templates/post/details.html:49
+msgid "Un-nuke"
+msgstr "Ун-ядерный"
+
+#: ../templates/post/brief.html:48 ../templates/post/details.html:51
+msgid "Ban user"
+msgstr "Забанить пользователя"
+
+#: ../templates/post/brief.html:50 ../templates/post/details.html:53
+#: ../templates/post/yank.html:16
+msgid "Yank"
+msgstr "Переехать"
+
+#: ../templates/post/brief.html:53 ../templates/post/details.html:56
+msgid "Voters"
+msgstr "Избиратель"
+
+#: ../templates/post/brief.html:55 ../templates/post/details.html:58
+#: ../templates/post/flag.html:7
+msgid "Flag"
+msgstr "Отчет"
+
+#: ../templates/post/details.html:63
+msgid "Add comment"
+msgstr "Добавить комментарий"
+
+#: ../templates/post/details.html:66 ../templates/post/details.html:94
+msgid "Comment body"
+msgstr "Текст комментария"
+
+#: ../templates/post/details.html:72
+msgid "Comments"
+msgstr "Комментарии"
+
+#: ../templates/post/details.html:80 ../templates/post/details.html:95
+msgid "Reply"
+msgstr ""
+
+#: ../templates/post/details.html:87
+msgid "View entire discussion"
+msgstr "Просмотреть обсуждение полностью"
+
+#: ../templates/post/details.html:100
+msgid "No comments yet"
+msgstr ""
+
+#: ../templates/post/flag.html:3
+msgid "Flag post"
+msgstr ""
+
+#: ../templates/post/flag.html:5
+msgid "Reason"
+msgstr ""
+
+#: ../templates/post/flag.html:6
+msgid "Reason of flag"
+msgstr ""
+
+#: ../templates/post/kick.html:3
+msgid "Kick post"
+msgstr ""
+
+#: ../templates/post/kick.html:7
+msgid "Are you sure?"
+msgstr "Ты уверен?"
+
+#: ../templates/post/voters.html:9
+msgid "No downvotes or upvotes yet"
+msgstr ""
+
+#: ../templates/post/write.html:5
+msgid "Title"
+msgstr ""
+
+#: ../templates/post/write.html:7
+msgid "Body"
+msgstr ""
+
+#: ../templates/post/write.html:9
+msgid "Image upload"
+msgstr ""
+
+#: ../templates/post/write.html:11
+msgid "Keywords"
+msgstr ""
+
+#: ../templates/post/write.html:13
+msgid "Link"
+msgstr ""
+
+#: ../templates/post/write.html:15
+msgid "Show who voted?"
+msgstr ""
+
+#: ../templates/post/write.html:17
+msgid "Is post NSFW?"
+msgstr ""
+
+#: ../templates/post/write.html:20
+msgid "Board to post to"
+msgstr ""
+
+#: ../templates/post/write.html:27
+msgid "Category"
+msgstr ""
+
+#: ../templates/post/write.html:33
+msgid "Write"
+msgstr ""
+
+#: ../templates/post/yank.html:3
+msgid "Yank post"
+msgstr ""
+
+#: ../templates/post/yank.html:8
+msgid "Board to yank to"
+msgstr ""
+
+#: ../templates/post/yank.html:19
+#, fuzzy
+#| msgid "You are not moderating any guilds, you cannot yank"
+msgid "You are not moderating any boards, you cannot yank"
+msgstr "Вы не модерируете форумы, вы не можете перемещать сообщения"
+
+#: ../templates/user/edit.html:9
+msgid "Biography"
+msgstr ""
+
+#: ../templates/user/edit.html:12
+msgid "Profile picture"
+msgstr ""
+
+#: ../templates/user/edit.html:15 ../templates/user/info.html:15
+#: ../templates/user/info.html:17
+msgid "Electronic Mail Address"
+msgstr ""
+
+#: ../templates/user/edit.html:18
+msgid "Show E-Mail address?"
+msgstr ""
+
+#: ../templates/user/edit.html:21 ../templates/user/info.html:21
+#: ../templates/user/info.html:23
+msgid "Telefax"
+msgstr ""
+
+#: ../templates/user/edit.html:24
+msgid "Show telefax number?"
+msgstr ""
+
+#: ../templates/user/edit.html:27
+msgid "Telephone number"
+msgstr ""
+
+#: ../templates/user/edit.html:30
+msgid "Show phone number?"
+msgstr ""
+
+#: ../templates/user/edit.html:33
+msgid "Check this box if you are ok viewing NSFW content"
+msgstr ""
+
+#: ../templates/user/info.html:7
+msgid "This user has been banned for"
+msgstr ""
+
+#: ../templates/user/info.html:9
+msgid "Network Points"
+msgstr ""
+
+#: ../templates/user/info.html:17 ../templates/user/info.html:23
+#: ../templates/user/info.html:29
+msgid "Unknown"
+msgstr "Неизвестно"
+
+#: ../templates/user/info.html:27 ../templates/user/info.html:29
+msgid "Telephone"
+msgstr ""
+
+#: ../templates/user/info.html:33
+msgid "Edit details"
+msgstr ""
+
+#: ../templates/user/login.html:9
+msgid "Username"
+msgstr ""
+
+#: ../templates/user/login.html:11
+msgid "Password"
+msgstr "Пароль"
+
+#: ../templates/user/notification.html:4
+msgid "Your notifications"
+msgstr ""
+
+#: ../templates/user/notification.html:7
+msgid "Mark all notifications as read"
+msgstr ""
+
+#: ../templates/user/pick.html:3
+msgid "Pick one"
+msgstr ""
+
+#: ../templates/user/pick.html:4
+msgid "There are multiple users with that username, select one of them"
+msgstr ""

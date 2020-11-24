@@ -2,44 +2,44 @@
 	<li class='nav-logo'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
 	
 	{% if u == None %}
-	<li class='nav-element'><a href='/user/signup'>Sign-up</a></li>
-	<li class='nav-element'><a href='/user/login'>Login</a></li>
+	<li class='nav-element'><a href='/user/signup'>{% trans %}Sign-up{% endtrans %}</a></li>
+	<li class='nav-element'><a href='/user/login'>{% trans %}Login{% endtrans %}</a></li>
 	{% else %}
 	{% if u.unread_notifications_number > 0 %}
 	<li class='nav-element' style='background-color:red;border-radius:12px;margin:0;padding:0;margin-top:6px;margin-left:4px;'><a style='color:white;height:12px;padding:8px;margin:0;' href='/user/notifications'>{{ u.unread_notifications_number }}</a></li>
 	{% endif %}
 	<li class='nav-element'><img style='border-radius:22px;float:right;' width='44px' height='44px' src='/user/thumb?uid={{ u.id }}'></img></li>
 	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
-	<li class='nav-element'><a href='/user/logout'>Logout</a></li>
+	<li class='nav-element'><a href='/user/logout'>{% trans %}Logout{% endtrans %}</a></li>
 	{% endif %}
-	<li class='nav-dropdown'><a href='/post/list/new'>Frontpage</a>
+	<li class='nav-dropdown'><a href='/post/list/new'>{% trans %}Frontpage{% endtrans %}</a>
 		<div class='nav-dropdown-content'>
 			{% if u != None %}
-			<a href='/post/feed/new'>My feed</a>
+			<a href='/post/feed/new'>{% trans %}My feed{% endtrans %}</a>
 			{% endif %}
-			<a href='/post/list/new'>Newest</a>
-			<a href='/post/list/old'>Oldest</a>
+			<a href='/post/list/new'>{% trans %}Newest{% endtrans %}</a>
+			<a href='/post/list/old'>{% trans %}Oldest{% endtrans %}</a>
 		</div>
 	</li>
 
-	<li class='nav-dropdown'><a href='/post/list'>Categories</a>
+	<li class='nav-dropdown'><a href='/post/list'>{% trans %}Categories{% endtrans %}</a>
 		<div class='nav-dropdown-content'>
-			<a href='/post/list?category=Anarchy'>Anarchy</a>
-			<a href='/post/list?category=Animals'>Animals</a>
-			<a href='/post/list?category=Culture'>Culture</a>
-			<a href='/post/list?category=Fiction'>Fiction</a>
-			<a href='/post/list?category=Humor'>Humor</a>
-			<a href='/post/list?category=Mathematics'>Mathematics</a>
-			<a href='/post/list?category=News'>News</a>
-			<a href='/post/list?category=Nonsense'>Nonsense</a>
-			<a href='/post/list?category=Nsfw'>NSFW</a>
-			<a href='/post/list?category=Other'>Other</a>
-			<a href='/post/list?category=Pictures'>Pictures</a>
-			<a href='/post/list?category=Politics'>Politics</a>
-			<a href='/post/list?category=Programming'>Programming</a>
-			<a href='/post/list?category=Technology'>Technology</a>
-			<a href='/post/list?category=Videogames'>Videogames</a>
-			<a href='/post/list?category=Sports'>Sports</a>
+			<a href='/post/list?category=Anarchy'>{% trans %}Anarchy{% endtrans %}</a>
+			<a href='/post/list?category=Animals'>{% trans %}Animals{% endtrans %}</a>
+			<a href='/post/list?category=Culture'>{% trans %}Culture{% endtrans %}</a>
+			<a href='/post/list?category=Fiction'>{% trans %}Fiction{% endtrans %}</a>
+			<a href='/post/list?category=Humor'>{% trans %}Humor{% endtrans %}</a>
+			<a href='/post/list?category=Mathematics'>{% trans %}Mathematics{% endtrans %}</a>
+			<a href='/post/list?category=News'>{% trans %}News{% endtrans %}</a>
+			<a href='/post/list?category=Nonsense'>{% trans %}Nonsense{% endtrans %}</a>
+			<a href='/post/list?category=Nsfw'>{% trans %}NSFW{% endtrans %}</a>
+			<a href='/post/list?category=Other'>{% trans %}Other{% endtrans %}</a>
+			<a href='/post/list?category=Pictures'>{% trans %}Pictures{% endtrans %}</a>
+			<a href='/post/list?category=Politics'>{% trans %}Politics{% endtrans %}</a>
+			<a href='/post/list?category=Programming'>{% trans %}Programming{% endtrans %}</a>
+			<a href='/post/list?category=Technology'>{% trans %}Technology{% endtrans %}</a>
+			<a href='/post/list?category=Videogames'>{% trans %}Videogames{% endtrans %}</a>
+			<a href='/post/list?category=Sports'>{% trans %}Sports{% endtrans %}</a>
 		</div>
 	</li>
 

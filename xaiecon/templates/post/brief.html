@@ -23,34 +23,34 @@
 	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
 	{% endif %}
 	
-	<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
+	<p style='color:gray;'>{% trans %}Submitted{% endtrans %} <i class='content-datetime' value='{{ post.creation_date }}'>({% trans %}calculating{% endtrans %}...)</i> by 
 	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view?bid={{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb?bid={{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
+	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} {% trans %}views{% endtrans %}</a>
+	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} {% trans %}comments{% endtrans %}</a>
 	
 {% if u != None %}
 	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?pid={{ post.id }}'>Delete</a>
-	<a class='post-option' href='/post/edit?pid={{ post.id }}'>Edit</a>
+	<a class='post-option' href='/post/delete?pid={{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
+	<a class='post-option' href='/post/edit?pid={{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
 	{% endif %}
 	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-	<a class='post-option' href='/post/kick?pid={{ post.id }}'>Kick</a>
+	<a class='post-option' href='/post/kick?pid={{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
 	{% if post.is_nuked == False %}
-	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>Nuke</a>
+	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
 	{% elif u.is_admin == True %}
-	<a class='post-option' href='/post/unnuke?pid={{ post.id }}'>Un-nuke</a>
+	<a class='post-option' href='/post/unnuke?pid={{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>Ban user</a>
+	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/post/yank?pid={{ post.id }}'>Yank</a>
+	<a class='post-option' href='/post/yank?pid={{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
 {% endif %}
 {% if post.show_votes == True %}
-	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>Voters</a>
+	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
 {% endif %}
-	<a class='post-option' href='/post/flag?pid={{ post.id }}'>Flag</a>
+	<a class='post-option' href='/post/flag?pid={{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
 </article>

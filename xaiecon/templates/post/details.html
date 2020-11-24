@@ -38,34 +38,38 @@
 	
 {% if u != None %}
 	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?pid={{ post.id }}'>Delete</a>
-	<a class='post-option' href='/post/edit?pid={{ post.id }}'>Edit</a>
+	<a class='post-option' href='/post/delete?pid={{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
+	<a class='post-option' href='/post/edit?pid={{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
 	{% endif %}
 	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-	<a class='post-option' href='/post/kick?pid={{ post.id }}'>Kick</a>
-	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>Nuke</a>
-	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>Ban user</a>
+	<a class='post-option' href='/post/kick?pid={{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
+	{% if post.is_nuked == False %}
+	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
+	{% elif u.is_admin == True %}
+	<a class='post-option' href='/post/unnuke?pid={{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/post/yank?pid={{ post.id }}'>Yank</a>
+	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
+	{% endif %}
+	<a class='post-option' href='/post/yank?pid={{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
 {% endif %}
 {% if post.show_votes == True %}
-	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>Voters</a>
+	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
 {% endif %}
-	<a class='post-option' href='/post/flag?pid={{ post.id }}'>Flag</a>
+	<a class='post-option' href='/post/flag?pid={{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
 	
 	</br>
 	
 {% if u != None %}
-	<h2>Add comment</h2>
+	<h2>{% trans %}Add comment{% endtrans %}</h2>
 	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
 		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
+		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='{% trans %}Comment body{% endtrans %}'></textarea></br>
 		<input class='form-btn' type='submit' value='Comment'>
 	</form>
 {% endif %}
 	
 	{% if comment %}
-		<h2>Comments</h2>
+		<h2>{% trans %}Comments{% endtrans %}</h2>
 		<hr>
 		{% for c in comment %}
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
@@ -73,27 +77,27 @@
 				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
 				{% if u != None %}
-					<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
+					<a onclick='reply_comment("reply-form-{{ c.id }}");'>{% trans %}Reply{% endtrans %}</a>
 					{% if c.user_id == u.id or u.is_admin == True %}
-					<a href='/comment/edit?cid={{ c.id }}'>Edit</a>
-					<a href='/comment/delete?cid={{ c.id }}'>Delete</a>
+					<a href='/comment/edit?cid={{ c.id }}'>{% trans %}Edit{% endtrans %}</a>
+					<a href='/comment/delete?cid={{ c.id }}'>{% trans %}Delete{% endtrans %}</a>
 					{% endif %}
 				{% endif %}
 				{% if c.more_children == True %}
-				<a href='/comment/view?cid={{ c.id }}'>View entire discussion</a>
+				<a href='/comment/view?cid={{ c.id }}'>{% trans %}View entire discussion{% endtrans %}</a>
 				{% endif %}
 			</div>
 			<div id='reply-form-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level }}0%;display:none;'>
 				<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
 					<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
 					<input type='text' name='cid' style='display:none;' value='{{ c.id }}'>
-					<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'></textarea></br>
-					<input class='form-btn' type='submit' value='Reply'>
+					<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='{% trans %}Comment body{% endtrans %}'></textarea></br>
+					<input class='form-btn' type='submit' value='{% trans %}Reply{% endtrans %}'>
 				</form>
 			</div>
 		{% endfor %}
 	{% else %}
-		<h2>No comments yet</h2>
+		<h2>{% trans %}No comments yet{% endtrans %}</h2>
 	{% endif %}
 <script type='text/javascript'>
 setInterval(update_content_time,1000);

@@ -1,11 +1,11 @@
 {% extends "default_layout.html" %}
 {% block content %}
-<h1>Yank post</h1>
+<h1>{% trans %}Yank post{% endtrans %}</h1>
 <hr>
+{% if boards %}
 <form enctype='multipart/form-data' method='POST' action='/post/yank'>
 	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-	{% if boards %}
-		<span>Board to yank to</span>
+		<span>{% trans %}Board to yank to{% endtrans %}</span>
 		<select name='bid'>
 			{% for board in boards %}
 				{% if u.mods(board.id) and post.board_id != board.id %}
@@ -13,9 +13,9 @@
 				{% endif %}
 			{% endfor %}
 		</select>
-	{% else %}
-	<p>You are not moderating any guilds, you cannot yank</p>
-	{% endif %}
-	<input class='form-btn' type='submit' value='Yank'></br>
+	<input class='form-btn' type='submit' value='{% trans %}Yank{% endtrans %}'></br>
 </form>
+{% else %}
+	<p>{% trans %}You are not moderating any boards, you cannot yank{% endtrans %}</p>
+{% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<h1>Pick one</h1>
-	<p>There are multiple users with that username, select one of them</p>
+	<h1>{% trans %}Pick one{% endtrans %}</h1>
+	<p>{% trans %}There are multiple users with that username, select one of them{% endtrans %}</p>
 	{% for u in user %}
 		<a href='/user/view?uid={{ u.id }}'><h2>{{ u.username }}</h2></a>
 		<i>(#{{ u.id }})</i>

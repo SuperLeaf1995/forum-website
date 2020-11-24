@@ -2,12 +2,12 @@
 {% block content %}
 <center>
 <h1 style='color:red'>Error!</h1>
-<p>Server is on fire. Hopefully this is not the production one...</p>
+<p>{% trans %}Server is on fire. Hopefully this is not the production one...{% endtrans %}</p>
 </center>
 
-<p>So what went wrong? Hmmm, maybe take a look at this?</p>
+<p>{% trans %}So what went wrong? Hmmm, maybe take a look at this?{% endtrans %}</p>
 <pre style='background-color:#ececec'>
 {{ trace }}
 </pre>
-<p>Error Message: </p><b>{{ error }}</b>
+<p>{% trans %}Error Message{% endtrans %}: </p><b>{{ error }}</b>
 {% endblock %}

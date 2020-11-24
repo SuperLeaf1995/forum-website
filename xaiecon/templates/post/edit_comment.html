@@ -3,6 +3,6 @@
 <h2>Edit comment</h2>
 <form enctype='multipart/form-data' method='POST' action='/comment/edit?cid={{ comment.id }}'>
 	<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='Comment body'>{{ comment.body }}</textarea></br>
-	<input class='form-btn' type='submit' value='Edit'>
+	<input class='form-btn' type='submit' value='{% trans %}Edit{% endtrans %}'>
 </form>
 {% endblock %}

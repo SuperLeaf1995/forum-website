@@ -43,9 +43,9 @@ def login(u=None):
 	try:
 		if request.method == 'POST':
 			if len(request.form.get('password')) == 0:
-				raise XaieconException('Please input a password')
+				raise XaieconException(gettext('Please input a password'))
 			if len(request.form.get('username')) == 0:
-				raise XaieconException('Please input a username')
+				raise XaieconException(gettext('Please input a username'))
 			
 			username = request.form.get('username')
 			
@@ -53,7 +53,7 @@ def login(u=None):
 			db = open_db()
 			users = db.query(User).filter_by(username=username).all()
 			if users == None:
-				raise XaieconException('Invalid username or password')
+				raise XaieconException(gettext('Invalid username or password'))
 			
 			for data in users:
 				rbool = check_password_hash(data.password,request.form.get('password'))
@@ -77,7 +77,7 @@ def login(u=None):
 			
 			db.rollback()
 			db.close()
-			raise XaieconException('Invalid username or password')
+			raise XaieconException(gettext('Invalid username or password'))
 		else:
 			return render_template('user/login.html',u=u,login_error='',title='Login')
 	except XaieconException as e:
@@ -124,7 +124,7 @@ def signup(u=None):
 			session['username'] = request.form.get('username')
 			session['id'] = new_user.id
 			
-			send_notification(f'Thanks for registering, feel free to [create your first post](/post/create) or [explore the frontpage](/post/list?sort=new)',new_user.id)
+			send_notification(gettext(f'Thanks for registering, feel free to [create your first post](/post/create) or [explore the frontpage](/post/list?sort=new)'),new_user.id)
 			
 			# Finally, end ;)
 			db.close()
@@ -230,7 +230,7 @@ def edit(u=None):
 			abort(404)
 
 		if u.id != id and u.is_admin == False:
-			raise XaieconException('Not authorized')
+			raise XaieconException(gettext('Not authorized'))
 
 		if request.method == 'POST':
 			# Get stuff
@@ -315,7 +315,7 @@ def csam_check_profile(uid: int):
 
 	# Ban user
 	db.query(User).filter_by(id=id).update({
-		'ban_reason':'CSAM Automatic Removal',
+		'ban_reason':gettext('CSAM Automatic Removal'),
 		'is_banned':True})
 	db.commit()
 	db.refresh(user)

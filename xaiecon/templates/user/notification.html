@@ -1,17 +1,17 @@
 {% extends "default_layout.html" %}
 {% block content %}
 	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ u.id }}'></img>
-	<h1>Your notifications</h1>
+	<h1>{% trans %}Your notifications{% endtrans %}</h1>
 
 	{% if notifications != None %}
-	<a href='/user/mark_all'>Mark all notifications as read</a><br>
+	<a href='/user/mark_all'>{% trans %}Mark all notifications as read{% endtrans %}</a><br>
 	{% else %}
 	<p>No notifications yet</p>
 	{% endif %}
 
 	{% for notif in notifications %}
 	<div class='comment-block-details'>
-		<i class='content-datetime' style='color:grey;' value='{{ notif.creation_date }}'>(calculating...)</i><br>
+		<i class='content-datetime' style='color:grey;' value='{{ notif.creation_date }}'>({% trans %}calculating{% endtrans %}...)</i><br>
 		<p>{{ notif.body_html | safe }}</p><br>
 	</div>
 	{% endfor %}

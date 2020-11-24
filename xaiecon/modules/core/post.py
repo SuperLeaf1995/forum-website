@@ -680,7 +680,6 @@ def view(u=None):
 			db.add(view)
 			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 			db.commit()
-			db.refresh(post)
 
 	db.close()
 	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)

@@ -371,7 +371,7 @@ def edit(u=None):
 			if link != '':
 				is_link = True
 
-				link = urllib.parse.quote(link,safe='/:$#')
+				link = urllib.parse.quote(link,safe='/:$#?=&')
 				parsed_link = urllib.parse.urlparse(link)
 
 				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
@@ -416,14 +416,17 @@ def edit(u=None):
 					db.query(Post).filter_by(id=pid).update({
 						'image_file':image_filename,
 						'thumb_file':thumb_filename,
-						'is_image':True})
+						'is_image':True,
+						'is_thumb':True})
 				except PIL.UnidentifiedImageError:
 					# Failure creating image!
 					db.query(Post).filter_by(id=pid).update({
-						'is_image':False})
+						'is_image':False,
+						'is_thumb':False})
 			else:
 				db.query(Post).filter_by(id=pid).update({
-					'is_image':False})
+					'is_image':False,
+					'is_thumb':False})
 				if is_link == True:
 					img = obtain_post_thumb(link)
 					if img is not None:
@@ -503,7 +506,7 @@ def write(u=None):
 			if link != '':
 				is_link = True
 
-				link = urllib.parse.quote(link,safe='/:$#')
+				link = urllib.parse.quote(link,safe='/:$#?=&')
 				parsed_link = urllib.parse.urlparse(link)
 
 				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
@@ -672,11 +675,12 @@ def view(u=None):
 	
 	# Add one view
 	if u is not None:
-		if db.query(View).filter_by(user_id=u.id,post_id=pid) is None:
+		if db.query(View).filter_by(user_id=u.id,post_id=pid).first() is None:
 			view = View(user_id=u.id,post_id=pid)
 			db.add(view)
 			db.query(Post).filter_by(id=pid).update({'views':post.views+1})
 			db.commit()
+			db.refresh(post)
 
 	db.close()
 	return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)

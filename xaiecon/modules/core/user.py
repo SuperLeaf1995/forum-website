@@ -26,6 +26,7 @@ from xaiecon.classes.notification import Notification
 from xaiecon.classes.exception import XaieconException
 
 from xaiecon.modules.core.hcaptcha import hcaptcha
+from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from sqlalchemy import desc
@@ -114,6 +115,8 @@ def signup(u=None):
 			session['auth_token'] = auth_token
 			session['username'] = request.form.get('username')
 			session['id'] = new_user.id
+			
+			send_notification(f'Thanks for registering, feel free to [create your first post](/post/create) or [explore the frontpage](/post/list?sort=new)',new_user.id)
 			
 			# Finally, end ;)
 			db.close()

@@ -72,8 +72,8 @@
 				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb?uid={{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
-				<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
 				{% if u != None %}
+					<a onclick='reply_comment("reply-form-{{ c.id }}");'>Reply</a>
 					{% if c.user_id == u.id or u.is_admin == True %}
 					<a href='/comment/edit?cid={{ c.id }}'>Edit</a>
 					<a href='/comment/delete?cid={{ c.id }}'>Delete</a>

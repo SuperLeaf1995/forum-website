@@ -31,12 +31,15 @@ def obtain_logged_user():
 		user = db.query(User).filter_by(id=app.user_id).first()
 		if user is None:
 			return None
-		
 	# Obtain user, normal user, not a bot hopefuly
 	else:
 		user = db.query(User).filter_by(id=session.get('id')).first()
-		if user is None or user.validate() == False:
+		if user is None:
 			return None
+		
+		if user.validate() == False:
+			return None
+		
 		if user.is_banned == True:
 			return None
 	db.close()

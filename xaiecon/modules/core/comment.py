@@ -147,12 +147,14 @@ def write_reply(u=None, cid=None):
 		
 		# Notify user who was replied, and post poster alert boardmaster of
 		# the posts in the guild
-		# Notify post poster
-		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
 		
 		# Notify user of comment which we replied
 		comment = db.query(Comment).filter_by(id=reply.comment_id).first()
-		send_notification(f'{reply.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',comment.user_id)
+		
+		# Notify post poster
+		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',post.user_id)
+		# Notify commenter
+		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',comment.user_id)
 		
 		db.close()
 		return redirect(f'/comment/view?cid={cid}')
@@ -242,7 +244,7 @@ def create(u=None):
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
 		
-		send_notification(f'{comment.body} by /u/{post.user_info.username} on /b/{post.board_info.name} / {post.title}',post.user_id)
+		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',post.user_id)
 		
 		db.close()
 		return redirect(f'/post/view?pid={pid}')

@@ -1,6 +1,6 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<h1>Leaderboard</h1>
+	<h1>{% trans %}Leaderboard{% endtrans %}</h1>
 	{% for user in users %}
 		<p>{{ user.net_points }} - <a href='/user/view?uid={{ user.id }}'>/u/{{ user.username }}</a></p>
 	{% endfor %}

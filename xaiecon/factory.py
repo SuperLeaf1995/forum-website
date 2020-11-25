@@ -72,9 +72,9 @@ def create_app() -> Flask:
 	
 	@babel.localeselector
 	def get_locale():
-		#translations = [str(translation) for translation in babel.list_translations()]
-		#return request.accept_languages.best_match(translations)
-		return 'ru'
+		translations = [str(translation) for translation in babel.list_translations()]
+		return request.accept_languages.best_match(translations)
+		#return 'ru'
 
 	# Register modules
 	from xaiecon.modules.core.legal import legal

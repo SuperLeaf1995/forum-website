@@ -107,7 +107,12 @@ def signup(u=None):
 			# Open the database
 			db = open_db()
 			
-			pics = ['golden.png','blue.png','jelly.png','crab.png']
+			pics = [
+				'golden.png','blue.png','jelly.png','crab.png',
+				'turtle.png','globefish.png','egg.png','sub.png',
+				'beta.png','penguin.png','sword.png','turtle.png',
+				'sword.png'
+				]
 			
 			# Create new user and add it to database
 			new_user = User(username=request.form.get('username'),
@@ -124,7 +129,7 @@ def signup(u=None):
 			session['username'] = request.form.get('username')
 			session['id'] = new_user.id
 			
-			send_notification(gettext(f'Thanks for registering, feel free to [create your first post](/post/create) or [explore the frontpage](/post/list?sort=new)'),new_user.id)
+			send_notification(gettext(f'Thanks for registering'),new_user.id)
 			
 			# Finally, end ;)
 			db.close()

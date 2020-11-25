@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2020-11-25 00:16-0500\n"
-"PO-Revision-Date: 2020-11-25 00:36-0500\n"
+"PO-Revision-Date: 2020-11-25 01:12-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -403,8 +403,6 @@ msgid "Board to yank to"
 msgstr "Доска, в которую нужно переместить сообщение"
 
 #: templates/post/yank.html:19
-#, fuzzy
-#| msgid "You are not moderating any guilds, you cannot yank"
 msgid "You are not moderating any boards, you cannot yank"
 msgstr "Вы не модерируете форумы, вы не можете перемещать сообщения"
 
@@ -414,33 +412,33 @@ msgstr "биография"
 
 #: templates/user/edit.html:12
 msgid "Profile picture"
-msgstr ""
+msgstr "Изображение профиля"
 
 #: templates/user/edit.html:15 templates/user/info.html:15
 #: templates/user/info.html:17
 msgid "Electronic Mail Address"
-msgstr ""
+msgstr "Электронный почтовый адрес"
 
 #: templates/user/edit.html:18
 msgid "Show E-Mail address?"
-msgstr ""
+msgstr "Показать адрес электронной почты?"
 
 #: templates/user/edit.html:21 templates/user/info.html:21
 #: templates/user/info.html:23
 msgid "Telefax"
-msgstr ""
+msgstr "Телефакс"
 
 #: templates/user/edit.html:24
 msgid "Show telefax number?"
-msgstr ""
+msgstr "Показать номер телефакса?"
 
 #: templates/user/edit.html:27
 msgid "Telephone number"
-msgstr ""
+msgstr "Номер телефона"
 
 #: templates/user/edit.html:30
 msgid "Show phone number?"
-msgstr ""
+msgstr "Показать номер телефона?"
 
 #: templates/user/edit.html:33
 msgid "Check this box if you are ok viewing NSFW content"
@@ -448,11 +446,11 @@ msgstr "Установите этот флажок, если вы нормаль
 
 #: templates/user/info.html:7
 msgid "This user has been banned for"
-msgstr ""
+msgstr "Этот пользователь заблокирован за"
 
 #: templates/user/info.html:9
 msgid "Network Points"
-msgstr ""
+msgstr "Сетевые точки"
 
 #: templates/user/info.html:17 templates/user/info.html:23
 #: templates/user/info.html:29
@@ -461,11 +459,11 @@ msgstr "Неизвестно"
 
 #: templates/user/info.html:27 templates/user/info.html:29
 msgid "Telephone"
-msgstr ""
+msgstr "Телефон"
 
 #: templates/user/info.html:33
 msgid "Edit details"
-msgstr ""
+msgstr "Редактировать детали"
 
 #: templates/user/leaderboard.html:3
 msgid "Leaderboard"

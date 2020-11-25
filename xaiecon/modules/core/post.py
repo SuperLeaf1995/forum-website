@@ -10,7 +10,6 @@ import requests
 import threading
 import time
 import urllib
-import urllib.parse
 import secrets
 import PIL
 import io
@@ -359,7 +358,8 @@ def edit(u=None):
 			title = request.form.get('title')
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
-			category = int(request.form.get('category',''))
+			category = int(request.form.get('category','0'))
+			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 
 			if len(title) > 255:
 				raise XaieconException('Too long title')
@@ -373,13 +373,8 @@ def edit(u=None):
 			if link != '':
 				is_link = True
 
-				link = urllib.parse.quote(link,safe='/:$#?=&')
-				parsed_link = urllib.parse.urlparse(link)
-
-				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
-					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
-			
-			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
+				embed = obtain_embed_url(link)
+				embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
 			
 			if body == None or body == '':
 				raise XaieconException('Empty body')
@@ -459,7 +454,7 @@ def edit(u=None):
 						'embed_html':embed_html})
 			db.commit()
 
-			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.link_url,))
+			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.id,))
 			csam_thread.start()
 			
 			db.close()
@@ -484,8 +479,9 @@ def write(u=None):
 			keywords = request.form.get('keywords')
 			link = request.form.get('link','')
 			bid = request.form.get('bid')
-			category = int(request.values.get('category',''))
+			category = int(request.values.get('category','0'))
 			show_votes = strtobool(request.form.get('show_votes','False'))
+			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 
 			if len(title) > 255:
 				raise XaieconException('Too long title')
@@ -508,13 +504,8 @@ def write(u=None):
 			if link != '':
 				is_link = True
 
-				link = urllib.parse.quote(link,safe='/:$#?=&')
-				parsed_link = urllib.parse.urlparse(link)
-
-				if parsed_link.netloc == 'lbry.tv' or parsed_link.netloc == 'open.lbry.tv' or parsed_link.netloc == 'www.lbry.tv':
-					embed_html = f'<iframe width="560" height="315" src="{link}" allowfullscreen></iframe>'
-			
-			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
+				embed = obtain_embed_url(link)
+				embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
 
 			if body == '' and is_link == False:
 				raise XaieconException('Empty body')
@@ -802,27 +793,68 @@ def search(u=None):
 	else:
 		return render_template('post/list.html',u=u,title='Post frontpage')
 
-# Obtain thumbnail for post
-def obtain_post_thumb(link: str):
+# Return a embed url for post
+# Works for:
+# - PeerTube
+# - Odysee
+# - LBRY
+def obtain_embed_url(link: str) -> str:
 	headers = {'User-Agent':'xaiecon-thumbnail-getter'}
 	x = requests.get(link,headers=headers)
-	if x.status_code not in [200,451]:
+	if x.status_code not in [200]:
 		return
 	html = x.text
 	soup = BeautifulSoup(html,'html.parser')
 	
-	# Get image from img tag
-	for img in soup.find_all('img'):
+	platform = []
+	platform.append(soup.find('meta',property='og:platform'))
+	platform.append(soup.find('meta',property='og:site_name'))
+	for p in platform:
 		try:
-			# Get image by GET'ing it via HTTP and then Pillow'ing it
-			src = img.get('src')
-			if src == '':
+			if p is None:
 				continue
 			
-			x = requests.get(src,headers=headers)
+			p = p['content']
+			
+			allowed_embeds = [
+				'PeerTube',
+				'LBRY'
+			]
+			
+			if p not in allowed_embeds:
+				continue
+			
+			meta = soup.find('meta',property='og:video:secure_url')
+			return meta['content']
+		except KeyError:
+			continue
+	
+	return None
+
+# Obtain thumbnail for post
+def obtain_post_thumb(link: str):
+	headers = {'User-Agent':'xaiecon-thumbnail-getter'}
+	x = requests.get(link,headers=headers)
+	if x.status_code not in [200]:
+		return
+	html = x.text
+	soup = BeautifulSoup(html,'html.parser')
+	
+	# Get image from meta tag or img tags
+	lst = soup.find_all('meta',property='og:image')+soup.find_all('img')
+	
+	for img in lst:
+		try:
+			content = img.get('content')
+			if content == '':
+				content = img.get('src')
+				if content == '':
+					continue
+			
+			x = requests.get(content,headers=headers)
 			im = PIL.Image.open(io.BytesIO(x.content))
 			w, h = im.size
-			if w <= 128 or h <= 128:
+			if w <= 120 or h <= 120:
 				continue
 			return im
 		except KeyError:

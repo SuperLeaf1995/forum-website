@@ -30,23 +30,3 @@ class Comment(Base):
 	
 	def __repr__(self):
 		return 'Comment(%r,%r,%r,%r)' % (self.body,self.user_id,self.post_id,self.comment_id)
-
-	def json(self):
-		return {
-			'body':self.body,
-			'body_html':self.body_html,
-			'creation_date':self.creation_date,
-			'comment_id':self.comment_id,
-			'post_id':self.post_id,
-			'user_id':self.user_id
-		}
-
-	def from_json(self, json):
-		self.body = json.body
-		self.body_html = json.body_html
-		self.creation_date = json.creation_date
-		if json.comment_id != 0:
-			self.comment_id = json.comment_id
-		if json.post_id != 0:
-			self.post_id = json.post_id
-		self.user_id = json.user_id

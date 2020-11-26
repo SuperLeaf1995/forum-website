@@ -620,6 +620,30 @@ def image(u=None):
 	db.close()
 	return send_from_directory('../user_data',post.image_file)
 
+@post.route('/post/embed', methods = ['GET'])
+@login_wanted
+def embed(u=None):
+	pid = request.values.get('pid')
+	if pid == None:
+		abort(404)
+	
+	# Obtain postpath and send it
+	db = open_db()
+	
+	# Query post from database
+	post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
+	if post is None:
+		abort(404)
+	
+	# Dont let people see nsfw
+	if post.is_nsfw == True and u.is_nsfw == False:
+		abort(403)
+	
+	ret = render_template('post/embed.html',u=u,title=post.title,post=post)
+	
+	db.close()
+	return ret
+
 @post.route('/post/view', methods = ['GET'])
 @login_wanted
 def view(u=None):
@@ -818,8 +842,11 @@ def obtain_embed_url(link: str) -> str:
 			
 			allowed_embeds = [
 				'PeerTube',
-				'LBRY'
+				'LBRY',
 			]
+			
+			if p == 'Xaiecon':
+				return link
 			
 			if p not in allowed_embeds:
 				continue

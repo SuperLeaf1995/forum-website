@@ -64,10 +64,9 @@ def create_app() -> Flask:
 	def after_request_fn(response):
 		if os.environ.get('FLASK_ENV') == 'production':
 			response.headers.add('X-XSS-Protection','1; mode=block')
-			if not request.path.endswith('/thumb') and not request.path.endswith('/image'):
+			if not request.path.endswith('/thumb') and not request.path.endswith('/image') and not request.path.endswith('/embed'):
 				response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
 				response.headers.add('X-Content-Type-Options','nosniff')
-				response.headers.add('Content-Security-Policy','frame-ancestors \'none\';')
 		return response
 	
 	@babel.localeselector

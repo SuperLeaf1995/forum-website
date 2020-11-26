@@ -345,6 +345,20 @@ textarea {
    .nav-top {
      position: sticky;
    }
+   .hidden-on-mobile {
+     display: none;
+   }
+}
+
+.footer-element, .footer-element:visited {
+  float: left;
+  color: grey;
+  padding: 2px 12px;
+  transition: 0.3s;
+}
+
+.footer-element:hover {
+  color: #3126d1;
 }
 
 img {

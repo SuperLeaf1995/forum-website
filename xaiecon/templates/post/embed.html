@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	{% include 'common/head.html' %}
+	<body class='body-grey'>
+		<article style='background-color:white;'>
+		<div style='height:100%;float:left;margin:0 16px;'>
+			{% if u != None %}
+			<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'></a>
+			<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+			<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'></a>
+			{% else %}
+			<a tabindex=0 class='content-upvote'>&#11165;</a>
+			<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+			<a tabindex=0 class='content-downvote'>&#11167;</a>
+			{% endif %}
+		</div>
+		
+		{% if post.is_link == True %}
+		<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
+		{% else %}
+		<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
+		{% endif %}
+		
+		<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
+			<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
+			Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
+		</p>
+		
+		<div>
+			<p>{{ post.body_html | safe }}</p>
+			{{ post.embed_html|safe }}
+			{% if post.is_image == True %}
+			<a href='{{ post.link_url }}'><img src='/post/image?pid={{ post.id }}'></img></a>
+			{% endif %}
+		</div>
+		
+		<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
+		
+		<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
+		<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
+		
+		<script type='text/javascript'>
+			setInterval(update_content_time,1000);
+		</script>
+		</article>
+	</body>
+</html>

@@ -6,9 +6,9 @@
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
 		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'></a>
 	{% else %}
-		<a tabindex=0 class='content-upvote'>&#11165;</a>
+		<a tabindex=0 class='content-upvote'></a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
-		<a tabindex=0 class='content-downvote'>&#11167;</a>
+		<a tabindex=0 class='content-downvote'></a>
 	{% endif %}
 	</div>
 	

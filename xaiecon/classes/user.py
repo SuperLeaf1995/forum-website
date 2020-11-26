@@ -4,10 +4,30 @@
 import time
 
 from flask import session
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base, open_db
 from xaiecon.classes.vote import Vote
+
+class UserFollow(Base):
+	__tablename__ = 'xaiecon_follower'
+	
+	id = Column(Integer, primary_key=True)
+	
+	creation_date = Column(Integer, default=time.time())
+	
+	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
+	user_info = relationship('User', foreign_keys=[user_id])
+	
+	target_id = Column(Integer, ForeignKey('xaiecon_user.id'))
+	target_info = relationship('User', foreign_keys=[user_id])
+	
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+	
+	def __repr__(self):
+		return 'UserFollow(%r,%r,%r)' % (self.user_id,self.target_id,self.creation_date)
 
 class User(Base):
 	__tablename__ = 'xaiecon_user'
@@ -28,6 +48,8 @@ class User(Base):
 	is_nsfw = Column(Boolean, default=False)
 	is_admin = Column(Boolean, default=False)
 	can_make_board = Column(Boolean, default=True)
+	
+	follow_count = Column(Integer, default=0)
 	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
@@ -133,3 +155,22 @@ class User(Base):
 		count = db.query(Notification).filter_by(user_id=self.id,is_read=False).count()
 		db.close()
 		return count
+	
+	@property
+	def followers_count(self) -> int:
+		db = open_db()
+		count = db.query(UserFollow).filter_by(target_id=self.id).count()
+		db.close()
+		return count
+	
+	@property
+	def following_count(self) -> int:
+		db = open_db()
+		count = db.query(UserFollow).filter_by(user_id=self.id).count()
+		db.close()
+		return count
+	
+	def is_following(self, uid: int) -> bool:
+		db = open_db()
+		ret = db.query(UserFollow).filter_by(user_id=self.id,target_id=uid).first()
+		return True if ret is not None else False

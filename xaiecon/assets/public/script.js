@@ -86,6 +86,28 @@ function vote_comment(id,value) {
 	xhr.send(params);
 }
 
+function follow(uid,e) {
+	var xhr = new XMLHttpRequest();
+	var url;
+	var text;
+	var params = 'uid='+uid;
+	if(e.value === 'Unfollow') {
+		url = '/user/unfollow';
+		text = 'Follow';
+	} else {
+		url = '/user/follow';
+		text = 'Unfollow';
+	}
+	xhr.open('POST',url,true);
+	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4 && xhr.status == 200) {
+			e.value = text;
+		}
+	}
+	xhr.send(params);
+}
+
 function subscribe(bid,e) {
 	var xhr = new XMLHttpRequest();
 	var url;

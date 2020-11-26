@@ -22,7 +22,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import User
+from xaiecon.classes.user import User, UserFollow
 from xaiecon.classes.notification import Notification
 
 from xaiecon.classes.exception import XaieconException
@@ -205,6 +205,57 @@ def view_by_id(u=None):
 	db.close()
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
+
+@user.route('/user/follow', methods = ['POST'])
+@login_required
+def subscribe(u=None):
+	db = open_db()
+	
+	uid = request.values.get('uid')
+
+	# Board does not exist
+	if db.query(User).filter_by(id=uid).first() is None:
+		return '',404
+	# Already subscribed
+	if u.is_following(uid) == True:
+		return '',400
+
+	sub = UserFollow(user_id=u.id,target_id=uid)
+	db.add(sub)
+	
+	user = db.query(User).filter_by(id=uid).first()
+	db.query(User).filter_by(id=uid).update({
+		'follow_count':user.follow_count+1})
+	
+	db.commit()
+
+	db.close()
+	return '',200
+
+@user.route('/user/unfollow', methods = ['POST'])
+@login_required
+def unsubscribe(u=None):
+	db = open_db()
+	
+	uid = request.values.get('uid')
+
+	# User does not exist
+	if db.query(User).filter_by(id=uid).first() is None:
+		return '',404
+	# Not following
+	if u.is_following(uid) == False:
+		return '',400
+	
+	db.query(UserFollow).filter_by(user_id=u.id,target_id=uid).delete()
+	
+	user = db.query(User).filter_by(id=uid).first()
+	db.query(User).filter_by(id=uid).update({
+		'follow_count':user.follow_count-1})
+	
+	db.commit()
+	
+	db.close()
+	return '',200
 
 @user.route('/user/thumb', methods = ['GET','POST'])
 @login_wanted

@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS xaiecon_post;
 DROP TABLE IF EXISTS xaiecon_board;
 DROP TABLE IF EXISTS xaiecon_category;
 DROP TABLE IF EXISTS xaiecon_user;
+DROP TABLE IF EXISTS xaiecon_follower;
 
 CREATE TABLE xaiecon_user(
 	id SERIAL PRIMARY KEY,
@@ -34,6 +35,7 @@ CREATE TABLE xaiecon_user(
 	is_banned BOOLEAN DEFAULT FALSE,
 	can_make_board BOOLEAN DEFAULT FALSE,
 	ban_reason VARCHAR(255),
+	follow_count INT DEFAULT 0,
 	creation_date INT,
 	net_points INT,
 	fallback_thumb VARCHAR(64) NOT NULL
@@ -208,6 +210,13 @@ CREATE TABLE xaiecon_notification(
 	body_html VARCHAR(16000) NOT NULL,
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id)
+);
+
+CREATE TABLE xaiecon_follower(
+	id SERIAL PRIMARY KEY,
+	creation_date INT,
+	user_id INT REFERENCES xaiecon_user(id),
+	target_id INT REFERENCES xaiecon_user(id)
 );
 
 INSERT INTO xaiecon_category(name) VALUES

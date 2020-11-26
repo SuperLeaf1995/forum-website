@@ -6,11 +6,22 @@
 	{% if user.is_banned == True %}
 		<p>{% trans %}This user has been banned for{% endtrans %}: {{ user.ban_reason }}</p>
 	{% else %}
-		<b>{% trans %}Network Points{% endtrans %}: {{ user.net_points }}</b>
-
+		<b>{% trans %}Network Points{% endtrans %}: {{ user.net_points }}</b><br>
+		<b>Followers: {{ user.followers_count }}</b><br>
+		<b>Following: {{ user.following_count }}</b><br>
+		
 		<p>{{ user.biography }}</p>
 		
 		{% if u != None %}
+		
+		{% if u.id != user.id %}
+		{% if u.is_following(user.id) %}
+		<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Unfollow'>
+		{% else %}
+		<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Follow'>
+		{% endif %}
+		{% endif %}
+		
 			{% if user.is_show_email == True or u.id == user.id %}
 				<p>{% trans %}Electronic Mail Address{% endtrans %}: {{ user.email }}</p>
 			{% else %}

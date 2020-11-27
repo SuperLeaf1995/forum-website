@@ -153,7 +153,7 @@ def notifications(u=None):
 	db = open_db()
 	
 	# Mark all notifications as read
-	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).order_by(desc(Notification.creation_date)).all()
+	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).order_by(desc(Notification.id)).all()
 	
 	db.close()
 	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)

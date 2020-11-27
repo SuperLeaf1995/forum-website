@@ -17,7 +17,7 @@
 	<label for='link'>Link</label>
 	<input class='textbar-normal' type='text' name='link' id='link' value='{{ post.link_url }}'></br>
 	<label for='is_nsfw'>Is post NSFW?</label>
-	<input type='checkbox' name='is_nsfw' id='is_nsfw' value='{{ post.is_nsfw }}'></input></br>
+	<input type='checkbox' name='is_nsfw' id='is_nsfw' {% if post.is_nsfw == True %}checked{% endif %}></input></br>
 	<label for='category'>Category</label>
 	<select name='category'>
 	{% for category in categories %}

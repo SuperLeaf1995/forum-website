@@ -1,5 +1,13 @@
 <ul class='nav-top'>
+	{% if u != None %}
+	{% if u == None or u.uses_dark_mode == False %}
 	<li class='nav-logo'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
+	{% else %}
+	<li class='nav-logo'><img src='/assets/site-logo-white.png' alt='The Xaiecon logo'></img></li>
+	{% endif %}
+	{% else %}
+	<li class='nav-logo'><img src='/assets/site-logo.png' alt='The Xaiecon logo'></img></li>
+	{% endif %}
 	
 	{% if u == None %}
 	<li class='nav-element'><a href='/user/signup'>{% trans %}Sign-up{% endtrans %}</a></li>

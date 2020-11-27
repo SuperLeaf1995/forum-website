@@ -319,6 +319,8 @@ def edit(u=None):
 			raise XaieconException(gettext('Not authorized'))
 
 		if request.method == 'POST':
+			print(request.form)
+			
 			# Get stuff
 			email = request.form.get('email')
 			fax = request.form.get('fax')
@@ -330,6 +332,7 @@ def edit(u=None):
 			is_show_fax = strtobool(request.form.get('is_show_fax','False'))
 			is_show_phone = strtobool(request.form.get('is_show_phone','False'))
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
+			uses_dark_mode = strtobool(request.form.get('uses_dark_mode','False'))
 			
 			db.query(User).filter_by(id=id).update({
 						'biography':biography,
@@ -339,7 +342,8 @@ def edit(u=None):
 						'is_show_fax':is_show_fax,
 						'phone':phone,
 						'is_show_phone':is_show_phone,
-						'is_nsfw':is_nsfw})
+						'is_nsfw':is_nsfw,
+						'uses_dark_mode':uses_dark_mode})
 			db.commit()
 			db.refresh(user)
 

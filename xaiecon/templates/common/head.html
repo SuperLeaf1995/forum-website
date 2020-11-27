@@ -1,6 +1,14 @@
 <head>
 	<title>{{ title }} - Xaiecon</title>
+	{% if u != None %}
+	{% if u.uses_dark_mode == False %}
 	<link rel='stylesheet' href='/assets/style.css'>
+	{% else %}
+	<link rel='stylesheet' href='/assets/dark-style.css'>
+	{% endif %}
+	{% else %}
+	<link rel='stylesheet' href='/assets/style.css'>
+	{% endif %}
 	<link href='https://fonts.googleapis.com/css?family=Didact+Gothic' rel='stylesheet'>
 	<script src='/assets/script.js'></script>
 	<meta charset="UTF-8">

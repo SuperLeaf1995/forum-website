@@ -38,6 +38,7 @@ CREATE TABLE xaiecon_user(
 	follow_count INT DEFAULT 0,
 	creation_date INT,
 	net_points INT,
+	uses_dark_mode BOOLEAN DEFAULT FALSE,
 	fallback_thumb VARCHAR(64) NOT NULL
 );
 

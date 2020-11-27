@@ -1,0 +1,367 @@
+::-moz-selection, ::selection {
+  background-color: #74b0fc;
+  color: white;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+}
+
+.body-grey {
+  background-color: #3b3b3b;
+  color: white;
+}
+
+.body-white {
+  background-color: white;
+}
+
+.left-panel {
+  width: 22%;
+  float: left;
+  padding: 4%;
+}
+
+.right-panel {
+  float: left;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 70%;
+  height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: #74b0fc;
+}
+
+a:visited, a:active, a:hover, a:focus {
+  color: #74b0fc;
+}
+
+.index-intro {
+  background: #3cabf0;
+  background: linear-gradient(225deg,#3cabf0 0%,#3126d1 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#3cabf0',endColorstr='#3126d1');
+  zoom: 1;
+  margin: 0; padding: 0;
+  width: 100%;
+  height: 100vh;
+  background-image: url('/assets/landscape/4.jpeg');
+  background-size: cover;
+}
+
+.index-block {
+  padding-left: 30%;
+  padding-right: 30%;
+  text-align: center;
+}
+
+.index-intro-title {
+  color: white;
+  font-size: xxx-large;
+  animation: fade-in ease 1.5s;
+}
+
+.index-intro-brief {
+  color: white;
+  font-size: larger;
+  clear: both;
+  animation: fade-in ease 1.5s;
+}
+
+.index-intro-btn {
+  border: none;
+  color: white;
+  background: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: bold;
+  border: 1px solid white;
+  transition: 0.3s;
+  animation: fade-in ease 1.5s;
+}
+
+.index-intro-btn:hover {
+  background-color: #3126d1;
+  color: white;
+  border: 1px solid #3126d1;
+  cursor: pointer;
+}
+
+.header-nav {
+  list-style-type: none;
+  padding: 12px;
+  margin: 12px;
+  background-color: #575757;
+  border-radius: 4px;
+}
+
+.header-nav li a {
+  display: block;
+  padding: 4px 12px;
+  background-color: #575757;
+  color: #74b0fc;
+  margin: 4px;
+  border: 1px solid white;
+  transition: 0.3s;
+}
+
+.header-nav li a:hover {
+  box-shadow: 0 0 4px white;
+}
+
+.alert {
+  position: fixed;
+  background-color: white;
+  top: 8px;
+  z-index: 1;
+  padding: 0 16px;
+  border-radius: 8px;
+  width: 20%;
+  left: 40%;
+  box-shadow: 0 0 4px grey;
+  text-align: center;
+  opacity: 0;
+  animation: fade-out ease 8s 1s;
+}
+
+.form-btn {
+  border: none;
+  background-color: #3126d1;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.form-btn:hover {
+  color: #3126d1;
+  background-color: white;
+  cursor: pointer;
+}
+
+/*
+  Navigation bar styling
+*/
+.nav-top {
+  list-style-type: none;
+  overflow: hidden;
+  background-color: #242424;
+  margin: 0;
+  padding: 2px;
+  z-index: 2;
+}
+
+.nav-element, .nav-dropdown {
+  float: right;
+}
+
+.nav-element a, .nav-dropdown a {
+  display: block;
+  text-align: center;
+  padding: 12px 18px;
+  color: white;
+  transition: 0.3s;
+}
+
+.nav-element a:hover, .nav-dropdown a:hover {
+  color: white;
+}
+
+.nav-top .nav-logo {
+  float: left;
+}
+
+.nav-top .nav-logo img {
+  width: 258px;
+  height: 36px;
+  margin: 1px;
+}
+
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  padding: 12px 18px;
+  background-color: #242424;
+  border-bottom: 1px solid grey;
+  margin: 0;
+}
+
+.nav-dropdown-content a {
+  float: none;
+}
+
+.nav-dropdown:hover .nav-dropdown-content {
+  display: block;
+}
+
+/* Normal input stylization */
+.textbar-normal {
+  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+  color: black;
+  background-color: #575757;
+  border: none;
+  padding: 8px 16px;
+  margin: 4px;
+}
+
+select {
+  color: black;
+  border: none;
+  background-color: white;
+  padding: 8px 16px;
+  margin: 4px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #e4f1f7;
+}
+
+textarea {
+  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+  resize: none;
+}
+
+/* Post */
+.block-content {
+  overflow: auto;
+  color: white;
+  word-break: break-all;
+  margin: 12px;
+  padding: 12px;
+  border-color: #f5f5f5;
+  background-color: #575757;
+  border-radius: 4px;
+}
+
+.post-brief {
+  color: white;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+  float: left;
+  padding: 4px;
+  margin: 8px;
+  padding-top: 12px;
+  border-radius: 4px;
+  box-shadow: 0 0 1px white;
+  background-color: #575757;
+  overflow: auto;
+  transition: 0.3s;
+  animation: fade-in ease 2s;
+}
+
+.post-brief:hover {
+  box-shadow: 0 0 4px white;
+}
+
+.post-brief-thumb {
+  float: left;
+  overflow: hidden;
+}
+
+.post-brief-thumb img {
+  flex: 1;
+  height: 100%;
+  width: 128px;
+}
+
+.post-option, .post-option:visited {
+  float: left;
+  color: grey;
+  padding: 2px 12px;
+  border-right: solid 1px black;
+  transition: 0.3s;
+}
+
+.post-option:hover {
+  color: white;
+}
+
+/* Upvotes */
+.content-downvote, .content-downvote-active {
+  display: block;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 24px solid;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.content-upvote, .content-upvote-active {
+  display: block;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-bottom: 24px solid;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.content-upvote, .content-downvote {
+  color: grey;
+}
+.content-upvote-active, .content-downvote-active {
+  color: #74b0fc;
+}
+.content-upvote:hover, .content-upvote:active, .content-upvote:visited, , .content-upvote:focus,
+.content-downvote:hover, .content-downvote:active, .content-downvote:visited, , .content-downvote:focus {
+  color: #74b0fc;
+}
+.content-upvote-active:hover, .content-downvote-active:hover {
+  color: #74b0fc;
+}
+
+.comment-block-details {
+  padding: 2px 0 2px 20px;
+  margin-bottom: 8px;
+  background-color: #f5f5f5;
+}
+
+ @media only screen and (max-width: 800px) {
+   .nav-dropdown, .header-nav, .nav-top img {
+     display: none;
+   }
+   .nav-top {
+     position: sticky;
+   }
+   .hidden-on-mobile {
+     display: none;
+   }
+}
+
+.footer-element, .footer-element:visited {
+  float: left;
+  color: grey;
+  padding: 2px 12px;
+  transition: 0.3s;
+}
+
+.footer-element:hover {
+  color: #3126d1;
+}
+
+img {
+  animation: slide-in ease 2s;
+}

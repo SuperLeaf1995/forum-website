@@ -51,14 +51,11 @@ class User(Base):
 	is_nsfw = Column(Boolean, default=False)
 	is_admin = Column(Boolean, default=False)
 	can_make_board = Column(Boolean, default=True)
-	
+	uses_dark_mode = Column(Boolean, default=False)
 	follow_count = Column(Integer, default=0)
-	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
-	
 	fallback_thumb = Column(String(64), nullable=True)
-	
 	creation_date = Column(Integer, default=time.time())
 	net_points = Column(Integer, default=0)
 	

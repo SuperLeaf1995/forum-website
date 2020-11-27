@@ -12,6 +12,7 @@ from flask_babel import gettext
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post
 from xaiecon.classes.comment import Comment
+from xaiecon.classes.user import UserFollow
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
 
@@ -246,6 +247,11 @@ def create(u=None):
 		db.commit()
 		
 		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',post.user_id)
+		
+		# Notify followers
+		follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
+		for f in follows:
+			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',f.user_id)
 		
 		db.close()
 		return redirect(f'/post/view?pid={pid}')

@@ -13,8 +13,8 @@ DROP TABLE IF EXISTS xaiecon_comment;
 DROP TABLE IF EXISTS xaiecon_post;
 DROP TABLE IF EXISTS xaiecon_board;
 DROP TABLE IF EXISTS xaiecon_category;
-DROP TABLE IF EXISTS xaiecon_user;
 DROP TABLE IF EXISTS xaiecon_follower;
+DROP TABLE IF EXISTS xaiecon_user;
 
 CREATE TABLE xaiecon_user(
 	id SERIAL PRIMARY KEY,
@@ -139,9 +139,9 @@ CREATE TABLE xaiecon_serverchain(
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
 	ip_addr VARCHAR(255) NOT NULL,
-	endpoint_url VARCHAR(255) NOT NULL,
-	internal_token VARCHAR(255) NOT NULL,
-	external_token VARCHAR(255) NOT NULL,
+	our_private_key VARCHAR(255),
+	our_public_key VARCHAR(255),
+	their_private_key VARCHAR(255),
 	is_banned BOOLEAN DEFAULT FALSE,
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,
@@ -215,6 +215,8 @@ CREATE TABLE xaiecon_notification(
 CREATE TABLE xaiecon_follower(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
+	show_in_feed BOOLEAN DEFAULT TRUE,
+	notify BOOLEAN DEFAULT TRUE,
 	user_id INT REFERENCES xaiecon_user(id),
 	target_id INT REFERENCES xaiecon_user(id)
 );

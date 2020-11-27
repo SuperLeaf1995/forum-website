@@ -23,7 +23,7 @@ from werkzeug.utils import secure_filename
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
-from xaiecon.classes.user import User
+from xaiecon.classes.user import User, UserFollow
 from xaiecon.classes.post import Post
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.category import Category
@@ -50,8 +50,7 @@ def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
 	if num > 50:
 		num = 50
 	
-	# Obtain category by name, if category does not exist then use All as
-	# fallback
+	# Obtain category by name
 	category_obj = None
 	if category != 'All':
 		category_obj = db.query(Category).filter_by(name=category).first()
@@ -72,10 +71,8 @@ def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
 	# TODO: Use filter instead of array slice
 	if sort == 'new':
 		post = post.order_by(desc(Post.id))
-		#post = post.filter(Post.id>=(page*num),Post.id>=((page+1)*num))
 	elif sort == 'old':
 		post = post.order_by(asc(Post.id))
-		#post = post.filter(Post.id>=(page*num),Post.id<=((page+1)*num))
 	else:
 		abort(401)
 	
@@ -580,7 +577,12 @@ def write(u=None):
 			csam_thread.start()
 
 			# Alert boardmaster of the posts in the guild
-			send_notification(f'{post.title} - [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
+			send_notification(f'**{post.title}** - [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
+
+			# Notify followers
+			follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
+			for f in follows:
+				send_notification(f'**{post.title}** - [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',f.user_id)
 
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')
@@ -736,6 +738,7 @@ def list_nuked(u=None, sort='new'):
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=post,
 		page=page,num=num,category=category,sort=sort)
 
+@post.route('/post/feed', methods = ['GET'])
 @post.route('/post/feed/<sort>', methods = ['GET'])
 @login_required
 def feed_posts(u=None, sort='new'):
@@ -752,15 +755,21 @@ def feed_posts(u=None, sort='new'):
 	for s in subs:
 		subs_id.append(s.id)
 	
+	# And also remove posts when they are not of followed persons
+	follows = u.following
+	follows_id = []
+	for f in follows:
+		follows_id.append(f.target_id)
+	
 	for p in posts:
-		if p.board_id not in subs_id:
+		if p.board_id not in subs_id and p.user_id not in follows_id:
 			posts.remove(p)
 			continue
 	
 	# Slice out useless posts
 	posts = posts[(page*num):((page+1)*num)]
 	
-	return render_template('post/list.html',u=u,title='My feed',post=post,
+	return render_template('post/list.html',u=u,title='My feed',posts=posts,
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/title_by_url', methods = ['GET'])

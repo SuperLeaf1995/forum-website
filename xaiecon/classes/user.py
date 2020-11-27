@@ -17,6 +17,9 @@ class UserFollow(Base):
 	
 	creation_date = Column(Integer, default=time.time())
 	
+	show_in_feed = Column(Boolean, default=True)
+	notify = Column(Boolean, default=True)
+	
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
@@ -155,6 +158,20 @@ class User(Base):
 		count = db.query(Notification).filter_by(user_id=self.id,is_read=False).count()
 		db.close()
 		return count
+	
+	@property
+	def followers(self):
+		db = open_db()
+		ret = db.query(UserFollow).filter_by(target_id=self.id).all()
+		db.close()
+		return ret
+	
+	@property
+	def following(self):
+		db = open_db()
+		ret = db.query(UserFollow).filter_by(user_id=self.id).all()
+		db.close()
+		return ret
 	
 	@property
 	def followers_count(self) -> int:

@@ -7,6 +7,12 @@
 
 import requests
 import time
+import rsa
+
+import base64
+import hashlib
+import Crypto
+from Crypto.Cipher import AES
 
 from flask import Blueprint, render_template, request, jsonify
 from flask_babel import gettext
@@ -19,9 +25,50 @@ from xaiecon.classes.comment import Comment
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.serverchain import Serverchain
 
-from xaiecon.modules.core.wrappers import login_required
+from xaiecon.modules.core.wrappers import login_required, login_wanted
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
+
+class AES256(object):
+	def __init__(self, key):
+		self.bs = AES.block_size
+		self.key = hashlib.sha256(key.encode()).digest()
+	
+	def encrypt(self, raw):
+		raw = self._pad(raw)
+		iv = Crypto.Random.new().read(AES.block_size)
+		cipher = AES.new(self.key, AES.MODE_CBC, iv)
+		return base64.b64encode(iv+cipher.encrypt(raw.encode()))
+	
+	def decrypt(self, enc):
+		enc = base64.b64decode(enc)
+		iv = enc[:AES.block_size]
+		cipher = AES.new(self.key, AES.MODE_CBC, iv)
+		return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
+
+# this endpoint is called when a chainer wants to chain
+# and returns the public key so the other person
+# can give us their private key for establishing a secure
+# E2E connection
+@fediverse.route('/fediverse/init/start', methods = ['GET','POST'])
+@login_wanted
+def init_start(u=None):
+	ip_addr = request.remote_addr
+	
+	(pub_key, priv_key) = rsa.newkeys(1024)
+	
+	headers = {'User-Agent':'Xaiecon Chainer'}
+	
+	x = requests.get(f'https://{ip_addr}/init/recv_pub',headers=headers)
+
+@fediverse.route('/fediverse/init/recv_pub', methods = ['GET','POST'])
+@login_wanted
+def init_recv_pub(u=None):
+	ip_addr = request.remote_addr
+	
+	headers = {'User-Agent':'Xaiecon Chainer'}
+	
+	
 
 @fediverse.route('/fediverse/add', methods = ['GET','POST'])
 @login_required

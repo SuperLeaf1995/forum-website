@@ -54,7 +54,7 @@ class Post(Base):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.descr,
-		self.link_url,self.is_link,self.is_nsfw,self.is_admin,self.keywords,
-		self.user_id,self.downvote_count,self.upvote_count,self.total_vote_count,
+		return 'Post(%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r,%r)' % (self.title,self.body,
+		self.link_url,self.is_link,self.is_nsfw,self.keywords,self.user_id,
+		self.downvote_count,self.upvote_count,self.total_vote_count,
 		self.is_deleted,self.category_id)

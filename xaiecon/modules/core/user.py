@@ -153,7 +153,7 @@ def notifications(u=None):
 	db = open_db()
 	
 	# Mark all notifications as read
-	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).all()
+	notifications = db.query(Notification).filter_by(user_id=u.id,is_read=False).order_by(desc(Notification.creation_date)).all()
 	
 	db.close()
 	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)
@@ -205,6 +205,36 @@ def view_by_id(u=None):
 	db.close()
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
+
+@user.route('/user/feed_settings', methods = ['GET','POST'])
+@login_wanted
+def change_feed_settings(u=None):
+	uid = int(request.values.get('uid','0'))
+	
+	db = open_db()
+	
+	user = db.query(User).filter_by(id=uid).first()
+	if user is None:
+		abort(404)
+	
+	if request.method == 'POST':
+		show = strtobool(str(request.values.get('show-feed')))
+		receive = strtobool(str(request.values.get('receive')))
+		
+		sub = db.query(UserFollow).filter_by(user_id=u.id,target_id=uid).first()
+		if sub is None:
+			abort(404)
+		
+		db.query(UserFollow).filter_by(user_id=u.id,target_id=uid).update({
+			'show_in_feed':show,
+			'notify':receive})
+		db.commit()
+		db.close()
+		
+		return redirect(f'/user/view?uid={uid}')
+	else:
+		db.close()
+		return render_template('user/follow_settings.html',u=u,title='Edit feed and notification settings',user=user)
 
 @user.route('/user/follow', methods = ['POST'])
 @login_required

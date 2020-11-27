@@ -13,15 +13,15 @@
 		<p>{{ user.biography }}</p>
 		
 		{% if u != None %}
-		
-		{% if u.id != user.id %}
-		{% if u.is_following(user.id) %}
-		<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Unfollow'>
-		{% else %}
-		<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Follow'>
-		{% endif %}
-		{% endif %}
-		
+			{% if u.id != user.id %}
+				{% if u.is_following(user.id) %}
+					<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Unfollow'><br>
+					<a href='/user/feed_settings?uid={{ user.id }}'>Edit feed and notification settings</a>
+				{% else %}
+					<input type='button' class='form-btn' onclick='follow("{{ user.id }}",this);' value='Follow'>
+				{% endif %}
+			{% endif %}
+			
 			{% if user.is_show_email == True or u.id == user.id %}
 				<p>{% trans %}Electronic Mail Address{% endtrans %}: {{ user.email }}</p>
 			{% else %}

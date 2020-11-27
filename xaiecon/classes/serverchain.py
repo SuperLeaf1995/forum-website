@@ -13,7 +13,14 @@ class Serverchain(Base):
 	id = Column(Integer, primary_key=True)
 	name = Column(String(255), nullable=False)
 	ip_addr = Column(String(255), nullable=False)
-	endpoint_url = Column(String(255), nullable=False)
+	
+	# Our public key we give to the other server
+	our_public_key = Column(String(255), nullable=True)
+	# Our private key we store for ourselves for decrypting data
+	our_private_key = Column(String(255), nullable=True)
+	# The private key of the other server, hashed with our public key
+	their_private_key = Column(String(255), nullable=True)
+	
 	is_banned = Column(Boolean, default=False)
 	is_active = Column(Boolean, default=False)
 	is_online = Column(Boolean, default=False)

@@ -371,7 +371,8 @@ def edit(u=None):
 				is_link = True
 
 				embed = obtain_embed_url(link)
-				embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
+				if embed is not None:
+					embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
 			
 			if body == None or body == '':
 				raise XaieconException('Empty body')
@@ -502,7 +503,8 @@ def write(u=None):
 				is_link = True
 
 				embed = obtain_embed_url(link)
-				embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
+				if embed is not None:
+					embed_html = f'<iframe width="560" height="315" src="{embed}" allowfullscreen frameborder=\'0\'></iframe>'
 
 			if body == '' and is_link == False:
 				raise XaieconException('Empty body')
@@ -832,7 +834,7 @@ def search(u=None):
 # - Odysee
 # - LBRY
 def obtain_embed_url(link: str) -> str:
-	headers = {'User-Agent':'xaiecon-thumbnail-getter'}
+	headers = {'User-Agent':'xaiecon-embed-getter'}
 	x = requests.get(link,headers=headers)
 	if x.status_code not in [200]:
 		return
@@ -852,6 +854,7 @@ def obtain_embed_url(link: str) -> str:
 			allowed_embeds = [
 				'PeerTube',
 				'LBRY',
+				'YouTube'
 			]
 			
 			if p == 'Xaiecon':

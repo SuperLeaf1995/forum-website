@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -24,6 +25,8 @@ class Comment(Base):
 	comment_info = relationship('Comment', foreign_keys=[comment_id])
 	post_info = relationship('Post', foreign_keys=[post_id])
 	user_info = relationship('User', foreign_keys=[user_id])
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

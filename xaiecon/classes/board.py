@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 from sqlalchemy import Column, Integer, ForeignKey, String, Boolean
 from sqlalchemy.orm import relationship
 
@@ -32,6 +33,8 @@ class Board(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
+	uuid = Column(String(255), default=secrets.token_hex(254))
+	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
@@ -51,6 +54,8 @@ class BoardBan(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
+	uuid = Column(String(255), default=secrets.token_hex(254))
+	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
@@ -68,8 +73,10 @@ class BoardSub(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
+	uuid = Column(String(255), default=secrets.token_hex(254))
+	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
-		return 'BoardSub(%r,%r,%r,%r)' % (self.user_id,self.board_id)
+		return 'BoardSub(%r,%r)' % (self.user_id,self.board_id)

@@ -39,13 +39,15 @@ CREATE TABLE xaiecon_user(
 	creation_date INT,
 	net_points INT,
 	uses_dark_mode BOOLEAN DEFAULT FALSE,
-	fallback_thumb VARCHAR(64) NOT NULL
+	fallback_thumb VARCHAR(64) NOT NULL,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_category(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
-	name VARCHAR(255)
+	name VARCHAR(255),
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_board(
@@ -61,7 +63,8 @@ CREATE TABLE xaiecon_board(
 	sub_count INT,
 	fallback_thumb VARCHAR(64) NOT NULL,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
-	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_post(
@@ -90,7 +93,8 @@ CREATE TABLE xaiecon_post(
 	nuker_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	board_id INT REFERENCES xaiecon_board(id) ON UPDATE CASCADE
+	board_id INT REFERENCES xaiecon_board(id) ON UPDATE CASCADE,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_flag(
@@ -98,7 +102,8 @@ CREATE TABLE xaiecon_flag(
 	creation_date INT,
 	reason VARCHAR(16000),
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
-	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_comment(
@@ -111,7 +116,8 @@ CREATE TABLE xaiecon_comment(
 	total_vote_count INT DEFAULT 0,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE
+	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_vote(
@@ -120,20 +126,23 @@ CREATE TABLE xaiecon_vote(
 	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	value BIGINT DEFAULT 1
+	value BIGINT DEFAULT 1,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_view(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
-	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_log(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
-	name VARCHAR(255) NOT NULL
+	name VARCHAR(255) NOT NULL,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_serverchain(
@@ -146,7 +155,8 @@ CREATE TABLE xaiecon_serverchain(
 	is_banned BOOLEAN DEFAULT FALSE,
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,
-	creation_date INT
+	creation_date INT,
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_board_ban(
@@ -155,14 +165,16 @@ CREATE TABLE xaiecon_board_ban(
 	creation_date INT,
 	reason VARCHAR(255) NOT NULL,
 	board_id INT REFERENCES xaiecon_board(id),
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_board_sub(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
 	board_id INT REFERENCES xaiecon_board(id),
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 -- API App
@@ -171,7 +183,8 @@ CREATE TABLE xaiecon_apiapp(
 	name VARCHAR(128),
 	token VARCHAR(128),
 	creation_date INT,
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 -- OAuth App
@@ -182,7 +195,8 @@ CREATE TABLE xaiecon_oauthapp(
 	name VARCHAR(128) NOT NULL,
 	redirect_uri VARCHAR(128) NOT NULL,
 	creation_date INT,
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_oauthclient(
@@ -201,7 +215,8 @@ CREATE TABLE xaiecon_oauthclient(
 	scope_board BOOLEAN DEFAULT FALSE,
 	scope_write BOOLEAN DEFAULT FALSE,
 	oauthapp_id INT REFERENCES xaiecon_oauthapp(id),
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_notification(
@@ -210,7 +225,8 @@ CREATE TABLE xaiecon_notification(
 	body VARCHAR(16000) NOT NULL,
 	body_html VARCHAR(16000) NOT NULL,
 	creation_date INT,
-	user_id INT REFERENCES xaiecon_user(id)
+	user_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 CREATE TABLE xaiecon_follower(
@@ -219,7 +235,8 @@ CREATE TABLE xaiecon_follower(
 	show_in_feed BOOLEAN DEFAULT TRUE,
 	notify BOOLEAN DEFAULT TRUE,
 	user_id INT REFERENCES xaiecon_user(id),
-	target_id INT REFERENCES xaiecon_user(id)
+	target_id INT REFERENCES xaiecon_user(id),
+	uuid VARCHAR(255)
 );
 
 INSERT INTO xaiecon_category(name) VALUES
@@ -239,5 +256,3 @@ INSERT INTO xaiecon_category(name) VALUES
 	('Videogames'),
 	('Other'),
 	('Sports');
-
-INSERT INTO xaiecon_user(name,username,biography,password,auth_token,fallback_thumb) VALUES('guest','guest','This is the default guest user','uncreatable','uncreatable','golden.png')

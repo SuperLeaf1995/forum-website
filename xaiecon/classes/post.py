@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -49,6 +50,8 @@ class Post(Base):
 	
 	board_id = Column(Integer, ForeignKey('xaiecon_board.id'))
 	board_info = relationship('Board', foreign_keys=[board_id])
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

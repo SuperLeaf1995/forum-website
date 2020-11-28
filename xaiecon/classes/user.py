@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 
 from flask import session
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
@@ -25,6 +26,8 @@ class UserFollow(Base):
 	
 	target_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	target_info = relationship('User', foreign_keys=[user_id])
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -58,6 +61,8 @@ class User(Base):
 	fallback_thumb = Column(String(64), nullable=True)
 	creation_date = Column(Integer, default=time.time())
 	net_points = Column(Integer, default=0)
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

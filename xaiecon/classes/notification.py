@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 
 from sqlalchemy import Column, Boolean, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
@@ -19,6 +20,8 @@ class Notification(Base):
 	
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

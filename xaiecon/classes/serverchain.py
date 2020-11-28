@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time
+import secrets
 
 from sqlalchemy import Column, Integer, String, Boolean
 
@@ -25,6 +26,8 @@ class Serverchain(Base):
 	is_active = Column(Boolean, default=False)
 	is_online = Column(Boolean, default=False)
 	creation_date = Column(Integer, default=time.time())
+	
+	uuid = Column(String(255), default=secrets.token_hex(254))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

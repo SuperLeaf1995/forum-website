@@ -23,7 +23,7 @@ def send_event(json):
 	
 	for s in servers:
 		headers = { 'User-Agent':'Xaiecon-Fediverse' }
-		requests.post(url=url,headers=headers,json=json)
+		requests.post(url='http://{s.ip_addr}/fediverse/receive',headers=headers,json=json)
 	
 	db.close()
 

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-	{% include 'common/head.html' %}
+	<head>
+		{% include 'common/head.html' %}
+		{% block extra_head %}{% endblock %}
+	</head>
 	<body class='body-grey'>
 		{% include 'common/navbar.html' %}
 		{% include 'common/userpanel.html' %}

@@ -1,27 +1,23 @@
-<head>
-	<title>{{ title }} - Xaiecon</title>
-	{% if u != None %}
-	{% if u.uses_dark_mode == False %}
-	<link rel='stylesheet' href='/assets/style.css'>
-	{% else %}
-	<link rel='stylesheet' href='/assets/dark-style.css'>
-	{% endif %}
-	{% else %}
-	<link rel='stylesheet' href='/assets/style.css'>
-	{% endif %}
-	<link href='https://fonts.googleapis.com/css?family=Didact+Gothic' rel='stylesheet'>
-	<script src='/assets/script.js'></script>
-	<meta charset="UTF-8">
-	<meta name="description" content="Federated discussion place. Make your own fediverse; get back your internet.">
-	<meta name="keywords" content="federated, opensource, federated opensource, opensource project python, federated forums, forums, bbs, bulletin board, federated bulletin board, opensource federated bulletin board, opensource federated discussion place, top federated freespeech platforms, how to make your own fediverse">
-	<meta name="viewport" content="width=device-width, initial-scale=0.5">
-	<meta name="author" content="Jesus Diaz">
-	<meta name="google-site-verification" content="r6DR4HO2a4YSUXA0_B6WhIel41TWx-gS3VZ1s--LTE0"/>
-	<meta property="og:platform" content="Xaiecon">
-	<meta property="og:site_name" content="Xaiecon">
-	<meta property="og:type" content="website">
-	<meta property="og:title" content="{{ title }} - Xaiecon">
-	<meta property="og:url" content="{{ request.url }}">
-	<meta property="og:description" content="Xaiecon is a federation of forums aimed to be censorship resistant">
-	<script>0</script>
-</head>
+<title>{{ title }} - Xaiecon</title>
+{% if u != None %}
+{% if u.uses_dark_mode == False %}
+<link rel='stylesheet' href='/assets/style.css'>
+{% else %}
+<link rel='stylesheet' href='/assets/dark-style.css'>
+{% endif %}
+{% else %}
+<link rel='stylesheet' href='/assets/style.css'>
+{% endif %}
+<link href='https://fonts.googleapis.com/css?family=Didact+Gothic' rel='stylesheet'>
+<script src='/assets/script.js'></script>
+<meta charset="UTF-8">
+<meta name="description" content="Federated discussion place. Make your own fediverse; get back your internet.">
+<meta name="keywords" content="federated, opensource, federated opensource, opensource project python, federated forums, forums, bbs, bulletin board, federated bulletin board, opensource federated bulletin board, opensource federated discussion place, top federated freespeech platforms, how to make your own fediverse">
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+<meta name="author" content="Jesus Diaz">
+<meta name="google-site-verification" content="r6DR4HO2a4YSUXA0_B6WhIel41TWx-gS3VZ1s--LTE0"/>
+<meta property="og:platform" content="Xaiecon">
+<meta property="og:site_name" content="Xaiecon">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<script>0</script>

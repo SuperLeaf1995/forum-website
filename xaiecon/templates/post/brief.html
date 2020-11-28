@@ -1,9 +1,15 @@
 <article class='post-brief'>
-	<div class='post-brief-thumb'>
-	{% if post.is_thumb == True %}
-		<a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a>
+	{% if post.is_image == True %}
+		<div class='post-brief-thumb'><img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></img></div>
+		<div id='image-full' class='image-preview-full'>
+			<img src='/post/image?pid={{ post.id }}'>
+		</div>
+		<div id='smoke-curtain' class='smoke-curtain'></div>
+	{% elif post.is_thumb == True and post.is_link == True %}
+		<div class='post-brief-thumb'><a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a></div>
+	{% elif post.is_thumb == True %}
+		<div class='image-full'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
 	{% endif %}
-	</div>
 
 	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}

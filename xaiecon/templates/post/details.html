@@ -1,5 +1,28 @@
 {% extends "default_layout.html" %}
+
+{% block extra_head %}
+	<meta property="og:title" content="{{ post.title }}">
+	<meta property="og:description" content="{{ post.body | truncate(800,true) }}">
+	{% if post.is_image == True %}
+	<meta property="og:image" content="https://xaiecon.com/post/image?pid={{ post.id }}">
+	{% elif post.is_thumb == True %}
+	<meta property="og:image" content="https://xaiecon.com/post/thumb?pid={{ post.id }}">
+	{% endif %}
+{% endblock %}
+
 {% block content %}
+	{% if post.is_image == True %}
+		<img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'>
+		<div id='image-full' class='image-preview-full'>
+			<img src='/post/image?pid={{ post.id }}'></img>
+		</div>
+		<div id='smoke-curtain' class='smoke-curtain'></div>
+	{% elif post.is_thumb == True and post.is_link == True %}
+		<div style='float:left;'><a href='{{ post.link_url }}'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></a></div>
+	{% elif post.is_thumb == True %}
+		<div style='float:left;'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
+	{% endif %}
+	
 	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'></a>
@@ -26,9 +49,6 @@
 	<div>
 		<p>{{ post.body_html | safe }}</p>
 		{{ post.embed_html|safe }}
-		{% if post.is_image == True %}
-		<a href='{{ post.link_url }}'><img src='/post/image?pid={{ post.id }}'></img></a>
-		{% endif %}
 	</div>
 
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>

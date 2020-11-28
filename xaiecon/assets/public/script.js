@@ -195,3 +195,40 @@ var source = document.getElementById('link-text')
 if(source !== null) {
 	source.addEventListener('input',get_title_from_link);
 }
+
+// display full image when clicking on image block thing
+function full_image() {
+	var e = document.getElementById('image-full');
+	var s = document.getElementById('smoke-curtain');
+	
+	e.classList.remove('fucking-die');
+	s.classList.remove('fucking-die');
+	
+	e.style.display = 'block';
+	s.style.display = 'block';
+	
+	e.animationName = 'fade-out';
+	s.animationName = 'fade-in';
+}
+
+// close image when clicking outside it
+window.addEventListener('click', function(m) {
+	var e = document.getElementById('image-full');
+	var d = document.getElementById('image-full-dispenser');
+	var s = document.getElementById('smoke-curtain');
+	
+	if(!e.contains(m.target) && !d.contains(m.target)) {
+		e.classList.add('fucking-die');
+		s.classList.add('fucking-die');
+	}
+});
+
+window.addEventListener('animationend', function(m) {
+	var e = document.getElementById('image-full');
+	var s = document.getElementById('smoke-curtain');
+	
+	if(e.classList.contains('fucking-die') && s.classList.contains('fucking-die')) {
+		e.style.display = 'none';
+		s.style.display = 'none';
+	}
+});

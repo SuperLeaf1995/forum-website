@@ -707,6 +707,30 @@ def view(u=None):
 	db.close()
 	return ret
 
+@post.route('/post/catdiv', methods = ['GET'])
+@login_wanted
+def list_catdiv_posts(u=None, sort='new'):
+	# Obtain posts
+	posts = obtain_posts(u=u,sort=sort)
+	
+	post_arr = []
+	
+	db = open_db()
+	categories = db.query(Category).all()
+	db.close()
+	
+	for c in categories:
+		n_took = 0
+		for p in posts:
+			if p.category_id == c.id:
+				n_took = n_took+1
+				post_arr.append(p)
+			if n_took >= 5:
+				break
+	
+	return render_template('post/catdiv.html',u=u,title='Post frontpage',posts=posts,
+		sort=sort)
+
 @post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted

@@ -1,0 +1,22 @@
+{% extends "default_layout.html" %}
+{% block content %}
+	<h1>List posts divided by categories</h1>
+	{% if posts %}
+		<div>
+		{% set last_category = namespace(value=0) %}
+		{% set last_category.value = '' %}
+		{% for post in posts %}
+			{% if last_category != post.category_info.name %}
+			<center><h3 style='color:grey;'>{{ post.category_info.name }}</h3></center>
+			{% endif %}
+			{% include 'post/brief.html' %}
+			{% set last_category.value = post.category_info.name %}
+		{% endfor %}
+		</div>
+	{% else %}
+	<p>No posts yet</p>
+	{% endif %}
+<script type='text/javascript'>
+setInterval(update_content_time,1000);
+</script>
+{% endblock %}

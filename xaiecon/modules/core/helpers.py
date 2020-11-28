@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import requests
+
 from flask import request, session
 from flask_misaka import markdown
 
@@ -8,6 +10,22 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.apiapp import APIApp
 from xaiecon.classes.notification import Notification
+from xaiecon.classes.serverchain import Serverchain
+
+# Sends an event in AP to all instances
+# 
+def send_event(json):
+	json['@context'] = "https://www.w3.org/ns/activitystreams"
+	
+	db = open_db()
+	
+	servers = db.query(Serverchain).all()
+	
+	for s in servers:
+		headers = { 'User-Agent':'Xaiecon-Fediverse' }
+		requests.post(url=url,headers=headers,json=json)
+	
+	db.close()
 
 # Obtains current user/bot
 def obtain_logged_user():

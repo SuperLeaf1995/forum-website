@@ -3,6 +3,8 @@
 
 import time
 import secrets
+
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -51,7 +53,7 @@ class Post(Base):
 	board_id = Column(Integer, ForeignKey('xaiecon_board.id'))
 	board_info = relationship('Board', foreign_keys=[board_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -61,3 +63,13 @@ class Post(Base):
 		self.link_url,self.is_link,self.is_nsfw,self.keywords,self.user_id,
 		self.downvote_count,self.upvote_count,self.total_vote_count,
 		self.is_deleted,self.category_id)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data

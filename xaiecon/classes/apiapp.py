@@ -4,6 +4,7 @@
 import time
 import secrets
 
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -25,10 +26,20 @@ class APIApp(Base):
 
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'APIApp(%r,%r,%r,%r)' % (self.name,self.creation_date,self.token,self.user_id)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data

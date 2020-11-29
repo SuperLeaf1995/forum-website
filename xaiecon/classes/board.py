@@ -3,6 +3,8 @@
 
 import time
 import secrets
+
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy import Column, Integer, ForeignKey, String, Boolean
 from sqlalchemy.orm import relationship
 
@@ -33,13 +35,23 @@ class Board(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'Board(%r,%r,%r,%r)' % (self.name,self.descr,self.user_id,self.category_id)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data
 
 class BoardBan(Base):
 	__tablename__ = 'xaiecon_board_ban'
@@ -54,13 +66,23 @@ class BoardBan(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'BoardBan(%r,%r,%r,%r)' % (self.reason,self.user_id,self.board_id,self.expiration_date)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data
 
 class BoardSub(Base):
 	__tablename__ = 'xaiecon_board_sub'
@@ -73,10 +95,20 @@ class BoardSub(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 	
 	def __repr__(self):
 		return 'BoardSub(%r,%r)' % (self.user_id,self.board_id)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data

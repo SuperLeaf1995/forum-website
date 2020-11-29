@@ -4,6 +4,7 @@
 import time
 import secrets
 
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy import Column, Integer, String, Boolean
 
 from xaiecon.classes.base import Base
@@ -27,7 +28,7 @@ class Serverchain(Base):
 	is_online = Column(Boolean, default=False)
 	creation_date = Column(Integer, default=time.time())
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -36,3 +37,13 @@ class Serverchain(Base):
 		return 'Serverchain(%r,%r,%r,%r,%r,%r,%r,%r)' % (self.name,self.ip_addr,
 			self.is_banned,self.is_online,self.is_active,self.endpoint_url,
 			self.internal_password,self.external_password)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data

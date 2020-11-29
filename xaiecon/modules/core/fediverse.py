@@ -5,149 +5,85 @@
 # Module that allows fediverse with other instances
 #
 
-# In short
-# Our ActivityPub implementation uses E2E to communicate to other servers
-# We need to have many privacy, because we do not want any eavesdropper
-# To see a big list of posts without our consent. Business will love this.
-
 # TODO: implement activitypub
 
 import os
 import requests
+import json
 
-from flask import Blueprint, render_template, request, jsonify, make_response
+from flask import Blueprint, render_template, request, jsonify, make_response, abort
 from flask_babel import gettext
+
+from werkzeug.security import generate_password_hash
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.comment import Comment
 from xaiecon.classes.post import Post
 from xaiecon.classes.user import User
 from xaiecon.classes.vote import Vote
+from xaiecon.classes.category import Category
+from xaiecon.classes.board import Board
+from xaiecon.classes.view import View
+from xaiecon.classes.oauthapp import OAuthApp
+from xaiecon.classes.apiapp import APIApp
+from xaiecon.classes.notification import Notification
 from xaiecon.classes.serverchain import Serverchain
-
 from xaiecon.modules.core.wrappers import login_required
+
+from sqlalchemy.orm import joinedload
 
 fediverse = Blueprint('fediverse',__name__,template_folder='templates/fediverse')
 
-@fediverse.route('/acpub/vote/<vote_id>', methods = ['GET'])
-def vote_obj(vote_id=0):
+# Return object for other instances to fetch
+@fediverse.route('/fediverse/end/<_type>/<id>')
+def return_object(_type='Post',id=0):
 	db = open_db()
 	
-	vote = db.query(Vote).filter_by(id=vote_id).first()
-	if vote is None:
-		return '',404
+	types = [
+		'Post','User','Comment',
+		'Vote','Category','Board',
+		'View','OAuthApp','APIApp',
+		'Notification'
+	]
 	
-	user = db.query(User).filter_by(id=vote.user_id).first()
-	if user is None:
-		return '',404
+	if _type not in types:
+		return jsonify({'error':'Unknown type'})
 	
-	data = {
-		'@context':'https://www.w3.org/ns/activitystreams',
-		'type':'Like',
-		'actor':{
-			'type':'Person',
-			'uuid':f'{user.uuid}'
-		},
-		'object':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/vote/{vote_id}'
-	}
+	if _type == 'Post':
+		obj = Post
+	elif _type == 'User':
+		obj = User
+	elif _type == 'Comment':
+		obj = Comment
+	elif _type == 'Vote':
+		obj = Vote
+	elif _type == 'Category':
+		obj = Category
+	elif _type == 'Board':
+		obj = Board
+	elif _type == 'View':
+		obj = View
+	elif _type == 'OAuthApp':
+		obj = OAuthApp
+	elif _type == 'APIApp':
+		obj = APIApp
+	elif _type == 'Notification':
+		obj = Notification
+	else:
+		return jsonify({'error':'Unknown type'})
 	
-	db.close()
+	data = db.query(_type).filter_by(id=id).first()
+	if data is None:
+		return jsonify({'error':f'{type(data).__name__} with id {id} does not exist here'}),404
 	
-	return jsonify(data),200
-
-@fediverse.route('/acpub/post/<post_id>', methods = ['GET'])
-def post_obj(post_id=0):
-	db = open_db()
+	data = data.json
 	
-	# TODO: Add post representation
-	
-	db.close()
-	return jsonify(data),200
-
-# Inbox for user
-@fediverse.route('/acpub/user/<user_id>/inbox', methods = ['POST'])
-def inbox(user_id=0):
-	data = request.json
-	
-	if data['@context'] != 'https://www.w3.org/ns/activitystreams':
-		return '',400
-	
-	atype = data['type']
-	
-	db = open_db()
-	
-	# Upvote
-	if atype == 'Like':
-		actor = data.get('actor')
-		object = data.get('object')
-		published = data.get('published')
-		
-		# Get actor
-		x = requests.get(url=actor)
-		res = x.json
-		
-		if res['@context'] != 'https://www.w3.org/ns/activitystreams':
-			return '',400
-		
-		user = db.query(User).filter_by(uuid=res.get('uuid')).first()
-		if user is None:
-			return '',400
-		
-		x = requests.get(url=object)
-		res = x.json
-		
-		if res['@context'] != 'https://www.w3.org/ns/activitystreams':
-			return '',400
-		
-		if res['type'] == 'Article':
-			post = db.query(Post).filter_by(uuid=res.get('uuid')).first()
-			if post is None:
-				return '',400
-			vote = Vote(user_id=user.id,post_id=post.id,value=1)
-		elif res['type'] == 'Comment':
-			comment = db.query(Comment).filter_by(uuid=res.get('uuid')).first()
-			if comment is None:
-				return '',400
-			vote = Vote(user_id=user.id,comment_id=comment.id,value=1)
-		
-		db.add(vote)
-		db.commit()
-	
-	db.refresh(vote)
-	
-	r = make_response('')
-	r.headers.set('Location',f'https://{os.environ.get("DOMAIN_NAME")}/acpub/vote/{vote.id}')
+	if _type == 'User':
+		string = f'{data["password"]}:{data["id"]}'
+		auth_token = generate_password_hash(string)
+		data['auth_token'] = auth_token
 	
 	db.close()
-	
-	return r,201
-
-# Return user object
-@fediverse.route('/acpub/user/<user_id>/object', methods = ['GET'])
-def user_object(user_id=0):
-	db = open_db()
-	user = db.query(User).filter_by(id=user_id).first()
-	if user is None:
-		return '',404
-	
-	data = {
-		'@context':'https://www.w3.org/ns/activitystreams',
-		'type':'Person',
-		'id':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/object',
-		'following':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/follwing',
-		'followers':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/follwers',
-		'liked':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/liked',
-		'inbox':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/inbox',
-		'outbox':f'https://{os.environ.get("DOMAIN_NAME")}/acpub/user/{user_id}/outbox',
-		'preferredUsername':f'{user.username}',
-		'name':f'{user.name}',
-		'summary':f'{user.biography}',
-		'uuid':f'{user.uuid}',
-		'icon':[f'https://{os.environ.get("DOMAIN_NAME")}/user/thumb?uid={user_id}']
-	}
-	
-	db.close()
-	
 	return jsonify(data),200
 
 # After this, our server will gladly receive AP stuff from this IP
@@ -158,6 +94,8 @@ def user_object(user_id=0):
 @fediverse.route('/fediverse/chain', methods = ['GET','POST'])
 @login_required
 def add_instance(u=None):
+	if u.is_admin == False:
+		abort(403)
 	if request.method == 'POST':
 		db = open_db()
 		

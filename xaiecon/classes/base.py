@@ -4,7 +4,7 @@
 import time
 import os
 import sqlalchemy
-
+import sqlalchemy.orm.state
 from sqlalchemy.ext.declarative import declarative_base
 
 from xaiecon.classes.exception import XaieconDatabaseException

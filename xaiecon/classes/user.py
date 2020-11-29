@@ -5,6 +5,8 @@ import time
 import secrets
 
 from flask import session
+
+from sqlalchemy.orm.state import InstanceState
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -34,6 +36,16 @@ class UserFollow(Base):
 	
 	def __repr__(self):
 		return 'UserFollow(%r,%r,%r)' % (self.user_id,self.target_id,self.creation_date)
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data
 
 class User(Base):
 	__tablename__ = 'xaiecon_user'
@@ -62,7 +74,7 @@ class User(Base):
 	creation_date = Column(Integer, default=time.time())
 	net_points = Column(Integer, default=0)
 	
-	uuid = Column(String(255), default=secrets.token_hex(254))
+	uuid = Column(String(255), default=secrets.token_hex(126))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
@@ -193,3 +205,13 @@ class User(Base):
 		db = open_db()
 		ret = db.query(UserFollow).filter_by(user_id=self.id,target_id=uid).first()
 		return True if ret is not None else False
+	
+	@property
+	def json(self):
+		data = {'type':type(self).__name__}
+		for o in self.__dict__:
+			dict_item = self.__dict__[o]
+			if isinstance(dict_item,InstanceState):
+				continue
+			data[o] = dict_item
+		return data

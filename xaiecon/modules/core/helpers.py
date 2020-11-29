@@ -12,19 +12,14 @@ from xaiecon.classes.apiapp import APIApp
 from xaiecon.classes.notification import Notification
 from xaiecon.classes.serverchain import Serverchain
 
-# Sends an event in AP to all instances
+# Sends an event to all instances
 # 
 def send_event(json):
-	json['@context'] = "https://www.w3.org/ns/activitystreams"
-	
 	db = open_db()
-	
 	servers = db.query(Serverchain).all()
-	
 	for s in servers:
 		headers = { 'User-Agent':'Xaiecon-Fediverse' }
-		requests.post(url='http://{s.ip_addr}/fediverse/receive',headers=headers,json=json)
-	
+		requests.post(url='https://{s.ip_addr}/fediverse/receive',headers=headers,json=json)
 	db.close()
 
 # Obtains current user/bot
@@ -49,6 +44,18 @@ def obtain_logged_user():
 		user = db.query(User).filter_by(id=app.user_id).first()
 		if user is None:
 			return None
+	elif request.path.startswith('/fediverse/end/'):
+		if not request.headers.getlist('X-Forwarded-For'):
+			ip_addr = request.remote_addr
+		else:
+			ip_addr = request.headers.getlist('X-Forwarded-For')[0]
+		
+		server = db.query(Serverchain).filter_by(ip_addr=ip_addr).first()
+		if server is None:
+			return None
+		
+		return server
+# (don't just copy/paste this -- keep reading)
 	# Obtain user, normal user, not a bot hopefuly
 	else:
 		user = db.query(User).filter_by(id=session.get('id')).first()

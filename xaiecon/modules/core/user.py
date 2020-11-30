@@ -15,6 +15,8 @@ import secrets
 import time
 import random
 
+import smtplib
+
 from flask import Blueprint, render_template, session, request, redirect, abort, send_from_directory
 from flask_babel import gettext
 
@@ -88,6 +90,8 @@ def login(u=None):
 def signup(u=None):
 	try:
 		if request.method == 'POST':
+			# TODO: Validate hcaptcha
+			
 			# Validate form data
 			if len(request.form.get('password','')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')
@@ -157,6 +161,109 @@ def notifications(u=None):
 	
 	db.close()
 	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)
+
+@user.route('/user/password_reset', methods = ['GET'])
+@login_required
+def password_reset(u=None):
+	db = open_db()
+	
+	if u.is_email_verified == False:
+		return 'Please verify your email',400
+	
+	auth = request.values.get('auth','')
+	if request.methods == 'POST':
+		db.query(User).filter_by(user_id=u.id).update({
+			'email_auth_token':auth
+		})
+		
+		# Send email
+		try:
+			sender = 'services@xaiecon.com'
+			receivers = [u.email]
+			
+			message = f"""
+			From: From Xaiecon <services@xaiecon.com>
+			To: To {u.name} <{u.email}>
+			Subject: Password reset
+			
+			<html>
+			<p>
+			Password reset requested by {u.username}.
+			<a href=\'https://{os.environ.get("DOMAIN_NAME")}/user/password_reset?auth={auth}\'>Click here</a>
+			<p>
+			<i>When we send an e-mail, fax or sms we will never ask you for your password</i>
+			</html>"""
+			smtp = smtplib.SMTP('localhost')
+			smtp.sendmail(sender,receivers,message)
+		except smtplib.SMTPException:
+			abort(500)
+		
+		db.close()
+		return 'Password reseted',500
+	else:
+		db.close()
+		return render_template('user/password_reset.html',u=u,title='Password reset')
+
+@user.route('/user/email/send_verify', methods = ['GET'])
+@login_required
+def email_verify_send(u=None):
+	db = open_db()
+	
+	auth = secrets.token_hex(126)
+	
+	db.query(User).filter_by(user_id=u.id).update({
+		'email_auth_token':auth
+	})
+	
+	# Send email
+	try:
+		sender = 'services@xaiecon.com'
+		receivers = [u.email]
+		
+		message = f"""
+		From: From Xaiecon <services@xaiecon.com>
+		To: To {u.name} <{u.email}>
+		Subject: Please verify your account
+		
+		<html>
+		<p>
+		If you do not have an account on Xaiecon please ignore this email.<br>
+		User /u/{u.username} has specified that this email is of their ownership.<br>
+		If you are registered on Xaiecon, and this email is NOT from that user,
+		please report the incident to /b/xaiecon.<br>
+		Anyways, here is your verification link, have a great day! :)
+		<a href=\'https://{os.environ.get("DOMAIN_NAME")}/user/email/verify?auth={auth}\'>Click here</a>
+		<p>
+		<i>When we send an e-mail, fax or sms we will never ask you for your password</i>
+		</html>"""
+		smtp = smtplib.SMTP('localhost')
+		smtp.sendmail(sender,receivers,message)
+	except smtplib.SMTPException:
+		abort(500)
+	
+	db.commit()
+	db.close()
+	return redirect('/')
+
+@user.route('/user/email/verify', methods = ['GET'])
+@login_required
+def email_verify(u=None):
+	db = open_db()
+	
+	auth = request.values.get('auth')
+	
+	if len(auth) <= 126:
+		return 'Invalid token',400
+	
+	if u.email_auth_token != auth:
+		return 'Invalid token',400
+	
+	db.query(User).filter_by(user_id=u.id).update({
+		'is_email_verified':True
+	})
+	db.commit()
+	db.close()
+	return redirect('/')
 
 @user.route('/user/mark_all', methods = ['GET'])
 @login_required
@@ -326,6 +433,12 @@ def edit(u=None):
 			fax = request.form.get('fax')
 			phone = request.form.get('phone')
 			biography = request.form.get('biography')
+			
+			# Revoke verification if user changes email
+			if user.email != email:
+				db.query(User).filter_by(id=id).update({
+					'is_email_verified':False
+				})
 			
 			# Update our user information
 			is_show_email = strtobool(request.form.get('is_show_email','False'))

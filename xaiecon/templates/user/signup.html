@@ -14,7 +14,9 @@
 		<input class='textbar-normal' type='password' id='password_double' name='password_double' value='{{ request.form.password }}'><br>
 		
 		<label><input type='checkbox' name='agree_tos'></input>{% trans %}I agree with the{% endtrans %} <a href='/legal/terms'>{% trans %}Terms of Service{% endtrans %}</a>, <a href='/legal/privacy'>{% trans %}the Privacy Policy{% endtrans %}</a> <a href='/legal/content'>{% trans %}and the Content Policy{% endtrans %}</a></label><br>
-
+		
+		{{ hcaptcha }}
+		
 		<input class='form-btn' type='submit' value='{% trans %}Signup{% endtrans %}'></br>
 	</form>
 </div>

@@ -26,6 +26,8 @@ CREATE TABLE xaiecon_user(
 	image_file VARCHAR(255),
 	email VARCHAR(255),
 	is_show_email BOOLEAN DEFAULT FALSE,
+	is_email_verified BOOLEAN DEFAULT FALSE,
+	email_auth_token VARCHAR(255),
 	phone VARCHAR(255),
 	is_show_phone BOOLEAN DEFAULT FALSE,
 	fax VARCHAR(255),

@@ -9,10 +9,11 @@ import os
 import requests
 import threading
 import time
-import urllib
 import secrets
 import PIL
 import io
+
+import spacy
 
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
@@ -816,6 +817,7 @@ def title_by_url():
 
 	return title,200
 
+# TODO: Insert even more neural networks
 @post.route('/post/search', methods = ['GET','POST'])
 @login_wanted
 def search(u=None):
@@ -829,24 +831,54 @@ def search(u=None):
 			query = request.form.get('query')
 			query = query.split(' ')
 			
+			post = db.query(Post)
 			is_nsfw = False
 			if u is not None:
 				is_nsfw = u.is_nsfw
-			
-			post = db.query(Post)
-			
 			if is_nsfw == False:
 				post = post.filter_by(is_nsfw=False)
 			
 			posts = []
-			for q in query:
-				ps = post.options(joinedload('*')).order_by(desc(Post.creation_date)).filter_by(title=q).filter(Post.id>=(page*num),Post.id<=((page+1)*num)).all()
-				for p in ps:
-					posts.append(p)
+			
+			ps = post.options(joinedload('*')).order_by(desc(Post.creation_date)).all()
+			
+			nlp = spacy.load("en_core_web_sm")
+			
+			for p in ps:
+				alist = [
+					p.title,
+					p.body,
+					p.user_info.username,
+					p.category_info.name,
+					p.board_info.name
+				]
+				
+				threshold = 0
+				
+				end_str = ''
+				for o in alist:
+					end_str = f'{end_str} {o}'
+				
+				for q in query:
+					q = q.lower()
+					
+					words = nlp(f'{q} {end_str}')
+					
+					for tok in words:
+						if tok.text == q:
+							continue
+						
+						threshold += tok.similarity(words[0])
+					
+					if threshold >= 1 and p not in posts:
+						posts.append(p)
+			
+			# Slice out useless posts
+			posts = posts[(page*num):((page+1)*num)]
 			
 			# Close the database
 			db.close()
-			return render_template('post/list.html',u=u,title='Post frontpage',posts=posts)
+			return render_template('post/list.html',u=u,title='Post frontpage',posts=posts,page=page,num=num)
 		except XaieconException as e:
 			return render_template('user_error.html',u=u,title='Whoops!',err=e)
 	else:

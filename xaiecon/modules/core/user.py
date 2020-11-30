@@ -363,9 +363,7 @@ def thumb(u=None):
 	
 	db.close()
 	
-	if user.image_file is None:
-		return send_from_directory('assets/public/pics',user.fallback_thumb)
-	if os.path.isfile(os.path.join('user_data',user.image_file)) == False:
+	if user.image_file is None or user.image_file == '':
 		return send_from_directory('assets/public/pics',user.fallback_thumb)
 	return send_from_directory('../user_data',user.image_file)
 

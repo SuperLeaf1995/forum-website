@@ -207,10 +207,10 @@ def thumb(u=None):
 	if board is None:
 		abort(404)
 	db.close()
-	if board.icon_file is None:
+	if board.icon_file is None or board.icon_file == '':
 		return send_from_directory('assets/public/pics',board.fallback_thumb)
-	if os.path.isfile(os.path.join('./user_data',board.icon_file)) == False:
-		return send_from_directory('assets/public/pics',board.fallback_thumb)
+	#if os.path.isfile(os.path.join('./user_data',board.icon_file)) == False:
+	#	return send_from_directory('assets/public/pics',board.fallback_thumb)
 	return send_from_directory('../user_data',board.icon_file)
 
 @board.route('/board/subscribe', methods = ['POST'])

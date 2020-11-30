@@ -42,14 +42,14 @@ CREATE TABLE xaiecon_user(
 	net_points INT,
 	uses_dark_mode BOOLEAN DEFAULT FALSE,
 	fallback_thumb VARCHAR(64) NOT NULL,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_category(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
 	name VARCHAR(255),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_board(
@@ -66,7 +66,7 @@ CREATE TABLE xaiecon_board(
 	fallback_thumb VARCHAR(64) NOT NULL,
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_post(
@@ -96,7 +96,7 @@ CREATE TABLE xaiecon_post(
 	category_id INT REFERENCES xaiecon_category(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	board_id INT REFERENCES xaiecon_board(id) ON UPDATE CASCADE,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_flag(
@@ -105,7 +105,7 @@ CREATE TABLE xaiecon_flag(
 	reason VARCHAR(16000),
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_comment(
@@ -119,7 +119,7 @@ CREATE TABLE xaiecon_comment(
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_vote(
@@ -129,7 +129,7 @@ CREATE TABLE xaiecon_vote(
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	value BIGINT DEFAULT 1,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_view(
@@ -137,14 +137,14 @@ CREATE TABLE xaiecon_view(
 	creation_date INT,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_log(
 	id SERIAL PRIMARY KEY,
 	creation_date INT,
 	name VARCHAR(255) NOT NULL,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_serverchain(
@@ -158,7 +158,7 @@ CREATE TABLE xaiecon_serverchain(
 	is_active BOOLEAN DEFAULT FALSE,
 	is_online BOOLEAN DEFAULT FALSE,
 	creation_date INT,
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_board_ban(
@@ -168,7 +168,7 @@ CREATE TABLE xaiecon_board_ban(
 	reason VARCHAR(255) NOT NULL,
 	board_id INT REFERENCES xaiecon_board(id),
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_board_sub(
@@ -176,7 +176,7 @@ CREATE TABLE xaiecon_board_sub(
 	creation_date INT,
 	board_id INT REFERENCES xaiecon_board(id),
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 -- API App
@@ -186,7 +186,7 @@ CREATE TABLE xaiecon_apiapp(
 	token VARCHAR(128),
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 -- OAuth App
@@ -198,7 +198,7 @@ CREATE TABLE xaiecon_oauthapp(
 	redirect_uri VARCHAR(128) NOT NULL,
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_oauthclient(
@@ -218,7 +218,7 @@ CREATE TABLE xaiecon_oauthclient(
 	scope_write BOOLEAN DEFAULT FALSE,
 	oauthapp_id INT REFERENCES xaiecon_oauthapp(id),
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_notification(
@@ -228,7 +228,7 @@ CREATE TABLE xaiecon_notification(
 	body_html VARCHAR(16000) NOT NULL,
 	creation_date INT,
 	user_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 CREATE TABLE xaiecon_follower(
@@ -238,7 +238,7 @@ CREATE TABLE xaiecon_follower(
 	notify BOOLEAN DEFAULT TRUE,
 	user_id INT REFERENCES xaiecon_user(id),
 	target_id INT REFERENCES xaiecon_user(id),
-	uuid VARCHAR(255)
+	uuid VARCHAR(32)
 );
 
 INSERT INTO xaiecon_category(name) VALUES

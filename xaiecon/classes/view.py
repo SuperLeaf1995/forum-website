@@ -23,7 +23,7 @@ class View(Base):
 	post_info = relationship('Post', foreign_keys=[post_id])
 	user_info = relationship('User', foreign_keys=[user_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(126))
+	uuid = Column(String(32), default=secrets.token_hex(16))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

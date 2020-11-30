@@ -20,7 +20,7 @@ class Log(Base):
 	user_id = Column(Integer, ForeignKey('xaiecon_user.id'))
 	user_info = relationship('User', foreign_keys=[user_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(126))
+	uuid = Column(String(32), default=secrets.token_hex(16))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

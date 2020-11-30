@@ -53,7 +53,7 @@ class Post(Base):
 	board_id = Column(Integer, ForeignKey('xaiecon_board.id'))
 	board_info = relationship('Board', foreign_keys=[board_id])
 	
-	uuid = Column(String(255), default=secrets.token_hex(126))
+	uuid = Column(String(32), default=secrets.token_hex(16))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

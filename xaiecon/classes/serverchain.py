@@ -28,7 +28,7 @@ class Serverchain(Base):
 	is_online = Column(Boolean, default=False)
 	creation_date = Column(Integer, default=time.time())
 	
-	uuid = Column(String(255), default=secrets.token_hex(126))
+	uuid = Column(String(32), default=secrets.token_hex(16))
 	
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)

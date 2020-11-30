@@ -57,20 +57,29 @@ class User(Base):
 	biography = Column(String(8000), nullable=True)
 	password = Column(String(510), nullable=False)
 	auth_token = Column(String(510), nullable=False)
+	
+	email_auth_token = Column(String(255), nullable=True)
 	email = Column(String(255), nullable=True)
 	is_show_email = Column(Boolean, default=False)
+	is_email_verified = Column(Boolean, default=False)
+	
 	phone = Column(String(255), nullable=True)
 	is_show_phone = Column(Boolean, default=False)
+	
 	fax = Column(String(255), nullable=True)
 	is_show_fax = Column(Boolean, default=False)
+	
 	is_nsfw = Column(Boolean, default=False)
 	is_admin = Column(Boolean, default=False)
 	can_make_board = Column(Boolean, default=True)
 	uses_dark_mode = Column(Boolean, default=False)
-	follow_count = Column(Integer, default=0)
+	
 	is_banned = Column(Boolean, default=False)
 	ban_reason = Column(String(255), nullable=True)
+	
+	follow_count = Column(Integer, default=0)
 	fallback_thumb = Column(String(64), nullable=True)
+	
 	creation_date = Column(Integer, default=time.time())
 	net_points = Column(Integer, default=0)
 	

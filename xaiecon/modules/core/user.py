@@ -162,48 +162,6 @@ def notifications(u=None):
 	db.close()
 	return render_template('user/notification.html',u=u,title='Your notifications',notifications=notifications)
 
-@user.route('/user/password_reset', methods = ['GET'])
-@login_required
-def password_reset(u=None):
-	db = open_db()
-	
-	if u.is_email_verified == False:
-		return 'Please verify your email',400
-	
-	auth = request.values.get('auth','')
-	if request.methods == 'POST':
-		db.query(User).filter_by(user_id=u.id).update({
-			'email_auth_token':auth
-		})
-		
-		# Send email
-		try:
-			sender = 'services@xaiecon.com'
-			receivers = [u.email]
-			
-			message = f"""
-			From: From Xaiecon <services@xaiecon.com>
-			To: To {u.name} <{u.email}>
-			Subject: Password reset
-			
-			<html>
-			<p>
-			Password reset requested by {u.username}.
-			<a href=\'https://{os.environ.get("DOMAIN_NAME")}/user/password_reset?auth={auth}\'>Click here</a>
-			<p>
-			<i>When we send an e-mail, fax or sms we will never ask you for your password</i>
-			</html>"""
-			smtp = smtplib.SMTP('localhost')
-			smtp.sendmail(sender,receivers,message)
-		except smtplib.SMTPException:
-			abort(500)
-		
-		db.close()
-		return 'Password reseted',500
-	else:
-		db.close()
-		return render_template('user/password_reset.html',u=u,title='Password reset')
-
 @user.route('/user/email/send_verify', methods = ['GET'])
 @login_required
 def email_verify_send(u=None):
@@ -211,7 +169,7 @@ def email_verify_send(u=None):
 	
 	auth = secrets.token_hex(126)
 	
-	db.query(User).filter_by(user_id=u.id).update({
+	db.query(User).filter_by(id=u.id).update({
 		'email_auth_token':auth
 	})
 	
@@ -243,7 +201,7 @@ def email_verify_send(u=None):
 	
 	db.commit()
 	db.close()
-	return redirect('/')
+	return redirect('/user/view?uid={u.id}')
 
 @user.route('/user/email/verify', methods = ['GET'])
 @login_required
@@ -263,7 +221,7 @@ def email_verify(u=None):
 	})
 	db.commit()
 	db.close()
-	return redirect('/')
+	return redirect('/user/view?uid={u.id}')
 
 @user.route('/user/mark_all', methods = ['GET'])
 @login_required

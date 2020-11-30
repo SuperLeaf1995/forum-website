@@ -13,7 +13,7 @@ import secrets
 import PIL
 import io
 
-import spacy
+#import spacy
 
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
@@ -838,13 +838,8 @@ def search(u=None):
 			if is_nsfw == False:
 				post = post.filter_by(is_nsfw=False)
 			
-			posts = []
-			
-			ps = post.options(joinedload('*')).order_by(desc(Post.creation_date)).all()
-			
-			nlp = spacy.load("en_core_web_sm")
-			
-			for p in ps:
+			posts = post.options(joinedload('*')).order_by(desc(Post.creation_date)).all()
+			for p in posts:
 				alist = [
 					p.title,
 					p.body,
@@ -854,24 +849,16 @@ def search(u=None):
 				]
 				
 				threshold = 0
-				
-				end_str = ''
-				for o in alist:
-					end_str = f'{end_str} {o}'
-				
 				for q in query:
-					q = q.lower()
+					for a in alist:
+						for t in a.split(' '):
+							if q.lower() == t.lower():
+								threshold = 1
+								break
 					
-					words = nlp(f'{q} {end_str}')
-					
-					for tok in words:
-						if tok.text == q:
-							continue
-						
-						threshold += tok.similarity(words[0])
-					
-					if threshold >= 1 and p not in posts:
-						posts.append(p)
+					if threshold == 0:
+						posts.remove(p)
+						break
 			
 			# Slice out useless posts
 			posts = posts[(page*num):((page+1)*num)]

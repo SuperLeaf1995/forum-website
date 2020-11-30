@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
@@ -44,6 +44,10 @@ def create_app() -> Flask:
 	@login_wanted
 	def handle_exception(e=None,u=None):
 		return render_template("user_error.html",u=None,title=gettext('Server Exception'),err=e), 500
+
+	@app.route('/favicon.ico', methods = ['GET'])
+	def favico():
+		return send_file(os.path.join('./assets/public','favicon.ico'))
 
 	@app.errorhandler(404)
 	@login_wanted

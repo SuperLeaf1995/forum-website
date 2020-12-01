@@ -18,11 +18,6 @@ cache:
     - .cache/pip
     - venv/
 
-before_script:
-  - pip install -r requirements.txt virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-
 database:
   image: postgres
   script:
@@ -31,4 +26,7 @@ database:
 
 test:
   script:
+    - pip install -r requirements.txt virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
     - python test.py

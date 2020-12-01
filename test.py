@@ -2,7 +2,7 @@ import requests
 import os
 import sys
 
-from xaiecon.modules.classes.base import open_db
+from xaiecon.classes.base import open_db
 from xaiecon.__init__ import app
 
 # Wait 3 seconds for server to start

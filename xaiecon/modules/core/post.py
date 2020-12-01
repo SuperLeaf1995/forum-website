@@ -432,7 +432,7 @@ def edit(u=None):
 						thumb_filepath = os.path.join('user_data',thumb_filename)
 						
 						img = img.convert('RGB')
-						img.resize((128,128))
+						img.thumb((128,128))
 						img.save(thumb_filepath)
 						
 						db.query(Post).filter_by(id=pid).update({
@@ -548,7 +548,7 @@ def write(u=None):
 					# Create thumbnail for image
 					image = PIL.Image.open(image_filepath)
 					image = image.convert('RGB')
-					image.resize((128,128))
+					image.thumb((128,128))
 					image.save(thumb_filepath)
 	
 					post.image_file = image_filename
@@ -566,9 +566,9 @@ def write(u=None):
 						thumb_filename = secure_filename(f'thumb_{secrets.token_hex(12)}.jpeg')
 						thumb_filepath = os.path.join('user_data',thumb_filename)
 						
-						img = img.convert('RGB')
-						img.resize((128,128))
-						img.save(thumb_filepath)
+						timg = img.convert('RGB')
+						timg.resize((128,128))
+						timg.save(thumb_filepath)
 						
 						post.thumb_file = thumb_filename
 						post.is_thumb = True
@@ -711,30 +711,6 @@ def view(u=None):
 	
 	db.close()
 	return ret
-
-@post.route('/post/catdiv', methods = ['GET'])
-@login_wanted
-def list_catdiv_posts(u=None, sort='new'):
-	# Obtain posts
-	posts = obtain_posts(u=u,sort=sort)
-	
-	post_arr = []
-	
-	db = open_db()
-	categories = db.query(Category).all()
-	db.close()
-	
-	for c in categories:
-		n_took = 0
-		for p in posts:
-			if p.category_id == c.id:
-				n_took = n_took+1
-				post_arr.append(p)
-			if n_took >= 5:
-				break
-	
-	return render_template('post/catdiv.html',u=u,title='Post frontpage',posts=posts,
-		sort=sort)
 
 @post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])
@@ -888,65 +864,72 @@ def obtain_embed_url(link: str) -> str:
 	html = x.text
 	soup = BeautifulSoup(html,'html.parser')
 	
-	platform = []
-	platform.append(soup.find('meta',property='og:platform'))
-	platform.append(soup.find('meta',property='og:site_name'))
+	platform = soup.find('meta',property='og:platform')+soup.find('meta',property='og:site_name')
 	for p in platform:
-		try:
-			if p is None:
-				continue
-			
-			p = p['content']
-			
-			allowed_embeds = [
-				'PeerTube',
-				'LBRY',
-				'YouTube'
-			]
-			
-			if p == 'Xaiecon':
-				return link
-			
-			if p not in allowed_embeds:
-				continue
-			
-			meta = soup.find('meta',property='og:video:secure_url')
-			return meta['content']
-		except KeyError:
+		if p is None:
 			continue
-	
+		
+		p = p.get('content','')
+		
+		allowed_embeds = [
+			'PeerTube',
+			'LBRY',
+			'YouTube'
+		]
+		if p == 'Xaiecon':
+			return link
+		if p not in allowed_embeds:
+			continue
+		meta = soup.find('meta',property='og:video:secure_url')
+		return meta.get('content')
 	return None
 
 # Obtain thumbnail for post
 def obtain_post_thumb(link: str):
 	headers = {'User-Agent':'xaiecon-thumbnail-getter'}
-	x = requests.get(link,headers=headers)
+	try:
+		x = requests.get(link,headers=headers)
+	except requests.exceptions.InvalidURL:
+		return None
 	if x.status_code not in [200]:
-		return
+		return None
+	
+	filetype, extension = x.headers.get('content-type','text/html').split('/')
+	if filetype == 'image':
+		# Read the image, if it succeds then return that image
+		try:
+			im = PIL.Image.open(io.BytesIO(x.content))
+			w, h = im.size
+			return im
+		except PIL.UnidentifiedImageError:
+			pass
+	
 	html = x.text
 	soup = BeautifulSoup(html,'html.parser')
 	
 	# Get image from meta tag or img tags
-	lst = soup.find_all('meta',property='og:image')+soup.find_all('img')
-	
+	# We save this image in the server like if it was a upload
+	lst = soup.find_all('meta',property='twitter:image')+soup.find_all('meta',property='og:image')+soup.find_all('img')
 	for img in lst:
 		try:
 			content = img.get('content')
-			if content == '':
+			if content == '' or content is None:
 				content = img.get('src')
-				if content == '':
+				content = '{link}/{content}'
+				if content == '' or content is None:
 					continue
 			
-			x = requests.get(content,headers=headers)
+			x = requests.get(f'{content}',headers=headers)
 			im = PIL.Image.open(io.BytesIO(x.content))
 			w, h = im.size
-			if w <= 120 or h <= 120:
+			if w <= 100 or h <= 100:
 				continue
 			return im
-		except KeyError:
+		except PIL.UnidentifiedImageError:
 			continue
 		except requests.exceptions.InvalidURL:
 			continue
+	
 	return None
 
 # Check user for csam, if so ban the user

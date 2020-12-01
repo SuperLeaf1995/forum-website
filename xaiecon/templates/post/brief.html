@@ -6,9 +6,9 @@
 		</div>
 		<div id='smoke-curtain' class='smoke-curtain'></div>
 	{% elif post.is_thumb == True and post.is_link == True %}
-		<div class='post-brief-thumb'><a href='{{ post.link_url }}'><img src='/post/thumb?pid={{ post.id }}'></img></a></div>
+		<div class='post-brief-thumb'><a href='{{ post.link_url }}'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} src='/post/thumb?pid={{ post.id }}'></img></a></div>
 	{% elif post.is_thumb == True %}
-		<div class='image-full'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
+		<div class='image-full'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
 	{% endif %}
 
 	<div style='height:100%;float:left;margin:0 16px;'>

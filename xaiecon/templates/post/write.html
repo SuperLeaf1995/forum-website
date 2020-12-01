@@ -14,8 +14,10 @@
 	<input class='textbar-normal' type='text' name='link' id='link'><br>
 	<label for='show_votes'>{% trans %}Show who voted?{% endtrans %}</label><br>
 	<input type='checkbox' name='show_votes' id='show_votes' checked></input><br>
+	{% if u.is_nsfw == True %}
 	<label for='is_nsfw'>{% trans %}Is post NSFW?{% endtrans %}</label><br>
 	<input type='checkbox' name='is_nsfw' id='is_nsfw'></input><br>
+	{% endif %}
 	{% if boards %}
 		<label for='bid'>{% trans %}Board to post to{% endtrans %}</label><br>
 		<select name='bid'>

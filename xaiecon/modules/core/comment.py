@@ -154,9 +154,11 @@ def write_reply(u=None, cid=None):
 		comment = db.query(Comment).filter_by(id=reply.comment_id).first()
 		
 		# Notify post poster
-		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',post.user_id)
+		if post.user_id != u.id:
+			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',post.user_id)
 		# Notify commenter
-		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',comment.user_id)
+		if comment.user_id != u.id:
+			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',comment.user_id)
 		
 		db.close()
 		return redirect(f'/comment/view?cid={cid}')

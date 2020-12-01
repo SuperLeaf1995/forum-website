@@ -582,13 +582,15 @@ def write(u=None):
 			csam_thread.start()
 
 			# Alert boardmaster of the posts in the guild
-			send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
+			if board.user_id != u.id:
+				send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
 
 			# Notify followers
 			follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 			for f in follows:
-				send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',f.user_id)
-
+				if f.user_id != u.id:
+					send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',f.user_id)
+			
 			db.close()
 			return redirect(f'/post/view?pid={post.id}')
 		else:

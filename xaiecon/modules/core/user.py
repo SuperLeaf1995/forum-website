@@ -133,7 +133,7 @@ def signup(u=None):
 			session['username'] = request.form.get('username')
 			session['id'] = new_user.id
 			
-			send_notification(gettext(f'Thanks for registering'),new_user.id)
+			send_notification(gettext(f'Thanks for registering.'),new_user.id)
 			
 			# Finally, end ;)
 			db.close()
@@ -308,13 +308,17 @@ def subscribe(u=None):
 	
 	uid = request.values.get('uid')
 
-	# Board does not exist
+	# User does not exist
 	if db.query(User).filter_by(id=uid).first() is None:
 		return '',404
-	# Already subscribed
+	# Already following
 	if u.is_following(uid) == True:
 		return '',400
-
+	
+	# Cant follow self
+	if u.id == uid:
+		return '',400
+	
 	sub = UserFollow(user_id=u.id,target_id=uid)
 	db.add(sub)
 	
@@ -339,6 +343,10 @@ def unsubscribe(u=None):
 		return '',404
 	# Not following
 	if u.is_following(uid) == False:
+		return '',400
+	
+	# Cant unfollow self
+	if u.id == uid:
 		return '',400
 	
 	db.query(UserFollow).filter_by(user_id=u.id,target_id=uid).delete()

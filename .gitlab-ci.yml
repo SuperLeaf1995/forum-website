@@ -9,7 +9,8 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   POSTGRES_DB: test
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
+  POSTGRES_PASSWORD: ""
+  POSTGRES_HOST: postgres
 
 # cache stuff
 cache:
@@ -23,8 +24,7 @@ before_script:
   - source venv/bin/activate
   - pip install -r requirements.txt
   - export PGPASSWORD=$POSTGRES_PASSWORD
-  - apt-get install -y postgresql postgresql-client libpq-dev
-  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE DATABASE xaiecon;"
+  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 'OK' AS status;"
 
 test:
   script:

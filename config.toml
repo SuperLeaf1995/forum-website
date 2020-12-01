@@ -1,6 +1,0 @@
-[runners.docker]
-  image = "python:latest"
-
-[[runners.docker.services]]
-  name = "postgresql:latest"
-  alias = "db"

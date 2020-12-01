@@ -5,7 +5,7 @@ import os
 
 from xaiecon.classes.base import open_db
 
-os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres@localhost/test'
+os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres:postgres@localhost/test'
 os.environ['DOMAIN_NAME'] = 'localhost:5000'
 
 from xaiecon.__init__ import app

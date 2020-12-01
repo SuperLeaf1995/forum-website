@@ -9,9 +9,8 @@ variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
   POSTGRES_DB: test
   POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: ""
-  POSTGRES_HOST_AUTH_METHOD: trust
-  
+  POSTGRES_PASSWORD: postgres
+
 # cache stuff
 cache:
   paths:
@@ -23,6 +22,8 @@ before_script:
   - virtualenv venv
   - source venv/bin/activate
   - pip install -r requirements.txt
+  - export PGPASSWORD=$POSTGRES_PASSWORD
+  - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE DATABASE xaiecon;"
 
 test:
   script:

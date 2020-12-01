@@ -1,9 +1,19 @@
 import requests
 import time
 import sys
+import os
 
 from xaiecon.classes.base import open_db
-from xaiecon.__init__ import app
+
+os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres@localhost/test'
+os.environ['DOMAIN_NAME'] = 'localhost:5000'
+
+#from xaiecon.__init__ import app
+
+from xaiecon.factory import create_app
+app = create_app()
+if __name__ == '__main__':
+	app.run(host='0.0.0.0',port=5000)
 
 # Wait 3 seconds for server to start
 time.sleep(3)
@@ -15,7 +25,12 @@ def test():
 	
 	headers = {'User-Agent':'python-webtester'}
 	
-	# Test 1: Test most visited and relevant endpoints
+	# Test 1: Database connection
+	db = open_db()
+	db.create_all()
+	db.close()
+	
+	# Test 2: Test most visited and relevant endpoints
 	endpoints = [
 		'',
 		'user/leaderboard',
@@ -24,10 +39,6 @@ def test():
 		x = requests.get(f'http://{app.config["DOMAIN_NAME"]}/{e}',headers=headers)
 		if x.status_code not in [200]:
 			sys.exit('Invalid answer for {e}, expected 200 got {x.status_code} instead')
-	
-	# Test 2: Database connection
-	db = open_db()
-	db.close()
 	
 	# TODO: Add even more tests
 

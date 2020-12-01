@@ -23,7 +23,7 @@ before_script:
   - source venv/bin/activate
   - pip install -r requirements.txt
   - export PGPASSWORD=$POSTGRES_PASSWORD
-  - sudo apt-get install -y postgresql postgresql-client libpq-dev
+  - apt-get install -y postgresql postgresql-client libpq-dev
   - psql -h "postgres" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE DATABASE xaiecon;"
 
 test:

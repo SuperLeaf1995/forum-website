@@ -100,15 +100,22 @@ def vote(u=None):
 		if post is None:
 			abort(404)
 		
+		user = db.query(User).filter_by(id=post.user_id).first()
+		
 		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
 		
 		if vote is not None and vote.value == val:
+			db.query(User).filter_by(id=post.user_id).update({
+				'net_points':user.net_points-vote.value})
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 		else:
 			db.query(Vote).filter_by(user_id=u.id,post_id=pid).delete()
 			# Create vote relation
 			vote = Vote(user_id=u.id,post_id=post.id,value=val)
 			db.add(vote)
+			
+			db.query(User).filter_by(id=post.user_id).update({
+				'net_points':user.net_points+val})
 		
 		# Update vote count
 		downvotes = db.query(Vote).filter_by(post_id=pid,value=-1).count()
@@ -117,11 +124,6 @@ def vote(u=None):
 			'downvote_count':downvotes,
 			'upvote_count':upvotes,
 			'total_vote_count':upvotes-downvotes})
-
-		# Give user fake internet points
-		user = db.query(User).filter_by(id=post.user_id).first()
-		db.query(User).filter_by(id=post.user_id).update({
-			'net_points':user.net_points+val})
 		
 		db.commit()
 		

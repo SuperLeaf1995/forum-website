@@ -1,12 +1,12 @@
 import requests
-import os
+import time
 import sys
 
 from xaiecon.classes.base import open_db
 from xaiecon.__init__ import app
 
 # Wait 3 seconds for server to start
-os.sleep(3)
+time.sleep(3)
 
 # Do tests to assure quality!
 def test():

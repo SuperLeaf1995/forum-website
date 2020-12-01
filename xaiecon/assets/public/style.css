@@ -1,11 +1,11 @@
 /* Fade-in animation */
-@keyframes animation-fade-in {
+@keyframes fade-in {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
 
 /* Fade-out animation */
-@keyframes animation-fade-out {
+@keyframes fade-out {
   0% { opacity: 1; }
   100% { opacity: 0; }
 }
@@ -265,7 +265,7 @@ textarea {
   box-shadow: 0 0 2px grey;
   overflow: auto;
   transition: 0.3s;
-  animation: fade-in ease 2s;
+  animation: fade-in ease 1.5s;
 }
 
 .post-brief:hover {
@@ -333,6 +333,10 @@ textarea {
   background-color: #f5f5f5;
 }
 
+.only-on-mobile {
+  display: none;
+}
+
  @media only screen and (max-width: 800px) {
    .nav-dropdown, .header-nav, .nav-top img {
      display: none;
@@ -342,6 +346,9 @@ textarea {
    }
    .hidden-on-mobile {
      display: none;
+   }
+   .only-on-mobile {
+     display: block;
    }
 }
 

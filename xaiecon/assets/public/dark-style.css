@@ -1,24 +1,19 @@
-::-moz-selection, ::selection {
-  background-color: #74b0fc;
-  color: white;
-}
-
+/* Fade-in animation */
 @keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
+/* Fade-out animation */
 @keyframes fade-out {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Main selection for our website */
+::-moz-selection, ::-webkit-selection, ::selection {
+  background-color: #3126d1;
+  color: white;
 }
 
 body {
@@ -28,7 +23,7 @@ body {
 }
 
 .body-grey {
-  background-color: #3b3b3b;
+  background-color: #202021;
   color: white;
 }
 
@@ -113,14 +108,14 @@ a:visited, a:active, a:hover, a:focus {
   list-style-type: none;
   padding: 12px;
   margin: 12px;
-  background-color: #575757;
+  background-color: #2e2e38;
   border-radius: 4px;
 }
 
 .header-nav li a {
   display: block;
   padding: 4px 12px;
-  background-color: #575757;
+  background-color: #2e2e38;
   color: #74b0fc;
   margin: 4px;
   border: 1px solid white;
@@ -222,7 +217,7 @@ a:visited, a:active, a:hover, a:focus {
 .textbar-normal {
   font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
   color: black;
-  background-color: #575757;
+  background-color: #636394;
   border: none;
   padding: 8px 16px;
   margin: 4px;
@@ -237,7 +232,7 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-color: #e4f1f7;
+  background-color: #636394;
 }
 
 textarea {
@@ -253,7 +248,7 @@ textarea {
   margin: 12px;
   padding: 12px;
   border-color: #f5f5f5;
-  background-color: #575757;
+  background-color: #2e2e38;
   border-radius: 4px;
 }
 
@@ -268,7 +263,7 @@ textarea {
   padding-top: 12px;
   border-radius: 4px;
   box-shadow: 0 0 1px white;
-  background-color: #575757;
+  background-color: #2e2e38;
   overflow: auto;
   transition: 0.3s;
   animation: fade-in ease 2s;
@@ -336,7 +331,11 @@ textarea {
 .comment-block-details {
   padding: 2px 0 2px 20px;
   margin-bottom: 8px;
-  background-color: #575757;
+  background-color: #39394d;
+}
+
+.only-on-mobile {
+  display: none;
 }
 
  @media only screen and (max-width: 800px) {
@@ -349,6 +348,9 @@ textarea {
    .hidden-on-mobile {
      display: none;
    }
+   .only-on-mobile {
+     display: block;
+   }
 }
 
 .footer-element, .footer-element:visited {
@@ -359,7 +361,7 @@ textarea {
 }
 
 .footer-element:hover {
-  color: #3126d1;
+  color: white;
 }
 
 img {

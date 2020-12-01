@@ -20,6 +20,7 @@
 	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
 	<li class='nav-element'><a href='/user/logout'>{% trans %}Logout{% endtrans %}</a></li>
 	{% endif %}
+	<li class='nav-element only-on-mobile'><a href='/post/list/new'>{% trans %}Frontpage{% endtrans %}</a></li>
 	<li class='nav-dropdown'><a href='/post/list/new'>{% trans %}Frontpage{% endtrans %}</a>
 		<div class='nav-dropdown-content'>
 			{% if u != None %}
@@ -29,7 +30,6 @@
 			<a href='/post/list/old'>{% trans %}Oldest{% endtrans %}</a>
 		</div>
 	</li>
-
 	<li class='nav-dropdown'><a href='/post/list'>{% trans %}Categories{% endtrans %}</a>
 		<div class='nav-dropdown-content'>
 			<a href='/post/list?category=Anarchy'>{% trans %}Anarchy{% endtrans %}</a>

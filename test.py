@@ -8,12 +8,7 @@ from xaiecon.classes.base import open_db
 os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres@localhost/test'
 os.environ['DOMAIN_NAME'] = 'localhost:5000'
 
-#from xaiecon.__init__ import app
-
-from xaiecon.factory import create_app
-app = create_app()
-if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=5000)
+from xaiecon.__init__ import app
 
 # Wait 3 seconds for server to start
 time.sleep(3)

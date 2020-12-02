@@ -91,7 +91,7 @@ def signup(u=None):
 	try:
 		if request.method == 'POST':
 			# TODO: Validate hcaptcha
-			if hcaptcha.validate() == False:
+			if hcaptcha.verify() == False:
 				raise XaieconException('Please complete hCaptcha')
 			
 			# Validate form data

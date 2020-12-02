@@ -377,7 +377,7 @@ def edit(u=None,uid=0):
 		if user is None:
 			abort(404)
 
-		if u.id != user.id and u.is_admin == False:
+		if u.id != uid and u.is_admin == False:
 			raise XaieconException(gettext('Not authorized'))
 
 		if request.method == 'POST':
@@ -425,13 +425,10 @@ def edit(u=None,uid=0):
 						pass
 				
 				# Create thumbnail
-				filename = f'{secrets.token_hex(32)}.jpeg'
-				filename = secure_filename(filename)
-
-				final_filename = os.path.join('user_data',filename)
-
+				filename = secure_filename(f'{secrets.token_hex(32)}.jpeg')
+				final_filename = os.path.join('user_data',filename)	
 				file.save(final_filename)
-
+				
 				image = Image.open(final_filename)
 				image = image.convert('RGB')
 				image.thumbnail((120,120))
@@ -477,7 +474,7 @@ def csam_check_profile(uid: int):
 		'is_banned':True})
 	db.commit()
 	db.refresh(user)
-
+	
 	os.remove(os.path.join('user_data',user.image_file))
 	
 	db.close()

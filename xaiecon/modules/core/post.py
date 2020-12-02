@@ -457,7 +457,7 @@ def edit(u=None,pid=0):
 						thumb_filepath = os.path.join('user_data',thumb_filename)
 						
 						img = img.convert('RGB')
-						img.thumb((128,128))
+						img.thumbnail((128,128))
 						img.save(thumb_filepath)
 						
 						db.query(Post).filter_by(id=pid).update({
@@ -579,7 +579,7 @@ def write(u=None):
 					# Create thumbnail for image
 					image = PIL.Image.open(image_filepath)
 					image = image.convert('RGB')
-					image.thumb((128,128))
+					image.thumbnail((128,128))
 					image.save(thumb_filepath)
 	
 					post.image_file = image_filename
@@ -642,7 +642,6 @@ def write(u=None):
 
 @post.route('/post/thumb/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=8600)
 def thumb(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()
@@ -655,7 +654,6 @@ def thumb(u=None,pid=0):
 
 @post.route('/post/image/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=8600)
 def image(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()

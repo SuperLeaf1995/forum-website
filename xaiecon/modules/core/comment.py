@@ -162,10 +162,10 @@ def write_reply(u=None,cid=0):
 		
 		# Notify post poster
 		if post.user_id != u.id:
-			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',post.user_id)
+			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}',post.user_id)
 		# Notify commenter
 		if comment.user_id != u.id:
-			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',comment.user_id)
+			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}',comment.user_id)
 		
 		db.close()
 		
@@ -259,12 +259,12 @@ def create(u=None,pid=0):
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
 		
-		send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',post.user_id)
+		send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}',post.user_id)
 		
 		# Notify followers
 		follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 		for f in follows:
-			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',f.user_id)
+			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}',f.user_id)
 		
 		db.close()
 		

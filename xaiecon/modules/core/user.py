@@ -377,7 +377,7 @@ def edit(u=None,uid=0):
 		if user is None:
 			abort(404)
 
-		if u.id != id and u.is_admin == False:
+		if u.id != user.id and u.is_admin == False:
 			raise XaieconException(gettext('Not authorized'))
 
 		if request.method == 'POST':
@@ -445,7 +445,7 @@ def edit(u=None,uid=0):
 				csam_thread.start()
 
 			db.close()
-			return redirect(f'/user/view/{id}')
+			return redirect(f'/user/view/{uid}')
 		else:
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)

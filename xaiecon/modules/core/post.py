@@ -140,7 +140,7 @@ def vote(u=None,pid=0):
 
 @post.route('/post/ballot/<pid>', methods = ['GET','POST'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def ballot(u=None,pid=0):
 	db = open_db()
 	try:
@@ -485,7 +485,7 @@ def edit(u=None,pid=0):
 			
 			db.close()
 			
-			cache.delete_memoized(view)
+			cache.delete_memoized(view,pid=pid)
 			cache.delete_memoized(list_posts)
 			cache.delete_memoized(list_nuked)
 			cache.delete_memoized(list_feed)
@@ -642,7 +642,7 @@ def write(u=None):
 
 @post.route('/post/thumb/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def thumb(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()
@@ -655,7 +655,7 @@ def thumb(u=None,pid=0):
 
 @post.route('/post/image/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def image(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()
@@ -668,7 +668,7 @@ def image(u=None,pid=0):
 
 @post.route('/post/embed/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def embed(u=None,pid=0):
 	db = open_db()
 	
@@ -688,7 +688,7 @@ def embed(u=None,pid=0):
 
 @post.route('/post/view/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def view(u=None,pid=0):
 	db = open_db()
 	
@@ -739,12 +739,17 @@ def view(u=None,pid=0):
 	ret = render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 	
 	db.close()
+	
+	cache.delete_memoized(list_posts)
+	cache.delete_memoized(list_nuked)
+	cache.delete_memoized(list_feed)
+	
 	return ret
 
 @post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def list_posts(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
@@ -761,7 +766,7 @@ def list_posts(u=None, sort='new'):
 
 @post.route('/post/nuked/<sort>', methods = ['GET'])
 @login_required
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def list_nuked(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
@@ -779,7 +784,7 @@ def list_nuked(u=None, sort='new'):
 @post.route('/post/feed', methods = ['GET'])
 @post.route('/post/feed/<sort>', methods = ['GET'])
 @login_required
-@cache.memoize(timeout=0)
+@cache.memoize(timeout=8600)
 def list_feed(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
@@ -896,7 +901,10 @@ def obtain_embed_url(link: str) -> str:
 	html = x.text
 	soup = BeautifulSoup(html,'html.parser')
 	
-	platform = soup.find('meta',property='og:platform')+soup.find('meta',property='og:site_name')
+	platform = []
+	platform.append(soup.find('meta',property='og:platform'))
+	platform.append(soup.find('meta',property='og:site_name'))
+	platform = [x for x in platform if x is not None]
 	for p in platform:
 		if p is None:
 			continue
@@ -941,7 +949,12 @@ def obtain_post_thumb(link: str):
 	
 	# Get image from meta tag or img tags
 	# We save this image in the server like if it was a upload
-	lst = soup.find_all('meta',property='twitter:image')+soup.find_all('meta',property='og:image')+soup.find_all('img')
+	lst = []
+	lst.append(soup.find('meta',property='twitter:image'))
+	lst.append(soup.find('meta',property='og:image'))
+	for i in soup.find_all('img'):
+		lst.append(i)
+	lst = [x for x in lst if x is not None]
 	for img in lst:
 		try:
 			content = img.get('content')
@@ -957,8 +970,6 @@ def obtain_post_thumb(link: str):
 			if w <= 100 or h <= 100:
 				continue
 			return im
-		except PIL.UnidentifiedImageError:
-			continue
 		except requests.exceptions.InvalidURL:
 			continue
 	
@@ -1033,6 +1044,7 @@ def csam_check_post(uid: int, pid: int):
 		db.refresh(user)
 	
 	db.close()
+	cache.delete_memoized(view)
 	return
 
 print('Post share ... ok')

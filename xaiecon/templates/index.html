@@ -12,18 +12,18 @@
 			<div class='index-intro'>
 				<div class='index-block'>
 					<br>
-					<h1 class='index-intro-title'>{% trans %}A federation for everyone.{% endtrans %}</h1>
-					<p class='index-intro-brief'>{% trans %}An open-source fediverse designed to secure everyone's right to free speech. No censorship, no abuse of power; just traditional forum communities of all kinds{% endtrans %}.</p>
+					<h1 class='index-intro-title'>{% trans %}Hello!{% endtrans %} :D</h1>
+					<p class='index-intro-brief'>{% trans %}An open-source social network{% endtrans %}. <a style='color:grey;' href='/user/signup'>{% trans %}Register{% endtrans %}</a> {% trans %}and start posting!{% endtrans %}.</p>
 					
-					<a href='https://www.reddit.com/r/RedditAlternatives/comments/jzlolp/xaiecon_federated_reddit_alternative_to_ruqqus/'>Explain me</a>
-
+					<a style='color:grey;' href='/help/guide'>Quick tour</a>
+					
 					{% if u != None %}
 					<form method='GET' action='/post/feed/new'>
-						<input class='index-intro-btn' type='submit' value='{% trans %}Get started{% endtrans %}'>
+						<input class='index-intro-btn' type='submit' value='{% trans %}View feed{% endtrans %}'>
 					</form>
 					{% else %}
 					<form method='GET' action='/user/signup'>
-						<input class='index-intro-btn' type='submit' value='{% trans %}Get started{% endtrans %}'>
+						<input class='index-intro-btn' type='submit' value='{% trans %}Signup{% endtrans %}'>
 					</form>
 					{% endif %}
 				</div>

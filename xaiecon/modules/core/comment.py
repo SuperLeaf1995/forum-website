@@ -16,6 +16,10 @@ from xaiecon.classes.user import UserFollow
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.cache import cache
+from xaiecon.modules.core.post import view as view_p
+from xaiecon.modules.core.post import list_posts, list_feed, list_nuked
+
 from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
@@ -43,6 +47,7 @@ def delete(u=None,cid=0):
 	db.commit()
 	
 	db.close()
+	cache.delete_memoized(view)
 	return redirect(f'/comment/view/{cid}')
 
 @comment.route('/comment/edit/<cid>', methods = ['GET','POST'])
@@ -71,6 +76,7 @@ def edit(u=None,cid=0):
 			db.commit()
 			
 			db.close()
+			cache.delete_memoized(view)
 			return redirect(f'/comment/view/{cid}')
 		else:
 			db.close()
@@ -114,6 +120,11 @@ def vote(u=None,cid=0):
 		db.commit()
 		
 		db.close()
+		
+		cache.delete_memoized(view_p)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
 		return '',200
 	except XaieconException as e:
 		return jsonify({'error':e}),400
@@ -157,12 +168,19 @@ def write_reply(u=None,cid=0):
 			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',comment.user_id)
 		
 		db.close()
+		
+		cache.delete_memoized(view_p)
+		cache.delete_memoized(view,cid=cid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
 		return redirect(f'/comment/view/{cid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @comment.route('/comment/view/<cid>', methods = ['GET','POST'])
 @login_wanted
+@cache.memoize(timeout=8600)
 def view(u=None,cid=0):
 	try:
 		db = open_db()
@@ -211,7 +229,7 @@ def view(u=None,cid=0):
 						l.more_children = True
 					
 					comments.append(l)
-
+		
 		db.close()
 		return render_template('post/details.html',u=u,title=post.title,post=post,comment=comments)
 	except XaieconException as e:
@@ -249,6 +267,11 @@ def create(u=None,pid=0):
 			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',f.user_id)
 		
 		db.close()
+		
+		cache.delete_memoized(view_p)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
 		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)

@@ -31,6 +31,7 @@ from sqlalchemy import desc, asc
 
 board = Blueprint('board',__name__,template_folder='templates')
 
+@board.route('/board/view/<bid>', methods = ['GET'])
 @board.route('/board/view/<bid>/<sort>', methods = ['GET'])
 @login_wanted
 def view(u=None,bid=0,sort='new'):
@@ -67,7 +68,7 @@ def view_by_name(u=None,name=None):
 		return render_template('board/pick.html',u=u,title=name,boards=board)
 	
 	# Only 1 board exists with that name
-	return redirect(f'/board/view?bid={board[0].id}')
+	return redirect(f'/board/view/{board[0].id}')
 
 @board.route('/board/edit/<bid>', methods = ['GET','POST'])
 @login_required
@@ -128,7 +129,7 @@ def edit(u=None,bid=0):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/board/view?bid={bid}')
+			return redirect(f'/board/view/{bid}')
 		else:
 			category = db.query(Category).all()
 			db.close()
@@ -264,8 +265,8 @@ def new(u=None):
 			category = request.values.get('category')
 			keywords = request.values.get('keywords')
 			
-			if db.query(Board).filter_by(user_id=u.id).count() > 20:
-				raise XaieconException('Limit of 20 boards reached')
+			if db.query(Board).filter_by(user_id=u.id).count() > 50:
+				raise XaieconException('Limit of 50 boards reached')
 			
 			category = db.query(Category).filter_by(name=category).first()
 			if category is None:
@@ -287,7 +288,7 @@ def new(u=None):
 			db.refresh(board)
 			
 			db.close()
-			return redirect(f'/board/view?bid={board.id}')
+			return redirect(f'/board/view/{board.id}')
 		else:
 			category = db.query(Category).all()
 			db.close()

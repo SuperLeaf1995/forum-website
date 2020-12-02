@@ -1,6 +1,6 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ u.id }}'></img>
+	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb/{{ u.id }}'></img>
 	<h1>{% trans %}Your notifications{% endtrans %}</h1>
 
 	{% if notifications != None %}

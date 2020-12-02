@@ -28,7 +28,7 @@ def create_app() -> Flask:
 	app.config['HCAPTCHA_SECRET_KEY'] = os.environ.get('HCAPTCHA_SECRET_KEY','')
 	app.config['SQLALCHEMY_URL'] = os.environ.get('SQLALCHEMY_URL','')
 	app.config['DOMAIN_NAME'] = os.environ.get('DOMAIN_NAME','localhost:5000')
-
+	
 	# Create cache associated with our app
 	# And also initialize hcaptcha
 	cache.init_app(app)

@@ -217,14 +217,13 @@ def view(u=None,cid=0):
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@comment.route('/comment/create', methods = ['POST'])
+@comment.route('/comment/create/<pid>', methods = ['POST'])
 @login_required
-def create(u=None):
+def create(u=None,pid=0):
 	try:
 		db = open_db()
 		
 		body = request.form.get('body')
-		pid = request.form.get('pid')
 		
 		if len(body) == 0:
 			raise XaieconException('Body too short')

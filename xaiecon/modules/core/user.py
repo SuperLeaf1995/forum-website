@@ -91,14 +91,14 @@ def signup(u=None):
 	try:
 		if request.method == 'POST':
 			# TODO: Validate hcaptcha
-			if hcaptcha.verify() == False:
-				raise XaieconException('Please complete hCaptcha')
+			#if hcaptcha.verify() == False:
+			#	raise XaieconException('Please complete hCaptcha')
 			
 			# Validate form data
 			if len(request.form.get('password','')) < 6:
 				raise XaieconException('Please input a password atleast of 6 characters')
-			if len(request.form.get('username','')) < 4:
-				raise XaieconException('Please input a username atleast of 4 characters')
+			if len(request.form.get('username','')) < 1:
+				raise XaieconException('Please input a username atleast of 1 character')
 			
 			if len(request.form.get('agree_tos','')) == 0:
 				raise XaieconException('Agree to the terms, privacy policy and content policy')
@@ -140,7 +140,7 @@ def signup(u=None):
 			# Finally, end ;)
 			db.close()
 			
-			return redirect(f'/user/view?uid={new_user.id}')
+			return redirect(f'/user/view/{new_user.id}')
 		else:
 			return render_template('user/signup.html',u=u,signup_error='',title='Signup')
 	except XaieconException as e:

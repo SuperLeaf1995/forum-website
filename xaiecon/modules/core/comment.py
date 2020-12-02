@@ -24,11 +24,10 @@ from sqlalchemy.orm import joinedload
 comment = Blueprint('comment',__name__,template_folder='templates/comment')
 
 # AKA. Blanking the comment ;)
-@comment.route('/comment/delete', methods = ['GET','POST'])
+@comment.route('/comment/delete/<cid>', methods = ['GET','POST'])
 @login_required
-def delete(u=None):
+def delete(u=None,cid=0):
 	db = open_db()
-	cid = int(request.values.get('cid',''))
 	
 	# Query comment from id
 	comment = db.query(Comment).filter_by(id=cid).first()
@@ -44,14 +43,13 @@ def delete(u=None):
 	db.commit()
 	
 	db.close()
-	return redirect(f'/comment/view?cid={cid}')
+	return redirect(f'/comment/view/{cid}')
 
-@comment.route('/comment/edit', methods = ['GET','POST'])
+@comment.route('/comment/edit/<cid>', methods = ['GET','POST'])
 @login_required
-def edit(u=None):
+def edit(u=None,cid=0):
 	try:
 		db = open_db()
-		cid = int(request.values.get('cid',''))
 		
 		# Query comment from id
 		comment = db.query(Comment).filter_by(id=cid).first()
@@ -73,18 +71,17 @@ def edit(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/comment/view?cid={cid}')
+			return redirect(f'/comment/view/{cid}')
 		else:
 			db.close()
 			return render_template('post/edit_comment.html',u=u,title='Edit comment',comment=comment)
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@comment.route('/comment/vote', methods = ['GET','POST'])
+@comment.route('/comment/vote/<cid>', methods = ['GET','POST'])
 @login_required
-def vote(u=None):
+def vote(u=None,cid=0):
 	try:
-		cid = int(request.values.get('cid',''))
 		val = int(request.values.get('value'))
 		
 		if cid is None or val is None or val not in [-1,1]:
@@ -121,14 +118,13 @@ def vote(u=None):
 	except XaieconException as e:
 		return jsonify({'error':e}),400
 
-@comment.route('/comment/reply', methods = ['POST'])
+@comment.route('/comment/reply/<cid>', methods = ['POST'])
 @login_required
-def write_reply(u=None, cid=None):
+def write_reply(u=None,cid=0):
 	try:
 		db = open_db()
 		
 		body = request.form.get('body')
-		cid = int(request.form.get('cid',''))
 		pid = int(request.form.get('pid',''))
 		
 		if len(body) == 0:
@@ -161,22 +157,20 @@ def write_reply(u=None, cid=None):
 			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{reply.body}',comment.user_id)
 		
 		db.close()
-		return redirect(f'/comment/view?cid={cid}')
+		return redirect(f'/comment/view/{cid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@comment.route('/comment/view', methods = ['GET','POST'])
+@comment.route('/comment/view/<cid>', methods = ['GET','POST'])
 @login_wanted
-def view(u=None):
+def view(u=None,cid=0):
 	try:
 		db = open_db()
 		
-		cid = request.values.get('cid','')
-
 		comment = db.query(Comment).filter_by(id=cid).options(joinedload('*')).first()
 		if comment is None:
 			abort(404)
-
+		
 		post_comment = None
 		post_cid = cid
 		post = None
@@ -256,7 +250,7 @@ def create(u=None):
 			send_notification(f'Comment by [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{post.board_info.name}](/board/view?bid={post.board_info.id}) in post ***{post.title}***\n\r{comment.body}',f.user_id)
 		
 		db.close()
-		return redirect(f'/post/view?pid={pid}')
+		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

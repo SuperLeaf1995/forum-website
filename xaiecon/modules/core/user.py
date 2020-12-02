@@ -91,6 +91,8 @@ def signup(u=None):
 	try:
 		if request.method == 'POST':
 			# TODO: Validate hcaptcha
+			if hcaptcha.validate() == False:
+				raise XaieconException('Please complete hCaptcha')
 			
 			# Validate form data
 			if len(request.form.get('password','')) < 6:
@@ -201,7 +203,7 @@ def email_verify_send(u=None):
 	
 	db.commit()
 	db.close()
-	return redirect('/user/view?uid={u.id}')
+	return redirect('/user/view/{u.id}')
 
 @user.route('/user/email/verify', methods = ['GET'])
 @login_required
@@ -257,13 +259,11 @@ def view_by_username(u=None,username=None):
 		return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 	return redirect(f'/user/view?uid={user[0].id}')
 
-@user.route('/user/view', methods = ['GET'])
+@user.route('/user/view/<uid>', methods = ['GET'])
 @login_wanted
-def view_by_id(u=None):
-	id = request.values.get('uid')
-	
+def view_by_id(u=None,uid=0):
 	db = open_db()
-	user = db.query(User).filter_by(id=id).first()
+	user = db.query(User).filter_by(id=uid).first()
 	if user is None:
 		abort(404)
 	
@@ -271,14 +271,12 @@ def view_by_id(u=None):
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
-@user.route('/user/feed_settings', methods = ['GET','POST'])
+@user.route('/user/feed_settings/<uid>', methods = ['GET','POST'])
 @login_wanted
-def change_feed_settings(u=None):
-	uid = int(request.values.get('uid','0'))
-	
+def change_feed_settings(u=None,uid=0):
 	db = open_db()
 	
-	user = db.query(User).filter_by(id=uid).first()
+	user = db.query(User).filter_by(id=u.id).first()
 	if user is None:
 		abort(404)
 	
@@ -301,13 +299,11 @@ def change_feed_settings(u=None):
 		db.close()
 		return render_template('user/follow_settings.html',u=u,title='Edit feed and notification settings',user=user)
 
-@user.route('/user/follow', methods = ['POST'])
+@user.route('/user/follow/<uid>', methods = ['POST'])
 @login_required
-def subscribe(u=None):
+def subscribe(u=None,uid=0):
 	db = open_db()
 	
-	uid = request.values.get('uid')
-
 	# User does not exist
 	if db.query(User).filter_by(id=uid).first() is None:
 		return '',404
@@ -327,17 +323,15 @@ def subscribe(u=None):
 		'follow_count':user.follow_count+1})
 	
 	db.commit()
-
+	
 	db.close()
 	return '',200
 
-@user.route('/user/unfollow', methods = ['POST'])
+@user.route('/user/unfollow/<uid>', methods = ['POST'])
 @login_required
-def unsubscribe(u=None):
+def unsubscribe(u=None,uid=0):
 	db = open_db()
 	
-	uid = request.values.get('uid')
-
 	# User does not exist
 	if db.query(User).filter_by(id=uid).first() is None:
 		return '',404
@@ -360,10 +354,9 @@ def unsubscribe(u=None):
 	db.close()
 	return '',200
 
-@user.route('/user/thumb', methods = ['GET','POST'])
+@user.route('/user/thumb/<uid>', methods = ['GET','POST'])
 @login_wanted
-def thumb(u=None):
-	uid = int(request.values.get('uid','0'))
+def thumb(u=None,uid=0):
 	db = open_db()
 	user = db.query(User).filter_by(id=uid).first()
 	if user is None:
@@ -375,14 +368,12 @@ def thumb(u=None):
 		return send_from_directory('assets/public/pics',user.fallback_thumb)
 	return send_from_directory('../user_data',user.image_file)
 
-@user.route('/user/edit', methods = ['GET','POST'])
+@user.route('/user/edit/<uid>', methods = ['GET','POST'])
 @login_required
-def edit(u=None):
+def edit(u=None,uid=0):
 	try:
-		id = int(request.values.get('uid',''))
-
 		db = open_db()
-		user = db.query(User).filter_by(id=id).first()
+		user = db.query(User).filter_by(id=uid).first()
 		if user is None:
 			abort(404)
 
@@ -400,7 +391,7 @@ def edit(u=None):
 			
 			# Revoke verification if user changes email
 			if user.email != email:
-				db.query(User).filter_by(id=id).update({
+				db.query(User).filter_by(id=uid).update({
 					'is_email_verified':False
 				})
 			
@@ -411,7 +402,7 @@ def edit(u=None):
 			is_nsfw = strtobool(request.form.get('is_nsfw','False'))
 			uses_dark_mode = strtobool(request.form.get('uses_dark_mode','False'))
 			
-			db.query(User).filter_by(id=id).update({
+			db.query(User).filter_by(id=uid).update({
 						'biography':biography,
 						'email':email,
 						'is_show_email':is_show_email,
@@ -447,14 +438,14 @@ def edit(u=None):
 				os.remove(final_filename)
 				image.save(final_filename)
 
-				db.query(User).filter_by(id=id).update({'image_file':filename})
+				db.query(User).filter_by(id=uid).update({'image_file':filename})
 				db.commit()
 
-				csam_thread = threading.Thread(target=csam_check_profile, args=(id,))
+				csam_thread = threading.Thread(target=csam_check_profile, args=(uid,))
 				csam_thread.start()
 
 			db.close()
-			return redirect(f'/user/view?uid={id}')
+			return redirect(f'/user/view/{id}')
 		else:
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)
@@ -471,7 +462,7 @@ def csam_check_profile(uid: int):
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
 	for i in range(10):
-		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/user/thumb?uid={uid}',headers=headers)
+		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/user/thumb/{uid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

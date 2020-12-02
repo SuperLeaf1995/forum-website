@@ -60,8 +60,8 @@ function status_change(id,value) {
 
 function vote_post(id,value) {
 	var xhr = new XMLHttpRequest();
-	var url = '/post/vote';
-	var params = 'pid='+id+'&value='+value;
+	var url = '/post/vote/'+id;
+	var params = 'value='+value;
 	xhr.open('POST',url,true);
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() {
@@ -74,8 +74,8 @@ function vote_post(id,value) {
 
 function vote_comment(id,value) {
 	var xhr = new XMLHttpRequest();
-	var url = '/comment/vote';
-	var params = 'cid='+id+'&value='+value;
+	var url = '/comment/vote/'+cid;
+	var params = 'value='+value;
 	xhr.open('POST',url,true);
 	xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 	xhr.onreadystatechange = function() {
@@ -90,12 +90,11 @@ function follow(uid,e) {
 	var xhr = new XMLHttpRequest();
 	var url;
 	var text;
-	var params = 'uid='+uid;
 	if(e.value === 'Unfollow') {
-		url = '/user/unfollow';
+		url = '/user/unfollow/'+uid;
 		text = 'Follow';
 	} else {
-		url = '/user/follow';
+		url = '/user/follow/'+uid;
 		text = 'Unfollow';
 	}
 	xhr.open('POST',url,true);
@@ -105,19 +104,18 @@ function follow(uid,e) {
 			e.value = text;
 		}
 	}
-	xhr.send(params);
+	xhr.send();
 }
 
 function subscribe(bid,e) {
 	var xhr = new XMLHttpRequest();
 	var url;
 	var text;
-	var params = 'bid='+bid;
 	if(e.value === 'Unsubscribe') {
-		url = '/board/unsubscribe';
+		url = '/board/unsubscribe/'+bid;
 		text = 'Subscribe';
 	} else {
-		url = '/board/subscribe';
+		url = '/board/subscribe/'+bid;
 		text = 'Unsubscribe';
 	}
 	xhr.open('POST',url,true);
@@ -127,7 +125,7 @@ function subscribe(bid,e) {
 			e.value = text;
 		}
 	}
-	xhr.send(params);
+	xhr.send();
 }
 
 function reply_comment(idd) {

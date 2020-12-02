@@ -1,6 +1,6 @@
 {% extends "default_layout.html" %}
 {% block content %}
-	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb?uid={{ user.id }}'></img>
+	<img style='border-radius:64px;' width='128px' height='128px' src='/user/thumb/{{ user.id }}'></img>
 	<h1>{{ user.username }}</h1>
 
 	{% if user.is_banned == True %}
@@ -41,7 +41,7 @@
 			{% endif %}
 			
 			{% if u.id == user.id %}
-				<a href='/user/edit?uid={{ user.id }}'>{% trans %}Edit details{% endtrans %}</a>
+				<a href='/user/edit/{{ user.id }}'>{% trans %}Edit details{% endtrans %}</a>
 			{% endif %}
 		{% endif %}
 	{% endif %}

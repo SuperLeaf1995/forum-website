@@ -4,8 +4,7 @@
 {% if edit_error %}
 <p>{{ edit_error }}</p>
 {% endif %}
-<form enctype='multipart/form-data' method='POST' action='/post/edit'>
-	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
+<form enctype='multipart/form-data' method='POST' action='/post/edit/{{ post.id }}'>
 	<label for='title'>Title</label>
 	<input class='textbar-normal' type='text' name='title' id='title' value='{{ post.title }}'></br>
 	<label for='body'>Body</label>

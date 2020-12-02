@@ -106,5 +106,8 @@ def create_app() -> Flask:
 
 	from xaiecon.modules.core.fediverse import fediverse
 	app.register_blueprint(fediverse)
+	
+	from xaiecon.modules.core.help import help
+	app.register_blueprint(help)
 
 	return app

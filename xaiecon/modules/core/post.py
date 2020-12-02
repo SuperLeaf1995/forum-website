@@ -83,12 +83,11 @@ def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
 	db.close()
 	return post
 
-@post.route('/post/vote', methods = ['POST'])
+@post.route('/post/vote/<pid>', methods = ['POST'])
 @login_required
-def vote(u=None):
+def vote(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
 		val = int(request.values.get('value',''))
 		
 		if pid is None:
@@ -129,19 +128,22 @@ def vote(u=None):
 		
 		db.close()
 		cache.delete_memoized(ballot)
+		cache.delete_memoized(view,pid=pid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
 		return '',200
 	except XaieconException as e:
 		db.rollback()
 		db.close()
 		return jsonify({'error':e}),400
 
-@post.route('/post/ballot', methods = ['GET','POST'])
+@post.route('/post/ballot/<pid>', methods = ['GET','POST'])
 @login_wanted
-def ballot(u=None):
+@cache.memoize(timeout=0)
+def ballot(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
-		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
@@ -181,18 +183,23 @@ def unnuke(u=None):
 		db.commit()
 		
 		db.close()
-		return redirect(f'/post/view?pid={pid}')
+		
+		cache.delete_memoized(view,pid=pid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
+		
+		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		db.rollback()
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/nuke', methods = ['GET','POST'])
+@post.route('/post/nuke/<pid>', methods = ['GET','POST'])
 @login_required
-def nuke(u=None):
+def nuke(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
@@ -214,18 +221,23 @@ def nuke(u=None):
 		db.commit()
 		
 		db.close()
-		return redirect(f'/post/view?pid={pid}')
+		
+		cache.delete_memoized(view,pid=pid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
+		
+		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		db.rollback()
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/kick', methods = ['GET','POST'])
+@post.route('/post/kick/<pid>', methods = ['GET','POST'])
 @login_required
-def kick(u=None):
+def kick(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
 		if request.method == 'POST':
 			post = db.query(Post).filter_by(id=pid).first()
 			
@@ -247,7 +259,13 @@ def kick(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view?pid={pid}')
+			
+			cache.delete_memoized(view,pid=pid)
+			cache.delete_memoized(list_posts)
+			cache.delete_memoized(list_nuked)
+			cache.delete_memoized(list_feed)
+			
+			return redirect(f'/post/view/{pid}')
 		else:
 			post = db.query(Post).filter_by(id=pid).first()
 			db.close()
@@ -257,12 +275,11 @@ def kick(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/yank', methods = ['GET','POST'])
+@post.route('/post/yank/<pid>', methods = ['GET','POST'])
 @login_required
-def yank(u=None):
+def yank(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
 		if request.method == 'POST':
 			bid = request.values.get('bid')
 			
@@ -288,7 +305,13 @@ def yank(u=None):
 			db.commit()
 			
 			db.close()
-			return redirect(f'/post/view?pid={pid}')
+			
+			cache.delete_memoized(view,pid=pid)
+			cache.delete_memoized(list_posts)
+			cache.delete_memoized(list_nuked)
+			cache.delete_memoized(list_feed)
+			
+			return redirect(f'/post/view/{pid}')
 		else:
 			boards = db.query(Board).filter_by(user_id=u.id).options(joinedload('user_info')).all()
 			post = db.query(Post).filter_by(id=pid).first()
@@ -299,13 +322,11 @@ def yank(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/delete', methods = ['GET','POST'])
+@post.route('/post/delete/<pid>', methods = ['GET','POST'])
 @login_required
-def delete(u=None):
+def delete(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
-
 		post = db.query(Post).filter_by(id=pid).first()
 		if post == None:
 			abort(404)
@@ -333,19 +354,23 @@ def delete(u=None):
 			'link_url':''})
 		db.commit()
 		db.close()
-		return redirect(f'/post/view?pid={pid}')
+		
+		cache.delete_memoized(view,pid=pid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
+		
+		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		db.rollback()
 		db.close()
 		return jsonify({'error':e}),400
 
-@post.route('/post/edit', methods = ['POST','GET'])
+@post.route('/post/edit/<pid>', methods = ['POST','GET'])
 @login_required
-def edit(u=None):
+def edit(u=None,pid=0):
 	db = open_db()
 	try:
-		pid = request.values.get('pid')
-		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
@@ -459,7 +484,13 @@ def edit(u=None):
 			csam_thread.start()
 			
 			db.close()
-			return redirect(f'/post/view?pid={pid}')
+			
+			cache.delete_memoized(view)
+			cache.delete_memoized(list_posts)
+			cache.delete_memoized(list_nuked)
+			cache.delete_memoized(list_feed)
+			
+			return redirect(f'/post/view/{pid}')
 		else:
 			categories = db.query(Category).all()
 			db.close()
@@ -592,7 +623,13 @@ def write(u=None):
 					send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',f.user_id)
 			
 			db.close()
-			return redirect(f'/post/view?pid={post.id}')
+			
+			# Mess with everyone's feed
+			cache.delete_memoized(list_posts)
+			cache.delete_memoized(list_nuked)
+			cache.delete_memoized(list_feed)
+			
+			return redirect(f'/post/view/{post.id}')
 		else:
 			board = db.query(Board).filter_by(is_banned=False).options(joinedload('user_info')).all()
 			categories = db.query(Category).all()
@@ -603,12 +640,12 @@ def write(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/thumb', methods = ['GET'])
+@post.route('/post/thumb/<pid>', methods = ['GET'])
 @login_wanted
-def thumb(u=None):
-	id = int(request.values.get('pid',''))
+@cache.memoize(timeout=0)
+def thumb(u=None,pid=0):
 	db = open_db()
-	post = db.query(Post).filter_by(id=id).first()
+	post = db.query(Post).filter_by(id=pid).first()
 	if post is None:
 		abort(404)
 	if post.thumb_file is None:
@@ -616,12 +653,12 @@ def thumb(u=None):
 	db.close()
 	return send_from_directory('../user_data',post.thumb_file)
 
-@post.route('/post/image', methods = ['GET'])
+@post.route('/post/image/<pid>', methods = ['GET'])
 @login_wanted
-def image(u=None):
-	id = int(request.values.get('pid',''))
+@cache.memoize(timeout=0)
+def image(u=None,pid=0):
 	db = open_db()
-	post = db.query(Post).filter_by(id=id).first()
+	post = db.query(Post).filter_by(id=pid).first()
 	if post is None:
 		abort(404)
 	if post.image_file is None:
@@ -629,14 +666,10 @@ def image(u=None):
 	db.close()
 	return send_from_directory('../user_data',post.image_file)
 
-@post.route('/post/embed', methods = ['GET'])
+@post.route('/post/embed/<pid>', methods = ['GET'])
 @login_wanted
-def embed(u=None):
-	pid = request.values.get('pid')
-	if pid == None:
-		abort(404)
-	
-	# Obtain postpath and send it
+@cache.memoize(timeout=0)
+def embed(u=None,pid=0):
 	db = open_db()
 	
 	# Query post from database
@@ -653,14 +686,10 @@ def embed(u=None):
 	db.close()
 	return ret
 
-@post.route('/post/view', methods = ['GET'])
+@post.route('/post/view/<pid>', methods = ['GET'])
 @login_wanted
-def view(u=None):
-	pid = request.values.get('pid')
-	if pid == None:
-		abort(404)
-	
-	# Obtain postpath and send it
+@cache.memoize(timeout=0)
+def view(u=None,pid=0):
 	db = open_db()
 	
 	# Query post from database
@@ -715,6 +744,7 @@ def view(u=None):
 @post.route('/post/list', methods = ['GET'])
 @post.route('/post/list/<sort>', methods = ['GET'])
 @login_wanted
+@cache.memoize(timeout=0)
 def list_posts(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
@@ -731,6 +761,7 @@ def list_posts(u=None, sort='new'):
 
 @post.route('/post/nuked/<sort>', methods = ['GET'])
 @login_required
+@cache.memoize(timeout=0)
 def list_nuked(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
@@ -748,7 +779,8 @@ def list_nuked(u=None, sort='new'):
 @post.route('/post/feed', methods = ['GET'])
 @post.route('/post/feed/<sort>', methods = ['GET'])
 @login_required
-def feed_posts(u=None, sort='new'):
+@cache.memoize(timeout=0)
+def list_feed(u=None, sort='new'):
 	category = request.values.get('category','All')
 	page = int(request.values.get('page','0'))
 	num = int(request.values.get('num','15'))
@@ -956,13 +988,13 @@ def csam_check_post(uid: int, pid: int):
 	# And check image if it has one...
 	if post.is_image == True:
 		for i in range(10):
-			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/thumb?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/thumb/{post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:
 				time.sleep(10)
 		for i in range(10):
-			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/image?pid={post.id}',headers=headers)
+			x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/post/image/{post.id}',headers=headers)
 			if x.status_code in [200, 451]:
 				break
 			else:

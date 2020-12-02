@@ -3,10 +3,10 @@
 	<h1>Pick one</h1>
 	<p>There are multiple boards with that name, select one of them</p>
 	{% for board in boards %}
-		<a href='/board/view?bid={{ board.id }}'><h2>{{ board.name }}</h2></a>
+		<a href='/board/view/{{ board.id }}'><h2>{{ board.name }}</h2></a>
 		<p>Category: {{ board.category_info.name }}</p>
 		<i>(#{{ board.id }})</i>
-		<b>Board created by: <a href='/user/view?uid={{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></b>
+		<b>Board created by: <a href='/user/view/{{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></b>
 		<p>{{ board.descr }}</p>
 	{% endfor %}
 {% endblock %}

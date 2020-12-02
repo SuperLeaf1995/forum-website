@@ -31,12 +31,9 @@ from sqlalchemy import desc, asc
 
 board = Blueprint('board',__name__,template_folder='templates')
 
-@board.route('/board/view', methods = ['GET'])
+@board.route('/board/view/<bid>/<sort>', methods = ['GET'])
 @login_wanted
-def view(u=None):
-	sort = request.values.get('sort','new')
-	bid = request.values.get('bid','new')
-	
+def view(u=None,bid=0,sort='new'):
 	db = open_db()
 	board = db.query(Board).filter_by(id=bid).options(joinedload('*')).first()
 	if board is None:
@@ -72,13 +69,11 @@ def view_by_name(u=None,name=None):
 	# Only 1 board exists with that name
 	return redirect(f'/board/view?bid={board[0].id}')
 
-@board.route('/board/edit', methods = ['GET','POST'])
+@board.route('/board/edit/<bid>', methods = ['GET','POST'])
 @login_required
-def edit(u=None):
+def edit(u=None,bid=0):
 	try:
 		db = open_db()
-		
-		bid = request.values.get('bid')
 		
 		board = db.query(Board).filter_by(id=bid).first()
 		if board is None:
@@ -142,11 +137,9 @@ def edit(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@board.route('/board/ban', methods = ['POST','GET'])
+@board.route('/board/ban/<bid>/<uid>', methods = ['POST','GET'])
 @login_required
-def ban(u=None):
-	bid = int(request.values.get('bid','0'))
-	uid = int(request.values.get('uid','0'))
+def ban(u=None,bid=0,uid=0):
 	if request.method == 'POST':
 		db = open_db()
 
@@ -170,38 +163,34 @@ def ban(u=None):
 		db.commit()
 
 		db.close()
-		return redirect(f'/board/view?bid={bid}')
+		return redirect(f'/board/view/{bid}')
 	else:
 		return render_template('board/ban.html',u=u,title='Ban user',bid=bid,uid=uid)
 
-@board.route('/board/unban', methods = ['POST'])
+@board.route('/board/unban/<bid>/<uid>', methods = ['POST'])
 @login_required
-def unban(u=None):
+def unban(u=None,bid=0,uid=0):
 	db = open_db()
 	
-	bid = request.values.get('bid')
-	uid = request.values.get('uid')
-
 	if u.mods(bid) == False:
 		return '',401
-
+	
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
 		return '',404
 	# Do not unban self
 	if uid == u.id:
 		return '',400
-
+	
 	db.qeury(BoardBan).filter_by(user_id=uid,board_id=bid).delete()
 	db.commit()
-
+	
 	db.close()
 	return '',200
 
-@board.route('/board/thumb', methods = ['GET','POST'])
+@board.route('/board/thumb/<bid>', methods = ['GET','POST'])
 @login_wanted
-def thumb(u=None):
-	bid = int(request.values.get('bid',''))
+def thumb(u=None,bid=0):
 	db = open_db()
 	board = db.query(Board).filter_by(id=bid).first()
 	if board is None:
@@ -213,13 +202,11 @@ def thumb(u=None):
 	#	return send_from_directory('assets/public/pics',board.fallback_thumb)
 	return send_from_directory('../user_data',board.icon_file)
 
-@board.route('/board/subscribe', methods = ['POST'])
+@board.route('/board/subscribe/<bid>', methods = ['POST'])
 @login_required
-def subscribe(u=None):
+def subscribe(u=None,bid=0):
 	db = open_db()
 	
-	bid = request.values.get('bid')
-
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
 		return '',404
@@ -239,13 +226,11 @@ def subscribe(u=None):
 	db.close()
 	return '',200
 
-@board.route('/board/unsubscribe', methods = ['POST'])
+@board.route('/board/unsubscribe/<bid>', methods = ['POST'])
 @login_required
-def unsubscribe(u=None):
+def unsubscribe(u=None,bid=0):
 	db = open_db()
 	
-	bid = request.values.get('bid')
-
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
 		return '',404
@@ -321,7 +306,7 @@ def csam_check_profile(bid: int):
 	headers = {'User-Agent':'xaiecon-csam-check'}
 
 	for i in range(10):
-		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/board/thumb?bid={bid}',headers=headers)
+		x = requests.get(f'https://{os.environ.get("DOMAIN_NAME")}/board/thumb/{bid}',headers=headers)
 		if x.status_code in [200, 451]:
 			break
 		else:

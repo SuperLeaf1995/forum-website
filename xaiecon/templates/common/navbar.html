@@ -17,7 +17,7 @@
 	<li class='nav-element' style='background-color:red;border-radius:12px;margin:0;padding:0;margin-top:6px;margin-left:4px;'><a style='color:white;height:12px;padding:8px;margin:0;' href='/user/notifications'>{{ u.unread_notifications_number }}</a></li>
 	{% endif %}
 	<li class='nav-element'><img style='border-radius:22px;float:right;' width='44px' height='44px' src='/user/thumb?uid={{ u.id }}'></img></li>
-	<li class='nav-element'><a href='/user/view?uid={{ u.id }}'>/u/{{ u.username }}</a></li>
+	<li class='nav-element'><a href='/user/view/{{ u.id }}'>/u/{{ u.username }}</a></li>
 	<li class='nav-element'><a href='/user/logout'>{% trans %}Logout{% endtrans %}</a></li>
 	{% endif %}
 	<li class='nav-element only-on-mobile'><a href='/post/list/new'>{% trans %}Frontpage{% endtrans %}</a></li>

@@ -3,16 +3,15 @@
 <h1>{% trans %}Yank post{% endtrans %}</h1>
 <hr>
 {% if boards %}
-<form enctype='multipart/form-data' method='POST' action='/post/yank'>
-	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-		<span>{% trans %}Board to yank to{% endtrans %}</span>
-		<select name='bid'>
-			{% for board in boards %}
-				{% if u.mods(board.id) and post.board_id != board.id %}
-					<option value='{{ board.id }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
-				{% endif %}
-			{% endfor %}
-		</select>
+<form enctype='multipart/form-data' method='POST' action='/post/yank/{{ post.id }}'>
+	<label for='bid'>{% trans %}Board to yank to{% endtrans %}</label>
+	<select name='bid' id='bid'>
+		{% for board in boards %}
+			{% if u.mods(board.id) and post.board_id != board.id %}
+				<option value='{{ board.id }}'>{{ board.name }} - /u/{{ board.user_info.username }}</option>
+			{% endif %}
+		{% endfor %}
+	</select>
 	<input class='form-btn' type='submit' value='{% trans %}Yank{% endtrans %}'></br>
 </form>
 {% else %}

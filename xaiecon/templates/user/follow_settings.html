@@ -1,8 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
-<form enctype='multipart/form-data' method='POST' action='/user/feed_settings'>
+<form enctype='multipart/form-data' method='POST' action='/user/feed_settings/{{ user.id }}'>
 	<h1>Follower settings</h1>
-	<input style='display:none;' value='{{ user.id }}' name='uid'>
 	<input type='checkbox' name='show-feed'>Show in feed</input><br>
 	<input type='checkbox' name='receive'>Receive notifications</input><br>
 	<input type='submit' class='form-btn' value='{% trans %}Apply{% endtrans %}'>

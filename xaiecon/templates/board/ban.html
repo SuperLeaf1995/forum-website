@@ -1,9 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
 <h1>Ban user</h1>
-<form enctype='multipart/form-data' method='POST' action='/board/ban'>
-	<input type='text' name='bid' style='display:none;' value='{{ bid }}'>
-	<input type='text' name='uid' style='display:none;' value='{{ uid }}'>
+<form enctype='multipart/form-data' method='POST' action='/board/ban/{{ bid }}/{{ uid }}'>
 	<label for='reason'>Reason</label>
 	<textarea class='textbar-normal' maxlength='4095' name='reason' id='reason' placeholder='Reason of why the ban'></textarea></br>
 	<input class='form-btn' type='submit' value='Ban'></br>

@@ -1,14 +1,14 @@
 <article class='post-brief'>
 	{% if post.is_image == True %}
-		<div class='post-brief-thumb'><img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></img></div>
+		<div class='post-brief-thumb'><img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb/{{ post.id }}'></img></div>
 		<div id='image-full' class='image-preview-full'>
-			<img src='/post/image?pid={{ post.id }}'>
+			<img src='/post/image/{{ post.id }}'>
 		</div>
 		<div id='smoke-curtain' class='smoke-curtain'></div>
 	{% elif post.is_thumb == True and post.is_link == True %}
-		<div class='post-brief-thumb'><a href='{{ post.link_url }}'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} src='/post/thumb?pid={{ post.id }}'></img></a></div>
+		<div class='post-brief-thumb'><a href='{{ post.link_url }}'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} src='/post/thumb/{{ post.id }}'></img></a></div>
 	{% elif post.is_thumb == True %}
-		<div class='image-full'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
+		<div class='image-full'><img {% if post.is_nsfw == True %}style='filter:blur(5px);'{% endif %} width='128px' height='128px' src='/post/thumb/{{ post.id }}'></div>
 	{% endif %}
 
 	<div style='height:100%;float:left;margin:0 16px;'>
@@ -26,38 +26,38 @@
 	{% if post.is_link == True %}
 	<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
 	{% else %}
-	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
+	<a href='/post/view/{{ post.id }}'><h2>{{ post.title }}</h2></a>
 	{% endif %}
 	
 	<p style='color:gray;'>{% trans %}Submitted{% endtrans %} <i class='content-datetime' value='{{ post.creation_date }}'>({% trans %}calculating{% endtrans %}...)</i> by 
-	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
-	Posted on <a href='/board/view?bid={{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb?bid={{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
+	<a href='/user/view/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
+	Posted on <a href='/board/view/{{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb/{{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} {% trans %}views{% endtrans %}</a>
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} {% trans %}comments{% endtrans %}</a>
+	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.views }} {% trans %}views{% endtrans %}</a>
+	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.number_comments }} {% trans %}comments{% endtrans %}</a>
 	
 {% if u != None %}
 	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?pid={{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
-	<a class='post-option' href='/post/edit?pid={{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
+	<a class='post-option' href='/post/delete/{{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
+	<a class='post-option' href='/post/edit/{{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
 	{% endif %}
 	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-	<a class='post-option' href='/post/kick?pid={{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
+	<a class='post-option' href='/post/kick/{{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
 	{% if post.is_nuked == False %}
-	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
+	<a class='post-option' href='/post/nuke/{{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
 	{% elif u.is_admin == True %}
-	<a class='post-option' href='/post/unnuke?pid={{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
+	<a class='post-option' href='/post/unnuke/{{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
+	<a class='post-option' href='/board/ban/{{ post.board_id }}/{{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/post/yank?pid={{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
+	<a class='post-option' href='/post/yank/{{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
 {% endif %}
 {% if post.show_votes == True %}
-	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
+	<a class='post-option' href='/post/ballot/{{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
 {% endif %}
-	<a class='post-option' href='/post/flag?pid={{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
-	<a class='post-option' href='/post/embed?pid={{ post.id }}'>{% trans %}Embed{% endtrans %}</a>
+	<a class='post-option' href='/post/flag/{{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
+	<a class='post-option' href='/post/embed/{{ post.id }}'>{% trans %}Embed{% endtrans %}</a>
 </article>

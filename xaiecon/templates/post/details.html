@@ -4,23 +4,23 @@
 	<meta property="og:title" content="{{ post.title }}">
 	<meta property="og:description" content="{{ post.body | truncate(800,true) }}">
 	{% if post.is_image == True %}
-	<meta property="og:image" content="https://xaiecon.com/post/image?pid={{ post.id }}">
+	<meta property="og:image" content="https://xaiecon.com/post/image/{{ post.id }}">
 	{% elif post.is_thumb == True %}
-	<meta property="og:image" content="https://xaiecon.com/post/thumb?pid={{ post.id }}">
+	<meta property="og:image" content="https://xaiecon.com/post/thumb/{{ post.id }}">
 	{% endif %}
 {% endblock %}
 
 {% block content %}
 	{% if post.is_image == True %}
-		<img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'>
+		<img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb/{{ post.id }}'>
 		<div id='image-full' class='image-preview-full'>
-			<img src='/post/image?pid={{ post.id }}'></img>
+			<img src='/post/image/{{ post.id }}'></img>
 		</div>
 		<div id='smoke-curtain' class='smoke-curtain'></div>
 	{% elif post.is_thumb == True and post.is_link == True %}
-		<div style='float:left;'><a href='{{ post.link_url }}'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></a></div>
+		<div style='float:left;'><a href='{{ post.link_url }}'><img width='128px' height='128px' src='/post/thumb/{{ post.id }}'></a></div>
 	{% elif post.is_thumb == True %}
-		<div style='float:left;'><img width='128px' height='128px' src='/post/thumb?pid={{ post.id }}'></div>
+		<div style='float:left;'><img width='128px' height='128px' src='/post/thumb/{{ post.id }}'></div>
 	{% endif %}
 	
 	<div style='height:100%;float:left;margin:0 16px;'>
@@ -42,8 +42,8 @@
 	{% endif %}
 	
 	<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
-	<a href='/user/view?uid={{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
-	Posted on <a href='/board/view?bid={{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
+	<a href='/user/view/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
+	Posted on <a href='/board/view/{{ post.board_info.id }}'>/b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
 	<div>
@@ -53,37 +53,36 @@
 
 	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 	
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.views }} views</a>
-	<a class='post-option' href='/post/view?pid={{ post.id }}'>{{ post.number_comments }} comments</a>
+	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.views }} views</a>
+	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.number_comments }} comments</a>
 	
 {% if u != None %}
 	{% if u.id == post.user_id or u.is_admin == True %}
-	<a class='post-option' href='/post/delete?pid={{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
-	<a class='post-option' href='/post/edit?pid={{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
+	<a class='post-option' href='/post/delete/{{ post.id }}'>{% trans %}Delete{% endtrans %}</a>
+	<a class='post-option' href='/post/edit/{{ post.id }}'>{% trans %}Edit{% endtrans %}</a>
 	{% endif %}
 	{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
-	<a class='post-option' href='/post/kick?pid={{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
+	<a class='post-option' href='/post/kick/{{ post.id }}'>{% trans %}Kick{% endtrans %}</a>
 	{% if post.is_nuked == False %}
-	<a class='post-option' href='/post/nuke?pid={{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
+	<a class='post-option' href='/post/nuke/{{ post.id }}'>{% trans %}Nuke{% endtrans %}</a>
 	{% elif u.is_admin == True %}
-	<a class='post-option' href='/post/unnuke?pid={{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
+	<a class='post-option' href='/post/unnuke/{{ post.id }}'>{% trans %}Un-nuke{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/board/ban?bid={{ post.board_id }}&uid={{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
+	<a class='post-option' href='/board/ban/{{ post.board_id }}/{{ post.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 	{% endif %}
-	<a class='post-option' href='/post/yank?pid={{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
+	<a class='post-option' href='/post/yank/{{ post.id }}'>{% trans %}Yank{% endtrans %}</a>
 {% endif %}
 {% if post.show_votes == True %}
-	<a class='post-option' href='/post/ballot?pid={{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
+	<a class='post-option' href='/post/ballot/{{ post.id }}'>{% trans %}Voters{% endtrans %}</a>
 {% endif %}
-	<a class='post-option' href='/post/flag?pid={{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
-	<a class='post-option' href='/post/embed?pid={{ post.id }}'>{% trans %}Embed{% endtrans %}</a>
+	<a class='post-option' href='/post/flag/{{ post.id }}'>{% trans %}Flag{% endtrans %}</a>
+	<a class='post-option' href='/post/embed/{{ post.id }}'>{% trans %}Embed{% endtrans %}</a>
 	
 	</br>
 	
 {% if u != None %}
 	<h2>{% trans %}Add comment{% endtrans %}</h2>
-	<form enctype='multipart/form-data' method='POST' action='/comment/create'>
-		<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
+	<form enctype='multipart/form-data' method='POST' action='/comment/create/{{ post.id }}'>
 		<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='{% trans %}Comment body{% endtrans %}'></textarea></br>
 		<input class='form-btn' type='submit' value='Comment'>
 	</form>
@@ -94,24 +93,23 @@
 		<hr>
 		{% for c in comment %}
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
-				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb?uid={{ c.user_id }}'></img>
-				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view?uid={{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
+				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb/{{ c.user_id }}'></img>
+				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view/{{ c.user_id }}'>/u/{{ c.user_info.username }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
 				{% if u != None %}
 					<a onclick='reply_comment("reply-form-{{ c.id }}");'>{% trans %}Reply{% endtrans %}</a>
 					{% if c.user_id == u.id or u.is_admin == True %}
-					<a href='/comment/edit?cid={{ c.id }}'>{% trans %}Edit{% endtrans %}</a>
-					<a href='/comment/delete?cid={{ c.id }}'>{% trans %}Delete{% endtrans %}</a>
+					<a href='/comment/edit/{{ c.id }}'>{% trans %}Edit{% endtrans %}</a>
+					<a href='/comment/delete/{{ c.id }}'>{% trans %}Delete{% endtrans %}</a>
 					{% endif %}
 				{% endif %}
 				{% if c.more_children == True %}
-				<a href='/comment/view?cid={{ c.id }}'>{% trans %}View entire discussion{% endtrans %}</a>
+				<a href='/comment/view/{{ c.id }}'>{% trans %}View entire discussion{% endtrans %}</a>
 				{% endif %}
 			</div>
 			<div id='reply-form-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level }}0%;display:none;'>
-				<form enctype='multipart/form-data' method='POST' action='/comment/reply'>
+				<form enctype='multipart/form-data' method='POST' action='/comment/reply/{{ c.id }}'>
 					<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
-					<input type='text' name='cid' style='display:none;' value='{{ c.id }}'>
 					<textarea rows=6 cols=60 class='textbar-normal' type='text' name='body' placeholder='{% trans %}Comment body{% endtrans %}'></textarea></br>
 					<input class='form-btn' type='submit' value='{% trans %}Reply{% endtrans %}'>
 				</form>

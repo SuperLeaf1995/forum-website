@@ -1,40 +1,27 @@
 {% extends "default_layout.html" %}
 {% block content %}
-<form enctype='multipart/form-data' method='POST' action='/user/edit'>
+<form enctype='multipart/form-data' method='POST' action='/user/edit/{{ user.id }}'>
 	<h1>{{ user.username }}</h1>
-
-	<input style='display:none;' value='{{ user.id }}' name='uid'>
-
 	<label for='biography'>{% trans %}Biography{% endtrans %}</label>
 	<input class='textbar-normal' type='text' id='biography' name='biography' value='{{ user.biography }}' placeholder='Biography'></br>
-
 	<label for='profile'>{% trans %}Profile picture{% endtrans %}</label>
 	<input class='textbar-normal' type='file' id='profile' name='profile'></br>
-	
 	<label for='email'>{% trans %}Electronic Mail Address{% endtrans %}</label>
 	<input class='textbar-normal' type='text' id='email' name='email' value='{{ user.email }}' placeholder='Electronic Mail Address'></br>
-
 	<label for='is_show_email'>{% trans %}Show E-Mail address?{% endtrans %}</label>
 	<input type='checkbox' id='is_show_email' name='is_show_email' {% if user.is_show_email == True %}checked{% endif %}></br>
-	
 	<label for='fax'>{% trans %}Telefax{% endtrans %}</label>
 	<input class='textbar-normal' type='text' id='fax' name='fax' value='{{ user.fax }}' placeholder='Telefax'></br>
-	
 	<label for='is_show_fax'>{% trans %}Show telefax number?{% endtrans %}</label>
 	<input type='checkbox' id='is_show_fax' name='is_show_fax' {% if user.is_show_fax == True %}checked{% endif %}></br>
-	
 	<label for='phone'>{% trans %}Telephone number{% endtrans %}</label>
 	<input class='textbar-normal' type='text' id='phone' name='phone' value='{{ user.phone }}' placeholder='Telephone'></br>
-	
 	<label for='is_show_phone'>{% trans %}Show phone number?{% endtrans %}</label>
 	<input type='checkbox' id='is_show_phone' name='is_show_phone' {% if user.is_show_phone == True %}checked{% endif %}></br>
-	
 	<label for='is_nsfw'>{% trans %}Check this box if you are ok viewing NSFW content{% endtrans %}</label>
 	<input type='checkbox' id='is_nsfw' name='is_nsfw' {% if user.is_nsfw == True %}checked{% endif %}></br>
-	
 	<label for='uses_dark_mode'>{% trans %}Use dark mode{% endtrans %}</label>
 	<input type='checkbox' id='uses_dark_mode' name='uses_dark_mode' {% if user.uses_dark_mode == True %}checked{% endif %}></br>
-	
 	<input class='form-btn' type='submit' value='{% trans %}Edit{% endtrans %}'>
 </form>
 {% endblock %}

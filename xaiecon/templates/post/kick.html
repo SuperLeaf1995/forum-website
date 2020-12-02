@@ -2,8 +2,7 @@
 {% block content %}
 <h1>{% trans %}Kick post{% endtrans %}</h1>
 <hr>
-<form enctype='multipart/form-data' method='POST' action='/post/kick'>
-	<input type='text' name='pid' style='display:none;' value='{{ post.id }}'>
+<form enctype='multipart/form-data' method='POST' action='/post/kick/{{ post.id }}'>
 	<p>{% trans %}Are you sure?{% endtrans %}</p>
 	<input class='form-btn' type='submit' value='{% trans %}Kick{% endtrans %}'></br>
 </form>

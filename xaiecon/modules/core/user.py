@@ -88,6 +88,7 @@ def login(u=None):
 
 @user.route('/user/signup', methods = ['GET','POST'])
 @login_wanted
+@limiter.limit('8/minute')
 def signup(u=None):
 	try:
 		if request.method == 'POST':

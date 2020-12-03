@@ -42,6 +42,7 @@ user = Blueprint('user',__name__,template_folder='templates/user')
 
 @user.route('/user/login', methods = ['GET','POST'])
 @login_wanted
+@limiter.limit('16/minute')
 def login(u=None):
 	try:
 		if request.method == 'POST':

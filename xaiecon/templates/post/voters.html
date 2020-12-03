@@ -2,8 +2,8 @@
 {% block content %}
 <h1>Voters</h1>
 {% if votes %}
-	{% for vote in votes%}
-		<p><a href='/user/view?uid={{ vote.user_info.id }}'>/u/{{ vote.user_info.username }}</a> {{ vote.value }}</p>
+	{% for vote in votes %}
+		<p><a href='/user/view/{{ vote.user_info.id }}'>/u/{{ vote.user_info.username }}</a> {{ vote.value }}</p>
 	{% endfor %}
 {% else %}
 <p>{% trans %}No downvotes or upvotes yet{% endtrans %}</p>

@@ -29,6 +29,7 @@ from xaiecon.classes.notification import Notification
 
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
@@ -166,6 +167,7 @@ def notifications(u=None):
 
 @user.route('/user/email/send_verify', methods = ['GET'])
 @login_required
+@limiter.limit('15/minute')
 def email_verify_send(u=None):
 	db = open_db()
 	
@@ -207,6 +209,7 @@ def email_verify_send(u=None):
 
 @user.route('/user/email/verify', methods = ['GET'])
 @login_required
+@limiter.limit('15/minute')
 def email_verify(u=None):
 	db = open_db()
 	
@@ -259,7 +262,7 @@ def view_by_username(u=None,username=None):
 		return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
 	return redirect(f'/user/view?uid={user[0].id}')
 
-@user.route('/user/view/<uid>', methods = ['GET'])
+@user.route('/user/view/<int:uid>', methods = ['GET'])
 @login_wanted
 def view_by_id(u=None,uid=0):
 	db = open_db()
@@ -271,7 +274,7 @@ def view_by_id(u=None,uid=0):
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)
 
-@user.route('/user/feed_settings/<uid>', methods = ['GET','POST'])
+@user.route('/user/feed_settings/<int:uid>', methods = ['GET','POST'])
 @login_wanted
 def change_feed_settings(u=None,uid=0):
 	db = open_db()
@@ -299,7 +302,7 @@ def change_feed_settings(u=None,uid=0):
 		db.close()
 		return render_template('user/follow_settings.html',u=u,title='Edit feed and notification settings',user=user)
 
-@user.route('/user/follow/<uid>', methods = ['POST'])
+@user.route('/user/follow/<int:uid>', methods = ['POST'])
 @login_required
 def subscribe(u=None,uid=0):
 	db = open_db()
@@ -327,7 +330,7 @@ def subscribe(u=None,uid=0):
 	db.close()
 	return '',200
 
-@user.route('/user/unfollow/<uid>', methods = ['POST'])
+@user.route('/user/unfollow/<int:uid>', methods = ['POST'])
 @login_required
 def unsubscribe(u=None,uid=0):
 	db = open_db()
@@ -354,8 +357,9 @@ def unsubscribe(u=None,uid=0):
 	db.close()
 	return '',200
 
-@user.route('/user/thumb/<uid>', methods = ['GET','POST'])
+@user.route('/user/thumb/<int:uid>', methods = ['GET','POST'])
 @login_wanted
+@limiter.exempt
 def thumb(u=None,uid=0):
 	db = open_db()
 	user = db.query(User).filter_by(id=uid).first()
@@ -368,8 +372,9 @@ def thumb(u=None,uid=0):
 		return send_from_directory('assets/public/pics',user.fallback_thumb)
 	return send_from_directory('../user_data',user.image_file)
 
-@user.route('/user/edit/<uid>', methods = ['GET','POST'])
+@user.route('/user/edit/<int:uid>', methods = ['GET','POST'])
 @login_required
+@limiter.exempt
 def edit(u=None,uid=0):
 	try:
 		db = open_db()

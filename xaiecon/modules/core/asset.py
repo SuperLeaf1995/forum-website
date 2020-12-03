@@ -11,32 +11,21 @@ import os
 from flask import Blueprint, send_file, request, jsonify
 from werkzeug.utils import secure_filename
 
+from xaiecon.modules.core.limiter import limiter
+from xaiecon.modules.core.cache import cache
+
 asset = Blueprint('asset',__name__,template_folder='templates')
 
 @asset.route('/assets/<asset_name>', methods = ['GET'])
+@limiter.exempt
 def send_asset(asset_name):
 	final_filename = os.path.join('./assets/public',secure_filename(asset_name))
 	return send_file(final_filename)
 
 @asset.route('/assets/landscape/<asset_name>', methods = ['GET'])
+@limiter.exempt
 def send_asset_landscape(asset_name):
 	final_filename = os.path.join('./assets/public/landscape',secure_filename(asset_name))
 	return send_file(final_filename)
-
-@asset.route('/timeit', methods = ['GET'])
-def send_time():
-	before = request.values.get('time')
-	now = time.time()
-	diff = now-before
-	if diff <= 0:
-		diff_str = f'{"now"}'
-	elif diff >= 0 and diff <= 60:
-		diff_str = f'{diff} seconds ago'
-	elif diff >= 60*2 and diff <= 60*60:
-		diff_str = f'{diff/60} minutes ago'
-	elif diff >= 60*60:
-		diff_str = f'{diff/(60*60)} hours ago'
-	
-	return jsonify({'time':diff_str})
 
 print('Asset serving ... ok')

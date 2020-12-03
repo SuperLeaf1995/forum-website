@@ -6,6 +6,7 @@ from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.babel import babel
+from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.wrappers import login_wanted
 
 from flask_babel import gettext
@@ -35,6 +36,7 @@ def create_app() -> Flask:
 	hcaptcha.init_app(app)
 	md.init_app(app)
 	babel.init_app(app)
+	limiter.init_app(app)
 
 	@app.errorhandler(XaieconDatabaseException)
 	def handle_database_exception(e=None):

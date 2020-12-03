@@ -4,7 +4,7 @@
 <p>{{ board.descr }}</p>
 <p>Category: {{ board.category_info.name }}</p>
 <b>Subscribers: {{ board.sub_count }}</b>
-<b>Board created by: <a href='/user/view?uid={{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></br>
+<b>Board created by: <a href='/user/view/{{ board.user_info.id }}'>/u/{{ board.user_info.username }}</a></br>
 {% if u != None %}
 {% if u.is_subscribed(board.id) %}
 <input type='button' class='form-btn' onclick='subscribe("{{ board.id }}",this);' value='Unsubscribe'>
@@ -13,7 +13,7 @@
 {% endif %}
 </br>
 {% if u.mods(board.id) %}
-<a href='/board/edit?bid={{ board.id }}'>Edit board</a>
+<a href='/board/edit/{{ board.id }}'>Edit board</a>
 {% endif %}
 {% endif %}
 <hr>

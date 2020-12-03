@@ -33,6 +33,7 @@ from xaiecon.classes.view import View
 from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
@@ -642,6 +643,7 @@ def write(u=None):
 
 @post.route('/post/thumb/<pid>', methods = ['GET'])
 @login_wanted
+@limiter.exempt
 def thumb(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()
@@ -654,6 +656,7 @@ def thumb(u=None,pid=0):
 
 @post.route('/post/image/<pid>', methods = ['GET'])
 @login_wanted
+@limiter.exempt
 def image(u=None,pid=0):
 	db = open_db()
 	post = db.query(Post).filter_by(id=pid).first()
@@ -815,6 +818,7 @@ def list_feed(u=None, sort='new'):
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/title_by_url', methods = ['GET'])
+@limiter.exempt
 def title_by_url():
 	# Used by javascript for getting title and put it as title
 	# for using url'ed posts

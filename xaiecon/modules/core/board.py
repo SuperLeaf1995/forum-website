@@ -24,6 +24,7 @@ from xaiecon.classes.category import Category
 from xaiecon.classes.user import User
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
 from sqlalchemy.orm import joinedload
@@ -191,6 +192,7 @@ def unban(u=None,bid=0,uid=0):
 
 @board.route('/board/thumb/<bid>', methods = ['GET','POST'])
 @login_wanted
+@limiter.exempt
 def thumb(u=None,bid=0):
 	db = open_db()
 	board = db.query(Board).filter_by(id=bid).first()
@@ -252,6 +254,7 @@ def unsubscribe(u=None,bid=0):
 
 @board.route('/board/new', methods = ['GET','POST'])
 @login_required
+@limiter.limit('15/minute')
 def new(u=None):
 	try:
 		db = open_db()

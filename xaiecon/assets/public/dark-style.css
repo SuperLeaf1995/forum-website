@@ -12,7 +12,7 @@
 
 /* Main selection for our website */
 ::-moz-selection, ::-webkit-selection, ::selection {
-  background-color: #3126d1;
+  background-color: #132b52;
   color: white;
 }
 

@@ -7,16 +7,21 @@ variables:
   POSTGRES_DB: xaiecon_test
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
-    - /usr/local/lib/
+    - .cache/pip
+    - venv/
 
 stages:
   - test
 
 test:
     script:
+    - pip3 install virtualenv
+    - virtualenv venv
+    - source venv/bin/activate
     - pip3 install -r requirements.txt
     - python3 test.py

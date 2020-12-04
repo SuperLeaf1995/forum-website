@@ -30,47 +30,56 @@ class TestFlaskApp(unittest.TestCase):
 				'endpoint':'',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'post/list',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'user/leaderboard',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'user/login',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'user/signup',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'user/logout',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200,302]
+				'accept_status':[200,302],
+				'expect_html':True
 			},{
 				'endpoint':'post/list/All/new/1',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':True
 			},{
 				'endpoint':'post/list/All/new/not_a_number',
 				'method':'GET',
 				'params':None,
-				'accept_status':[404]
+				'accept_status':[404],
+				'expect_html':True
 			},{
 				'endpoint':'favicon.ico',
 				'method':'GET',
 				'params':None,
-				'accept_status':[200]
+				'accept_status':[200],
+				'expect_html':False
 			}
 		]
 		
@@ -87,7 +96,7 @@ class TestFlaskApp(unittest.TestCase):
 			resp = method(f'http://localhost:5000/{e["endpoint"]}',headers=headers,data=data)
 			self.assertTrue(resp.status_code in e['accept_status'])
 			
-			if e['method'] == 'GET':
+			if e['expect_html'] == True:
 				# Check that given webpages are valid HTML5
 				soup = BeautifulSoup(resp.text,"html.parser")
 				

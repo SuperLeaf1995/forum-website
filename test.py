@@ -96,7 +96,7 @@ class TestFlaskApp(unittest.TestCase):
 				self.assertNotEqual(soup.find('body'),None)
 				
 				# Check OpenGraph
-				self.assertNotEqual(soup.find('meta',property='og:description'),None)
+				self.assertNotEqual(soup.find('meta',property='og:platform'),None)
 				self.assertNotEqual(soup.find('meta',property='og:url'),None)
 				
 				# Check that there aren't any broken links on any page

@@ -11,7 +11,6 @@ from xaiecon.classes.base import open_db
 from xaiecon.__init__ import app
 
 os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres:postgres@postgres:5432/xaiecon_test'
-os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres:postgres@localhost:5432/xaiecon'
 
 class TestFlaskApp(unittest.TestCase):
 	def test_database(self):

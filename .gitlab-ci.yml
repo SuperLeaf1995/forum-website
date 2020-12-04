@@ -8,6 +8,11 @@ variables:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - /usr/local/lib/
+
 stages:
   - test
 

@@ -101,7 +101,6 @@ def vote(u=None,pid=0):
 			abort(404)
 		
 		user = db.query(User).filter_by(id=post.user_id).first()
-		
 		vote = db.query(Vote).filter_by(user_id=u.id,post_id=pid).first()
 		
 		if vote is not None and vote.value == val:

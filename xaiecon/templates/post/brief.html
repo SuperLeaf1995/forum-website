@@ -14,11 +14,11 @@
 	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
 		<a tabindex=0 id='{{ post.id }}-post-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='postVote("{{ post.id }}",1)'></a>
-		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+		<p id='{{ post.id }}-post-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
 		<a tabindex=0 id='{{ post.id }}-post-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='postVote("{{ post.id }}",-1)'></a>
 	{% else %}
 		<a tabindex=0 class='content-upvote'></a>
-		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
+		<p>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
 		<a tabindex=0 class='content-downvote'></a>
 	{% endif %}
 	</div>

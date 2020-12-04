@@ -89,7 +89,7 @@ def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
 def vote(u=None,pid=0):
 	db = open_db()
 	try:
-		val = int(request.values.get('value',''))
+		val = int(request.values.get('value','1'))
 		
 		if pid is None:
 			abort(404)
@@ -128,6 +128,7 @@ def vote(u=None,pid=0):
 		db.commit()
 		
 		db.close()
+		
 		cache.delete_memoized(ballot)
 		cache.delete_memoized(view,pid=pid)
 		cache.delete_memoized(list_posts)
@@ -689,7 +690,7 @@ def embed(u=None,pid=0):
 
 @post.route('/post/view/<pid>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=8600)
+@cache.memoize(timeout=86400)
 def view(u=None,pid=0):
 	db = open_db()
 	
@@ -748,13 +749,13 @@ def view(u=None,pid=0):
 	return ret
 
 @post.route('/post/list', methods = ['GET'])
-@post.route('/post/list/<sort>', methods = ['GET'])
+@post.route('/post/list/<category>', methods = ['GET'])
+@post.route('/post/list/<category>/<sort>/<int:page>', methods = ['GET'])
+@post.route('/post/list/<category>/<sort>/<int:page>', methods = ['GET'])
 @login_wanted
-@cache.memoize(timeout=8600)
-def list_posts(u=None, sort='new'):
-	category = request.values.get('category','All')
-	page = int(request.values.get('page','0'))
-	num = int(request.values.get('num','15'))
+@cache.memoize(timeout=86400)
+def list_posts(u=None, sort='new', page=0, category='All'):
+	num = 50
 	
 	# Obtain posts
 	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
@@ -765,13 +766,17 @@ def list_posts(u=None, sort='new'):
 	return render_template('post/list.html',u=u,title='Post frontpage',posts=posts,
 		page=page,num=num,category=category,sort=sort)
 
-@post.route('/post/nuked/<sort>', methods = ['GET'])
+@post.route('/post/nuked', methods = ['GET'])
+@post.route('/post/nuked/<category>', methods = ['GET'])
+@post.route('/post/nuked/<category>/<sort>/<int:page>', methods = ['GET'])
+@post.route('/post/nuked/<category>/<sort>/<int:page>', methods = ['GET'])
 @login_required
-@cache.memoize(timeout=8600)
-def list_nuked(u=None, sort='new'):
-	category = request.values.get('category','All')
-	page = int(request.values.get('page','0'))
-	num = int(request.values.get('num','15'))
+@cache.memoize(timeout=86400)
+def list_nuked(u=None, sort='new', page=0, category='All'):
+	num = 50
+	
+	if u.is_admin == False:
+		abort(403)
 	
 	# Obtain posts
 	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
@@ -783,13 +788,13 @@ def list_nuked(u=None, sort='new'):
 		page=page,num=num,category=category,sort=sort)
 
 @post.route('/post/feed', methods = ['GET'])
-@post.route('/post/feed/<sort>', methods = ['GET'])
+@post.route('/post/feed/<category>', methods = ['GET'])
+@post.route('/post/feed/<category>/<sort>/<int:page>', methods = ['GET'])
+@post.route('/post/feed/<category>/<sort>/<int:page>', methods = ['GET'])
 @login_required
-@cache.memoize(timeout=8600)
-def list_feed(u=None, sort='new'):
-	category = request.values.get('category','All')
-	page = int(request.values.get('page','0'))
-	num = int(request.values.get('num','15'))
+@cache.memoize(timeout=86400)
+def list_feed(u=None, sort='new', page=0, category='All'):
+	num = 50
 	
 	# Obtain posts
 	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)

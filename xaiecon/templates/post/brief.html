@@ -13,9 +13,9 @@
 
 	<div style='height:100%;float:left;margin:0 16px;'>
 	{% if u != None %}
-		<a tabindex=0 id='{{ post.id }}-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",1)'></a>
+		<a tabindex=0 id='{{ post.id }}-post-upvote' class='content-upvote{% if u.has_vote_on_post(post.id).value == 1 %}-active{% endif %}' onclick='postVote("{{ post.id }}",1)'></a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
-		<a tabindex=0 id='{{ post.id }}-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='vote_post("{{ post.id }}",-1)'></a>
+		<a tabindex=0 id='{{ post.id }}-post-downvote' class='content-downvote{% if u.has_vote_on_post(post.id).value == -1 %}-active{% endif %}' onclick='postVote("{{ post.id }}",-1)'></a>
 	{% else %}
 		<a tabindex=0 class='content-upvote'></a>
 		<p id='{{ post.id }}-counter'>{{ post.upvote_count }}/{{ post.downvote_count }}</p>
@@ -30,11 +30,11 @@
 	{% endif %}
 	
 	<p style='color:gray;'>{% trans %}Submitted{% endtrans %} <i class='content-datetime' value='{{ post.creation_date }}'>({% trans %}calculating{% endtrans %}...)</i> by 
-	<a href='/user/view/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
+	<a href='/user/view/{{ post.user_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/user/thumb/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
 	Posted on <a href='/board/view/{{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb/{{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	
-	<a class='post-option' href='/post/list?category={{ post.category_info.name }}'>{{ post.category_info.name }}</a>
+	<a class='post-option' href='/post/list/{{ post.category_info.name }}'>{{ post.category_info.name }}</a>
 
 	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.views }} {% trans %}views{% endtrans %}</a>
 	<a class='post-option' href='/post/view/{{ post.id }}'>{{ post.number_comments }} {% trans %}comments{% endtrans %}</a>

@@ -8,9 +8,9 @@
 		{% endfor %}
 		</div>
 		<p>
-		<a href='/post/list/{{ sort }}?page={{ page-1 }}&num={{ num }}&category={{ category }}'>&lt;&lt;</a>
+		<a href='/post/list/{{ category }}/{{ sort }}/{{ page+1 }}'>&lt;&lt;</a>
 		{{ page }}
-		<a href='/post/list/{{ sort }}?page={{ page+1 }}&num={{ num }}&category={{ category }}'>&gt;&gt;</a>
+		<a href='/post/list/{{ category }}/{{ sort }}/{{ page+1 }}'>&gt;&gt;</a>
 		</p>
 	{% else %}
 	<p>No posts yet</p>

@@ -66,6 +66,11 @@ class TestFlaskApp(unittest.TestCase):
 				'method':'GET',
 				'params':None,
 				'accept_status':[404]
+			},{
+				'endpoint':'favicon.ico',
+				'method':'GET',
+				'params':None,
+				'accept_status':[200]
 			}
 		]
 		
@@ -80,7 +85,6 @@ class TestFlaskApp(unittest.TestCase):
 				data = e['params']
 			
 			resp = method(f'http://localhost:5000/{e["endpoint"]}',headers=headers,data=data)
-			print('Endpoint: ',e['endpoint'],' : ',resp)
 			self.assertTrue(resp.status_code in e['accept_status'])
 			
 			if e['method'] == 'GET':
@@ -90,6 +94,10 @@ class TestFlaskApp(unittest.TestCase):
 				# Check that soup has all semantically correct html
 				self.assertNotEqual(soup.find('html'),None)
 				self.assertNotEqual(soup.find('body'),None)
+				
+				# Check OpenGraph
+				self.assertNotEqual(soup.find('meta',property='og:description'),None)
+				self.assertNotEqual(soup.find('meta',property='og:url'),None)
 				
 				# Check that there aren't any broken links on any page
 				links = soup.find_all('a')

@@ -1,0 +1,17 @@
+image: python:latest
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: xaiecon_test
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+
+stages:
+  - test
+
+test:
+    script:
+    - pip3 install -r requirements.txt
+    - python3 test.py

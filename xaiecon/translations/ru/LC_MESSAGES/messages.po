@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-25 00:16-0500\n"
-"PO-Revision-Date: 2020-11-25 01:12-0500\n"
+"POT-Creation-Date: 2020-12-04 13:09-0500\n"
+"PO-Revision-Date: 2020-12-04 13:23-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -16,51 +16,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: factory.py:41
+#: factory.py:43
 msgid "Database Exception"
 msgstr "Исключение базы данных"
 
-#: factory.py:46
+#: factory.py:48
 msgid "Server Exception"
 msgstr "Исключение сервера"
 
-#: factory.py:61
+#: factory.py:67
 msgid "Homepage"
 msgstr "Домашняя страница"
 
-#: modules/core/comment.py:41 modules/core/comment.py:42
+#: modules/core/comment.py:45 modules/core/comment.py:46
 msgid "[deleted by user]"
 msgstr "[удалено пользователем]"
 
-#: modules/core/comment.py:66
+#: modules/core/comment.py:70
 msgid "Body too short"
 msgstr "Слишком короткое тело"
 
-#: modules/core/user.py:46
+#: modules/core/user.py:51
 msgid "Please input a password"
 msgstr "Пожалуйста, введите пароль"
 
-#: modules/core/user.py:48
+#: modules/core/user.py:53
 msgid "Please input a username"
 msgstr "Пожалуйста, введите имя пользователя"
 
-#: modules/core/user.py:56 modules/core/user.py:80
+#: modules/core/user.py:61 modules/core/user.py:85
 msgid "Invalid username or password"
 msgstr "Неправильное имя пользователя или пароль"
 
-#: modules/core/user.py:132
-msgid "Thanks for registering"
-msgstr "Спасибо за регистрацию"
+#: modules/core/user.py:142
+msgid "Thanks for registering."
+msgstr "Спасибо за регистрацию."
 
-#: modules/core/user.py:238
+#: modules/core/user.py:391
 msgid "Not authorized"
 msgstr "Не авторизован"
 
-#: modules/core/user.py:323
+#: modules/core/user.py:483
 msgid "CSAM Automatic Removal"
 msgstr "Автоматическое удаление CSAM"
 
@@ -72,6 +72,11 @@ msgstr "Похоже, нужного вам ресурса здесь нет."
 msgid "Server is on fire. Hopefully this is not the production one..."
 msgstr "Сервер охренеть. Надеюсь, это не серийный ..."
 
+#: templates/500.html:6 templates/common/footer.html:7
+#: templates/user_error.html:6
+msgid "Discord Server"
+msgstr ""
+
 #: templates/dev_error.html:8
 msgid "So what went wrong? Hmmm, maybe take a look at this?"
 msgstr "Так что же пошло не так? Хммм, может взглянуть на это?"
@@ -81,22 +86,46 @@ msgid "Error Message"
 msgstr "Сообщение об ошибке"
 
 #: templates/index.html:15
-msgid "A federation for everyone."
-msgstr "Федерация для всех."
+msgid "Hello!"
+msgstr ""
 
 #: templates/index.html:16
-msgid ""
-"An open-source fediverse designed to secure everyone's right to free speech. "
-"No censorship, no abuse of power; just traditional forum communities of all "
-"kinds"
+msgid "An open-source social network"
 msgstr ""
-"Вселенная с открытым исходным кодом, призванная защитить право каждого на "
-"свободу слова. Никакой цензуры, никакого злоупотребления властью; просто "
-"традиционные форумы всех видов"
 
-#: templates/index.html:20 templates/index.html:24
-msgid "Get started"
-msgstr "Начать"
+#: templates/index.html:16
+msgid "Register"
+msgstr ""
+
+#: templates/index.html:16
+msgid "and start posting!"
+msgstr ""
+
+#: templates/index.html:22
+msgid "View feed"
+msgstr "Моя лента"
+
+#: templates/index.html:26 templates/user/signup.html:4
+#: templates/user/signup.html:20
+msgid "Signup"
+msgstr "Зарегистрироваться"
+
+#: templates/common/footer.html:3 templates/common/userpanel.html:23
+#: templates/user/signup.html:16
+msgid "Terms of Service"
+msgstr ""
+
+#: templates/common/footer.html:4 templates/common/userpanel.html:24
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/common/footer.html:5 templates/common/userpanel.html:25
+msgid "Content Policy"
+msgstr "Текст комментария"
+
+#: templates/common/footer.html:6 templates/common/userpanel.html:26
+msgid "Source Code"
+msgstr "Исходный код"
 
 #: templates/common/gdprnotice.html:17
 msgid ""
@@ -105,110 +134,109 @@ msgid ""
 "store cookies."
 msgstr ""
 
-#: templates/common/navbar.html:5
+#: templates/common/navbar.html:13
 msgid "Sign-up"
 msgstr "Зарегистрироваться"
 
-#: templates/common/navbar.html:6 templates/user/login.html:4
+#: templates/common/navbar.html:14 templates/user/login.html:4
 #: templates/user/login.html:13
 msgid "Login"
 msgstr "Авторизоваться"
 
-#: templates/common/navbar.html:13
+#: templates/common/navbar.html:21
 msgid "Logout"
 msgstr "Выйти"
 
-#: templates/common/navbar.html:15
+#: templates/common/navbar.html:23 templates/common/navbar.html:24
 msgid "Frontpage"
 msgstr "Титульная страница"
 
-#: templates/common/navbar.html:18
+#: templates/common/navbar.html:27
 msgid "My feed"
 msgstr "Моя лента"
 
-#: templates/common/navbar.html:20
+#: templates/common/navbar.html:29
 msgid "Newest"
 msgstr "Новейшие"
 
-#: templates/common/navbar.html:21
+#: templates/common/navbar.html:30
 msgid "Oldest"
 msgstr "Самый старый"
 
-#: templates/common/navbar.html:25
+#: templates/common/navbar.html:33
 msgid "Categories"
 msgstr "Категории"
 
-#: templates/common/navbar.html:27
+#: templates/common/navbar.html:35
 msgid "Anarchy"
 msgstr "Анархия"
 
-#: templates/common/navbar.html:28
+#: templates/common/navbar.html:36
 msgid "Animals"
 msgstr "Животные"
 
-#: templates/common/navbar.html:29
+#: templates/common/navbar.html:37
 msgid "Culture"
 msgstr "Культура"
 
-#: templates/common/navbar.html:30
+#: templates/common/navbar.html:38
 msgid "Fiction"
 msgstr "Фантастика"
 
-#: templates/common/navbar.html:31
+#: templates/common/navbar.html:39
 msgid "Humor"
 msgstr "Юмор"
 
-#: templates/common/navbar.html:32
+#: templates/common/navbar.html:40
 msgid "Mathematics"
 msgstr "Математика"
 
-#: templates/common/navbar.html:33
+#: templates/common/navbar.html:41
 msgid "News"
 msgstr "Новости"
 
-#: templates/common/navbar.html:34
+#: templates/common/navbar.html:42
 msgid "Nonsense"
 msgstr "Ерунда"
 
-#: templates/common/navbar.html:35
+#: templates/common/navbar.html:43
 msgid "NSFW"
 msgstr "NSFW"
 
-#: templates/common/navbar.html:36
+#: templates/common/navbar.html:44
 msgid "Other"
 msgstr "Другие"
 
-#: templates/common/navbar.html:37
+#: templates/common/navbar.html:45
 msgid "Pictures"
 msgstr "Картинки"
 
-#: templates/common/navbar.html:38
+#: templates/common/navbar.html:46
 msgid "Politics"
 msgstr "Политика"
 
-#: templates/common/navbar.html:39
+#: templates/common/navbar.html:47
 msgid "Programming"
 msgstr "Программирование"
 
-#: templates/common/navbar.html:40
+#: templates/common/navbar.html:48
 msgid "Technology"
 msgstr "Технологии"
 
-#: templates/common/navbar.html:41
+#: templates/common/navbar.html:49
 msgid "Videogames"
 msgstr "Видео игры"
 
-#: templates/common/navbar.html:42
+#: templates/common/navbar.html:50
 msgid "Sports"
 msgstr "Виды спорта"
 
-#: templates/common/navbar.html:46
+#: templates/common/navbar.html:54
 #, fuzzy
-#| msgid "Homepage"
 msgid "Home"
 msgstr "Домашняя страница"
 
-#: templates/common/navbar.html:49
+#: templates/common/navbar.html:57
 msgid "Search for posts"
 msgstr "Искать сообщения"
 
@@ -240,93 +268,93 @@ msgstr "Вернись"
 msgid "the internet."
 msgstr "в Интернет."
 
-#: templates/common/userpanel.html:26
-msgid "Source Code"
-msgstr "Исходный код"
-
 #: templates/logs/loglist.html:3
 msgid "Logs"
 msgstr "Журналы"
 
-#: templates/post/brief.html:26
+#: templates/post/brief.html:32
 msgid "Submitted"
 msgstr "Отправлено"
 
-#: templates/post/brief.html:26 templates/user/notification.html:14
+#: templates/post/brief.html:32 templates/user/notification.html:14
 msgid "calculating"
 msgstr "расчет"
 
-#: templates/post/brief.html:33
+#: templates/post/brief.html:39
 msgid "views"
 msgstr "просмотры"
 
-#: templates/post/brief.html:34
+#: templates/post/brief.html:40
 msgid "comments"
 msgstr "комментарии"
 
-#: templates/post/brief.html:38 templates/post/details.html:41
-#: templates/post/details.html:83
+#: templates/post/brief.html:44 templates/post/details.html:61
+#: templates/post/details.html:103
 msgid "Delete"
 msgstr "Удалять"
 
-#: templates/post/brief.html:39 templates/post/details.html:42
-#: templates/post/details.html:82 templates/post/edit_comment.html:6
-#: templates/user/edit.html:36
+#: templates/post/brief.html:45 templates/post/details.html:62
+#: templates/post/details.html:102 templates/post/edit_comment.html:6
+#: templates/user/edit.html:25
 msgid "Edit"
 msgstr "Редактировать"
 
-#: templates/post/brief.html:42 templates/post/details.html:45
-#: templates/post/kick.html:8
+#: templates/post/brief.html:48 templates/post/details.html:65
+#: templates/post/kick.html:7
 msgid "Kick"
 msgstr "Удар"
 
-#: templates/post/brief.html:44 templates/post/details.html:47
+#: templates/post/brief.html:50 templates/post/details.html:67
 msgid "Nuke"
 msgstr "Ядерная бомба"
 
-#: templates/post/brief.html:46 templates/post/details.html:49
+#: templates/post/brief.html:52 templates/post/details.html:69
 msgid "Un-nuke"
 msgstr "Ун-ядерный"
 
-#: templates/post/brief.html:48 templates/post/details.html:51
+#: templates/post/brief.html:54 templates/post/details.html:71
 msgid "Ban user"
 msgstr "Забанить пользователя"
 
-#: templates/post/brief.html:50 templates/post/details.html:53
-#: templates/post/yank.html:16
+#: templates/post/brief.html:56 templates/post/details.html:73
+#: templates/post/yank.html:15
 msgid "Yank"
 msgstr "Переехать"
 
-#: templates/post/brief.html:53 templates/post/details.html:56
+#: templates/post/brief.html:59 templates/post/details.html:76
 msgid "Voters"
 msgstr "Избиратель"
 
-#: templates/post/brief.html:55 templates/post/details.html:58
+#: templates/post/brief.html:61 templates/post/details.html:78
 #: templates/post/flag.html:7
 msgid "Flag"
 msgstr "Отчет"
 
-#: templates/post/details.html:63
+#: templates/post/brief.html:62 templates/post/details.html:79
+msgid "Embed"
+msgstr ""
+
+#: templates/post/details.html:84
 msgid "Add comment"
 msgstr "Добавить комментарий"
 
-#: templates/post/details.html:66 templates/post/details.html:94
+#: templates/post/details.html:86 templates/post/details.html:113
 msgid "Comment body"
 msgstr "Текст комментария"
 
-#: templates/post/details.html:72
+#: templates/post/details.html:92
 msgid "Comments"
 msgstr "Комментарии"
 
-#: templates/post/details.html:80 templates/post/details.html:95
+#: templates/post/details.html:100 templates/post/details.html:114
 msgid "Reply"
 msgstr "Ответить"
 
-#: templates/post/details.html:87
+#: templates/post/details.html:107
 msgid "View entire discussion"
 msgstr "Просмотреть обсуждение полностью"
 
-#: templates/post/details.html:100
+#: templates/post/details.html:119
 msgid "No comments yet"
 msgstr "Пока без коментариев"
 
@@ -346,7 +374,7 @@ msgstr "Причина флага"
 msgid "Kick post"
 msgstr "Выкинуть публикацию"
 
-#: templates/post/kick.html:7
+#: templates/post/kick.html:6
 msgid "Are you sure?"
 msgstr "Ты уверен?"
 
@@ -378,19 +406,19 @@ msgstr "Ссылка на сайт"
 msgid "Show who voted?"
 msgstr "Покажи, кто голосовал?"
 
-#: templates/post/write.html:17
+#: templates/post/write.html:18
 msgid "Is post NSFW?"
 msgstr "Это сообщение NSFW?"
 
-#: templates/post/write.html:20
+#: templates/post/write.html:22
 msgid "Board to post to"
 msgstr "Доска для публикации"
 
-#: templates/post/write.html:27
+#: templates/post/write.html:29
 msgid "Category"
 msgstr "Категория"
 
-#: templates/post/write.html:33
+#: templates/post/write.html:35
 msgid "Write"
 msgstr "Напишите"
 
@@ -398,51 +426,59 @@ msgstr "Напишите"
 msgid "Yank post"
 msgstr "Переместить сообщение"
 
-#: templates/post/yank.html:8
+#: templates/post/yank.html:7
 msgid "Board to yank to"
 msgstr "Доска, в которую нужно переместить сообщение"
 
-#: templates/post/yank.html:19
+#: templates/post/yank.html:18
 msgid "You are not moderating any boards, you cannot yank"
 msgstr "Вы не модерируете форумы, вы не можете перемещать сообщения"
 
-#: templates/user/edit.html:9
+#: templates/user/edit.html:5
 msgid "Biography"
 msgstr "биография"
 
-#: templates/user/edit.html:12
+#: templates/user/edit.html:7
 msgid "Profile picture"
 msgstr "Изображение профиля"
 
-#: templates/user/edit.html:15 templates/user/info.html:15
-#: templates/user/info.html:17
+#: templates/user/edit.html:9 templates/user/info.html:26
+#: templates/user/info.html:28
 msgid "Electronic Mail Address"
 msgstr "Электронный почтовый адрес"
 
-#: templates/user/edit.html:18
+#: templates/user/edit.html:11
 msgid "Show E-Mail address?"
 msgstr "Показать адрес электронной почты?"
 
-#: templates/user/edit.html:21 templates/user/info.html:21
-#: templates/user/info.html:23
+#: templates/user/edit.html:13 templates/user/info.html:32
+#: templates/user/info.html:34
 msgid "Telefax"
 msgstr "Телефакс"
 
-#: templates/user/edit.html:24
+#: templates/user/edit.html:15
 msgid "Show telefax number?"
 msgstr "Показать номер телефакса?"
 
-#: templates/user/edit.html:27
+#: templates/user/edit.html:17
 msgid "Telephone number"
 msgstr "Номер телефона"
 
-#: templates/user/edit.html:30
+#: templates/user/edit.html:19
 msgid "Show phone number?"
 msgstr "Показать номер телефона?"
 
-#: templates/user/edit.html:33
+#: templates/user/edit.html:21
 msgid "Check this box if you are ok viewing NSFW content"
 msgstr "Установите этот флажок, если вы нормально просматриваете контент NSFW"
+
+#: templates/user/edit.html:23
+msgid "Use dark mode"
+msgstr ""
+
+#: templates/user/follow_settings.html:7
+msgid "Apply"
+msgstr ""
 
 #: templates/user/info.html:7
 msgid "This user has been banned for"
@@ -452,16 +488,16 @@ msgstr "Этот пользователь заблокирован за"
 msgid "Network Points"
 msgstr "Сетевые точки"
 
-#: templates/user/info.html:17 templates/user/info.html:23
-#: templates/user/info.html:29
+#: templates/user/info.html:28 templates/user/info.html:34
+#: templates/user/info.html:40
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: templates/user/info.html:27 templates/user/info.html:29
+#: templates/user/info.html:38 templates/user/info.html:40
 msgid "Telephone"
 msgstr "Телефон"
 
-#: templates/user/info.html:33
+#: templates/user/info.html:44
 msgid "Edit details"
 msgstr "Редактировать детали"
 
@@ -469,11 +505,11 @@ msgstr "Редактировать детали"
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
 
-#: templates/user/login.html:9
+#: templates/user/login.html:9 templates/user/signup.html:9
 msgid "Username"
 msgstr "Имя пользователя"
 
-#: templates/user/login.html:11
+#: templates/user/login.html:11 templates/user/signup.html:11
 msgid "Password"
 msgstr "Пароль"
 
@@ -494,3 +530,36 @@ msgid "There are multiple users with that username, select one of them"
 msgstr ""
 "Есть несколько пользователей с таким именем пользователя, выберите одного из "
 "них"
+
+#: templates/user/signup.html:13
+#, fuzzy
+#| msgid "Please input a password"
+msgid "Repeat password"
+msgstr "Пожалуйста, введите пароль"
+
+#: templates/user/signup.html:16
+msgid "I agree with the"
+msgstr ""
+
+#: templates/user/signup.html:16
+msgid "the Privacy Policy"
+msgstr ""
+
+#: templates/user/signup.html:16
+msgid "and the Content Policy"
+msgstr ""
+
+#~ msgid "A federation for everyone."
+#~ msgstr "Федерация для всех."
+
+#~ msgid ""
+#~ "An open-source fediverse designed to secure everyone's right to free "
+#~ "speech. No censorship, no abuse of power; just traditional forum "
+#~ "communities of all kinds"
+#~ msgstr ""
+#~ "Вселенная с открытым исходным кодом, призванная защитить право каждого на "
+#~ "свободу слова. Никакой цензуры, никакого злоупотребления властью; просто "
+#~ "традиционные форумы всех видов"
+
+#~ msgid "Get started"
+#~ msgstr "Начать"

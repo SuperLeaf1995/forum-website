@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-25 00:16-0500\n"
+"POT-Creation-Date: 2020-12-04 13:09-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,47 +17,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 
-#: factory.py:41
+#: factory.py:43
 msgid "Database Exception"
 msgstr ""
 
-#: factory.py:46
+#: factory.py:48
 msgid "Server Exception"
 msgstr ""
 
-#: factory.py:61
+#: factory.py:67
 msgid "Homepage"
 msgstr ""
 
-#: modules/core/comment.py:41 modules/core/comment.py:42
+#: modules/core/comment.py:45 modules/core/comment.py:46
 msgid "[deleted by user]"
 msgstr ""
 
-#: modules/core/comment.py:66
+#: modules/core/comment.py:70
 msgid "Body too short"
 msgstr ""
 
-#: modules/core/user.py:46
+#: modules/core/user.py:51
 msgid "Please input a password"
 msgstr ""
 
-#: modules/core/user.py:48
+#: modules/core/user.py:53
 msgid "Please input a username"
 msgstr ""
 
-#: modules/core/user.py:56 modules/core/user.py:80
+#: modules/core/user.py:61 modules/core/user.py:85
 msgid "Invalid username or password"
 msgstr ""
 
-#: modules/core/user.py:132
-msgid "Thanks for registering"
+#: modules/core/user.py:142
+msgid "Thanks for registering."
 msgstr ""
 
-#: modules/core/user.py:238
+#: modules/core/user.py:391
 msgid "Not authorized"
 msgstr ""
 
-#: modules/core/user.py:323
+#: modules/core/user.py:483
 msgid "CSAM Automatic Removal"
 msgstr ""
 
@@ -69,6 +69,11 @@ msgstr ""
 msgid "Server is on fire. Hopefully this is not the production one..."
 msgstr ""
 
+#: templates/500.html:6 templates/common/footer.html:7
+#: templates/user_error.html:6
+msgid "Discord Server"
+msgstr ""
+
 #: templates/dev_error.html:8
 msgid "So what went wrong? Hmmm, maybe take a look at this?"
 msgstr ""
@@ -78,18 +83,45 @@ msgid "Error Message"
 msgstr ""
 
 #: templates/index.html:15
-msgid "A federation for everyone."
+msgid "Hello!"
 msgstr ""
 
 #: templates/index.html:16
-msgid ""
-"An open-source fediverse designed to secure everyone's right to free "
-"speech. No censorship, no abuse of power; just traditional forum "
-"communities of all kinds"
+msgid "An open-source social network"
 msgstr ""
 
-#: templates/index.html:20 templates/index.html:24
-msgid "Get started"
+#: templates/index.html:16
+msgid "Register"
+msgstr ""
+
+#: templates/index.html:16
+msgid "and start posting!"
+msgstr ""
+
+#: templates/index.html:22
+msgid "View feed"
+msgstr ""
+
+#: templates/index.html:26 templates/user/signup.html:4
+#: templates/user/signup.html:20
+msgid "Signup"
+msgstr ""
+
+#: templates/common/footer.html:3 templates/common/userpanel.html:23
+#: templates/user/signup.html:16
+msgid "Terms of Service"
+msgstr ""
+
+#: templates/common/footer.html:4 templates/common/userpanel.html:24
+msgid "Privacy Policy"
+msgstr ""
+
+#: templates/common/footer.html:5 templates/common/userpanel.html:25
+msgid "Content Policy"
+msgstr ""
+
+#: templates/common/footer.html:6 templates/common/userpanel.html:26
+msgid "Source Code"
 msgstr ""
 
 #: templates/common/gdprnotice.html:17
@@ -99,108 +131,108 @@ msgid ""
 "we store cookies."
 msgstr ""
 
-#: templates/common/navbar.html:5
+#: templates/common/navbar.html:13
 msgid "Sign-up"
 msgstr ""
 
-#: templates/common/navbar.html:6 templates/user/login.html:4
+#: templates/common/navbar.html:14 templates/user/login.html:4
 #: templates/user/login.html:13
 msgid "Login"
 msgstr ""
 
-#: templates/common/navbar.html:13
+#: templates/common/navbar.html:21
 msgid "Logout"
 msgstr ""
 
-#: templates/common/navbar.html:15
+#: templates/common/navbar.html:23 templates/common/navbar.html:24
 msgid "Frontpage"
 msgstr ""
 
-#: templates/common/navbar.html:18
+#: templates/common/navbar.html:27
 msgid "My feed"
 msgstr ""
 
-#: templates/common/navbar.html:20
+#: templates/common/navbar.html:29
 msgid "Newest"
 msgstr ""
 
-#: templates/common/navbar.html:21
+#: templates/common/navbar.html:30
 msgid "Oldest"
 msgstr ""
 
-#: templates/common/navbar.html:25
+#: templates/common/navbar.html:33
 msgid "Categories"
 msgstr ""
 
-#: templates/common/navbar.html:27
+#: templates/common/navbar.html:35
 msgid "Anarchy"
 msgstr ""
 
-#: templates/common/navbar.html:28
+#: templates/common/navbar.html:36
 msgid "Animals"
 msgstr ""
 
-#: templates/common/navbar.html:29
+#: templates/common/navbar.html:37
 msgid "Culture"
 msgstr ""
 
-#: templates/common/navbar.html:30
+#: templates/common/navbar.html:38
 msgid "Fiction"
 msgstr ""
 
-#: templates/common/navbar.html:31
+#: templates/common/navbar.html:39
 msgid "Humor"
 msgstr ""
 
-#: templates/common/navbar.html:32
+#: templates/common/navbar.html:40
 msgid "Mathematics"
 msgstr ""
 
-#: templates/common/navbar.html:33
+#: templates/common/navbar.html:41
 msgid "News"
 msgstr ""
 
-#: templates/common/navbar.html:34
+#: templates/common/navbar.html:42
 msgid "Nonsense"
 msgstr ""
 
-#: templates/common/navbar.html:35
+#: templates/common/navbar.html:43
 msgid "NSFW"
 msgstr ""
 
-#: templates/common/navbar.html:36
+#: templates/common/navbar.html:44
 msgid "Other"
 msgstr ""
 
-#: templates/common/navbar.html:37
+#: templates/common/navbar.html:45
 msgid "Pictures"
 msgstr ""
 
-#: templates/common/navbar.html:38
+#: templates/common/navbar.html:46
 msgid "Politics"
 msgstr ""
 
-#: templates/common/navbar.html:39
+#: templates/common/navbar.html:47
 msgid "Programming"
 msgstr ""
 
-#: templates/common/navbar.html:40
+#: templates/common/navbar.html:48
 msgid "Technology"
 msgstr ""
 
-#: templates/common/navbar.html:41
+#: templates/common/navbar.html:49
 msgid "Videogames"
 msgstr ""
 
-#: templates/common/navbar.html:42
+#: templates/common/navbar.html:50
 msgid "Sports"
 msgstr ""
 
-#: templates/common/navbar.html:46
+#: templates/common/navbar.html:54
 msgid "Home"
 msgstr ""
 
-#: templates/common/navbar.html:49
+#: templates/common/navbar.html:57
 msgid "Search for posts"
 msgstr ""
 
@@ -232,93 +264,93 @@ msgstr ""
 msgid "the internet."
 msgstr ""
 
-#: templates/common/userpanel.html:26
-msgid "Source Code"
-msgstr ""
-
 #: templates/logs/loglist.html:3
 msgid "Logs"
 msgstr ""
 
-#: templates/post/brief.html:26
+#: templates/post/brief.html:32
 msgid "Submitted"
 msgstr ""
 
-#: templates/post/brief.html:26 templates/user/notification.html:14
+#: templates/post/brief.html:32 templates/user/notification.html:14
 msgid "calculating"
 msgstr ""
 
-#: templates/post/brief.html:33
+#: templates/post/brief.html:39
 msgid "views"
 msgstr ""
 
-#: templates/post/brief.html:34
+#: templates/post/brief.html:40
 msgid "comments"
 msgstr ""
 
-#: templates/post/brief.html:38 templates/post/details.html:41
-#: templates/post/details.html:83
+#: templates/post/brief.html:44 templates/post/details.html:61
+#: templates/post/details.html:103
 msgid "Delete"
 msgstr ""
 
-#: templates/post/brief.html:39 templates/post/details.html:42
-#: templates/post/details.html:82 templates/post/edit_comment.html:6
-#: templates/user/edit.html:36
+#: templates/post/brief.html:45 templates/post/details.html:62
+#: templates/post/details.html:102 templates/post/edit_comment.html:6
+#: templates/user/edit.html:25
 msgid "Edit"
 msgstr ""
 
-#: templates/post/brief.html:42 templates/post/details.html:45
-#: templates/post/kick.html:8
+#: templates/post/brief.html:48 templates/post/details.html:65
+#: templates/post/kick.html:7
 msgid "Kick"
 msgstr ""
 
-#: templates/post/brief.html:44 templates/post/details.html:47
+#: templates/post/brief.html:50 templates/post/details.html:67
 msgid "Nuke"
 msgstr ""
 
-#: templates/post/brief.html:46 templates/post/details.html:49
+#: templates/post/brief.html:52 templates/post/details.html:69
 msgid "Un-nuke"
 msgstr ""
 
-#: templates/post/brief.html:48 templates/post/details.html:51
+#: templates/post/brief.html:54 templates/post/details.html:71
 msgid "Ban user"
 msgstr ""
 
-#: templates/post/brief.html:50 templates/post/details.html:53
-#: templates/post/yank.html:16
+#: templates/post/brief.html:56 templates/post/details.html:73
+#: templates/post/yank.html:15
 msgid "Yank"
 msgstr ""
 
-#: templates/post/brief.html:53 templates/post/details.html:56
+#: templates/post/brief.html:59 templates/post/details.html:76
 msgid "Voters"
 msgstr ""
 
-#: templates/post/brief.html:55 templates/post/details.html:58
+#: templates/post/brief.html:61 templates/post/details.html:78
 #: templates/post/flag.html:7
 msgid "Flag"
 msgstr ""
 
-#: templates/post/details.html:63
+#: templates/post/brief.html:62 templates/post/details.html:79
+msgid "Embed"
+msgstr ""
+
+#: templates/post/details.html:84
 msgid "Add comment"
 msgstr ""
 
-#: templates/post/details.html:66 templates/post/details.html:94
+#: templates/post/details.html:86 templates/post/details.html:113
 msgid "Comment body"
 msgstr ""
 
-#: templates/post/details.html:72
+#: templates/post/details.html:92
 msgid "Comments"
 msgstr ""
 
-#: templates/post/details.html:80 templates/post/details.html:95
+#: templates/post/details.html:100 templates/post/details.html:114
 msgid "Reply"
 msgstr ""
 
-#: templates/post/details.html:87
+#: templates/post/details.html:107
 msgid "View entire discussion"
 msgstr ""
 
-#: templates/post/details.html:100
+#: templates/post/details.html:119
 msgid "No comments yet"
 msgstr ""
 
@@ -338,7 +370,7 @@ msgstr ""
 msgid "Kick post"
 msgstr ""
 
-#: templates/post/kick.html:7
+#: templates/post/kick.html:6
 msgid "Are you sure?"
 msgstr ""
 
@@ -370,19 +402,19 @@ msgstr ""
 msgid "Show who voted?"
 msgstr ""
 
-#: templates/post/write.html:17
+#: templates/post/write.html:18
 msgid "Is post NSFW?"
 msgstr ""
 
-#: templates/post/write.html:20
+#: templates/post/write.html:22
 msgid "Board to post to"
 msgstr ""
 
-#: templates/post/write.html:27
+#: templates/post/write.html:29
 msgid "Category"
 msgstr ""
 
-#: templates/post/write.html:33
+#: templates/post/write.html:35
 msgid "Write"
 msgstr ""
 
@@ -390,50 +422,58 @@ msgstr ""
 msgid "Yank post"
 msgstr ""
 
-#: templates/post/yank.html:8
+#: templates/post/yank.html:7
 msgid "Board to yank to"
 msgstr ""
 
-#: templates/post/yank.html:19
+#: templates/post/yank.html:18
 msgid "You are not moderating any boards, you cannot yank"
 msgstr ""
 
-#: templates/user/edit.html:9
+#: templates/user/edit.html:5
 msgid "Biography"
 msgstr ""
 
-#: templates/user/edit.html:12
+#: templates/user/edit.html:7
 msgid "Profile picture"
 msgstr ""
 
-#: templates/user/edit.html:15 templates/user/info.html:15
-#: templates/user/info.html:17
+#: templates/user/edit.html:9 templates/user/info.html:26
+#: templates/user/info.html:28
 msgid "Electronic Mail Address"
 msgstr ""
 
-#: templates/user/edit.html:18
+#: templates/user/edit.html:11
 msgid "Show E-Mail address?"
 msgstr ""
 
-#: templates/user/edit.html:21 templates/user/info.html:21
-#: templates/user/info.html:23
+#: templates/user/edit.html:13 templates/user/info.html:32
+#: templates/user/info.html:34
 msgid "Telefax"
 msgstr ""
 
-#: templates/user/edit.html:24
+#: templates/user/edit.html:15
 msgid "Show telefax number?"
 msgstr ""
 
-#: templates/user/edit.html:27
+#: templates/user/edit.html:17
 msgid "Telephone number"
 msgstr ""
 
-#: templates/user/edit.html:30
+#: templates/user/edit.html:19
 msgid "Show phone number?"
 msgstr ""
 
-#: templates/user/edit.html:33
+#: templates/user/edit.html:21
 msgid "Check this box if you are ok viewing NSFW content"
+msgstr ""
+
+#: templates/user/edit.html:23
+msgid "Use dark mode"
+msgstr ""
+
+#: templates/user/follow_settings.html:7
+msgid "Apply"
 msgstr ""
 
 #: templates/user/info.html:7
@@ -444,16 +484,16 @@ msgstr ""
 msgid "Network Points"
 msgstr ""
 
-#: templates/user/info.html:17 templates/user/info.html:23
-#: templates/user/info.html:29
+#: templates/user/info.html:28 templates/user/info.html:34
+#: templates/user/info.html:40
 msgid "Unknown"
 msgstr ""
 
-#: templates/user/info.html:27 templates/user/info.html:29
+#: templates/user/info.html:38 templates/user/info.html:40
 msgid "Telephone"
 msgstr ""
 
-#: templates/user/info.html:33
+#: templates/user/info.html:44
 msgid "Edit details"
 msgstr ""
 
@@ -461,11 +501,11 @@ msgstr ""
 msgid "Leaderboard"
 msgstr ""
 
-#: templates/user/login.html:9
+#: templates/user/login.html:9 templates/user/signup.html:9
 msgid "Username"
 msgstr ""
 
-#: templates/user/login.html:11
+#: templates/user/login.html:11 templates/user/signup.html:11
 msgid "Password"
 msgstr ""
 
@@ -483,5 +523,21 @@ msgstr ""
 
 #: templates/user/pick.html:4
 msgid "There are multiple users with that username, select one of them"
+msgstr ""
+
+#: templates/user/signup.html:13
+msgid "Repeat password"
+msgstr ""
+
+#: templates/user/signup.html:16
+msgid "I agree with the"
+msgstr ""
+
+#: templates/user/signup.html:16
+msgid "the Privacy Policy"
+msgstr ""
+
+#: templates/user/signup.html:16
+msgid "and the Content Policy"
 msgstr ""
 

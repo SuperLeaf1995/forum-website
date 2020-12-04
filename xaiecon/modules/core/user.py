@@ -29,6 +29,7 @@ from xaiecon.classes.notification import Notification
 
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.helpers import send_notification
@@ -158,6 +159,7 @@ def logout():
 
 @user.route('/user/notifications', methods = ['GET'])
 @login_required
+@cache.memoize(timeout=86400)
 def notifications(u=None):
 	db = open_db()
 	
@@ -237,6 +239,7 @@ def mark_all_as_read(u=None):
 	db.query(Notification).filter_by(user_id=u.id).update({'is_read':True})
 	db.commit()
 	db.close()
+	cache.delete_memoize(notifications)
 	return redirect('/user/notifications')
 
 @user.route('/user/leaderboard', methods = ['GET'])

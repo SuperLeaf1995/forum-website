@@ -266,7 +266,7 @@ textarea {
   background-color: #2e2e38;
   overflow: auto;
   transition: 0.3s;
-  animation: fade-in ease 2s;
+  animation: fade-in ease 0.5s;
 }
 
 .post-brief:hover {

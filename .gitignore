@@ -5,6 +5,11 @@
 __pycache__/
 user_data/*
 
+# Remove CPython artifacts
+*.so
+*.c
+build/
+
 # Some editor's stuff
 .spyproject/
 .spyproject/*

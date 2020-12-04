@@ -22,7 +22,6 @@ from flask_babel import gettext
 
 from werkzeug.utils import secure_filename
 
-from xaiecon.modules.core.cache import cache
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User, UserFollow
 from xaiecon.classes.post import Post
@@ -33,6 +32,7 @@ from xaiecon.classes.view import View
 from xaiecon.classes.board import Board
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required

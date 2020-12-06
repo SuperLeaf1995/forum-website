@@ -10,6 +10,10 @@
 		<b>Followers: {{ user.followers_count }}</b><br>
 		<b>Following: {{ user.following_count }}</b><br>
 		
+		{% if u != None and u.id == user.id and u.is_email_verified == False %}
+			<a href='/user/email/send_verify'>Verify your email</a>
+		{% endif %}
+		
 		<p>{{ user.biography }}</p>
 		
 		{% if u != None %}

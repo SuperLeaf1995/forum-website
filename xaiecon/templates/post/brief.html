@@ -30,7 +30,7 @@
 	{% endif %}
 	
 	<p style='color:gray;'>{% trans %}Submitted{% endtrans %} <i class='content-datetime' value='{{ post.creation_date }}'>({% trans %}calculating{% endtrans %}...)</i> by 
-	<a href='/user/view/{{ post.user_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/user/thumb/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}</a>
+	<a href='/user/view/{{ post.user_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/user/thumb/{{ post.user_info.id }}'>/u/{{ post.user_info.username }}#{{ post.user_info.id }}</a>
 	Posted on <a href='/board/view/{{ post.board_info.id }}'><img style='border-radius:12px;width:24px;height:24px;' src='/board/thumb/{{ post.board_info.id }}'></img> /b/{{ post.board_info.name | truncate(50,True) }}</a>
 	</p>
 	

@@ -10,6 +10,8 @@
 		<input class='textbar-normal' type='text' id='username' name='username' value='{{ request.form.username }}'><br>
 		<label for='password'>{% trans %}Password{% endtrans %}</label><br>
 		<input class='textbar-normal' type='password' id='password' name='password' value='{{ request.form.password }}'><br>
+		<i>Forgot password</i><br>
+		<a href='/user/email/reset_pass/send'>Reset password via E-Mail</a><br>
 		<input class='form-btn' type='submit' value='{% trans %}Login{% endtrans %}'>
 	</form>
 </div>

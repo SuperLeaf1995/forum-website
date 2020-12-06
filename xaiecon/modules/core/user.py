@@ -58,7 +58,7 @@ def login(u=None):
 			db = open_db()
 			users = db.query(User).filter_by(username=username).all()
 			if users == None:
-				raise XaieconException(gettext('Invalid username or password'))
+				raise XaieconException(gettext('User does not exist'))
 			
 			for data in users:
 				rbool = check_password_hash(data.password,request.form.get('password'))
@@ -207,9 +207,11 @@ def email_verify_send(u=None):
 	except smtplib.SMTPException:
 		abort(500)
 	
+	print(f'Sending email to {u.email}')
+	
 	db.commit()
 	db.close()
-	return redirect('/user/view/{u.id}')
+	return redirect(f'/user/view/{u.id}')
 
 @user.route('/user/email/verify', methods = ['GET'])
 @login_required
@@ -230,7 +232,77 @@ def email_verify(u=None):
 	})
 	db.commit()
 	db.close()
-	return redirect('/user/view?uid={u.id}')
+	return redirect(f'/user/view/{u.id}')
+
+@user.route('/user/email/reset_pass/send', methods = ['GET','POST'])
+@login_wanted
+@limiter.limit('15/minute')
+def email_reset_pass_send(u=None):
+	db = open_db()
+	
+	if request.method == 'POST':
+		users = db.query(User).filter_by(username=request.form['username'],email=request.form['email'])
+		
+		for data in users:
+			if data.is_email_verified == False:
+				continue
+			
+			auth = secrets.token_hex(126)
+			
+			db.query(User).filter_by(id=data.id).update({'email_auth_token':auth})
+			
+			# Send email
+			try:
+				sender = 'services@xaiecon.com'
+				receivers = [data.email]
+				
+				message = f"""
+				From: From Xaiecon <services@xaiecon.com>
+				To: To {u.name} <{u.email}>
+				Subject: Password reset request
+				
+				<html>
+				<p>
+				If you do not have an account on Xaiecon please ignore this email.<br>
+				User /u/{u.username} has requested a password reset.<br>
+				If you are registered on Xaiecon, and this email is NOT from that user,
+				please report the incident to /b/xaiecon.<br>
+				Anyways, here is your reset password link! :)
+				<a href=\'https://{os.environ.get("DOMAIN_NAME")}/user/email/reset_pass/get/{data.id}/{auth}\'>Click here</a>
+				<p>
+				<i>When we send an e-mail, fax or sms we will never ask you for your password</i>
+				</html>"""
+				smtp = smtplib.SMTP('localhost')
+				smtp.sendmail(sender,receivers,message)
+			except smtplib.SMTPException:
+				abort(500)
+		db.commit()
+		db.close()
+		return 'check email',200
+	else:
+		db.close()
+		return render_template('user/reset_password.html',u=u,title='Reset your password')
+	
+	db.close()
+	return 
+
+@user.route('/user/reset_pass/get/<int:uid>/<auth>', methods = ['GET','POST'])
+@login_wanted
+def email_reset_pass_get(u=None,uid=0,auth=''):
+	db = open_db()
+	user = db.query(User).filter_by(id=uid).first()
+	if user.email_auth_token != auth:
+		abort(403)
+	
+	if request.method == 'POST':
+		password = generate_password_hash(request.form.get('password'))
+		db.query(User).filter_by(id=uid).update({'password':password})
+		db.commit()
+		db.close()
+		return redirect('/user/login')
+	else:
+		db.close()
+		return render_template('user/reset_password_do.html',u=u,title='Reset your password',uid=uid,auth=auth)
 
 @user.route('/user/mark_all', methods = ['GET'])
 @login_required

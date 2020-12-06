@@ -22,7 +22,7 @@
 		<label for='bid'>{% trans %}Board to post to{% endtrans %}</label><br>
 		<select name='bid'>
 			{% for board in boards %}
-			<option value='{{ board.id }}'>{{ board.name | truncate(25,True) }} - /u/{{ board.user_info.username }}</option>
+			<option value='{{ board.id }}'>{{ board.name | truncate(25,True) }} - /u/{{ board.user_info.username }}#{{ board.user_info.id }}</option>
 			{% endfor %}
 		</select><br>
 	{% endif %}

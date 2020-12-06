@@ -30,7 +30,7 @@ def obtain_logged_user():
 	user = None
 	
 	# Obtain user, in this case it's a bot
-	if request.path.startswith('/api/v1/'):
+	if request.path.startswith('/api/bot/'):
 		token = request.headers.get('X-API-Key')
 		if token is None:
 			return None

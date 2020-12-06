@@ -10,7 +10,7 @@ from xaiecon.classes.base import open_db
 from xaiecon.classes.apiapp import APIApp
 from xaiecon.classes.exception import XaieconException
 
-from xaiecon.modules.core.wrappers import login_required
+from xaiecon.modules.core.wrappers import login_required, api
 
 apiapp = Blueprint('apiapp',__name__,template_folder='templates/apiapp')
 
@@ -69,21 +69,24 @@ def delete(u=None):
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 @apiapp.route('/apiapp/reroll', methods = ['GET','POST'])
-@login_required
+@apiapp.route('/api/bot/apiapp/reroll', methods = ['GET'])
+#@login_required
+@api('update')
 def reroll(u=None):
 	try:
 		# Reroll tokens for specified app
 		aid = request.values.get('aid')
+		token = secrets.token_urlsafe(127)
 		
 		db = open_db()
 		
 		db.query(APIApp).filter_by(user_id=u.id,id=aid).update({
-			'token':secrets.token_urlsafe(127)
+			'token':token
 		})
 		db.commit()
 		
 		db.close()
-		return redirect('/apiapp/view')
+		return {'html':redirect('/apiapp/view'),'api':token}
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 

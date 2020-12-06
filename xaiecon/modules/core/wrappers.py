@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import redirect
+from flask import redirect, request
 from functools import wraps
 from xaiecon.modules.core.helpers import obtain_logged_user
 
@@ -22,3 +22,19 @@ def login_required(f):
 			redirect('/user/login')
 		return f(u=u, *args, **kwargs)
 	return wrapper
+
+# Administers response
+def api(*scopes):
+	def decorator(f):
+		@wraps(f)
+		def wrapper(*args, **kwargs):
+			response = f(*args, **kwargs)
+			if isinstance(response,dict):
+				if request.path.startswith('/api/bot'):
+					return response['html']
+				else:
+					return response['html']
+			else:
+				return response
+		return wrapper
+	return decorator

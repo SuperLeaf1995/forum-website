@@ -205,8 +205,7 @@ def email_verify_send(u=None):
 		smtp = smtplib.SMTP('localhost')
 		smtp.sendmail(sender,receivers,message)
 	except smtplib.SMTPException:
-		abort(500)
-	
+		abort(500)	
 	print(f'Sending email to {u.email}')
 	
 	db.commit()

@@ -4,7 +4,6 @@ from flask import Flask, render_template, request, send_file
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
-from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.babel import babel
 from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.wrappers import login_wanted
@@ -34,7 +33,6 @@ def create_app() -> Flask:
 	# And also initialize hcaptcha
 	cache.init_app(app)
 	hcaptcha.init_app(app)
-	md.init_app(app)
 	babel.init_app(app)
 	limiter.init_app(app)
 
@@ -46,7 +44,7 @@ def create_app() -> Flask:
 	@login_wanted
 	def handle_exception(e=None,u=None):
 		return render_template("user_error.html",u=None,title=gettext('Server Exception'),err=e), 500
-
+	
 	@app.route('/favicon.ico', methods = ['GET'])
 	def favico():
 		return send_file(os.path.join('./assets/public','favicon.ico'))

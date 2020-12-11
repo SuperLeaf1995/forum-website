@@ -38,7 +38,7 @@
 	{% if post.is_link == True %}
 	<a href='{{ post.link_url }}'><h2>{{ post.title }}</h2></a>
 	{% else %}
-	<a href='/post/view?pid={{ post.id }}'><h2>{{ post.title }}</h2></a>
+	<a href='/post/view/{{ post.id }}'><h2>{{ post.title }}</h2></a>
 	{% endif %}
 	
 	<p style='color:gray;'>Submitted <i class='content-datetime' value='{{ post.creation_date }}'>(calculating...)</i> by 
@@ -93,18 +93,24 @@
 		<hr>
 		{% for c in comment %}
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
-				<img style='border-radius:32px;float:left;' width='64px' height='64px' src='/user/thumb/{{ c.user_id }}'></img>
+				<img style='border-radius:16px;float:left;' width='32px' height='32px' src='/user/thumb/{{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view/{{ c.user_id }}'>/u/{{ c.user_info.username }}#{{ c.user_info.id }}</a></p>
 				<p>{{ c.body_html | safe }}</p>
 				{% if u != None %}
-					<a onclick='reply_comment("reply-form-{{ c.id }}");'>{% trans %}Reply{% endtrans %}</a>
+					<a class='post-option' onclick='reply_comment("reply-form-{{ c.id }}");'>{% trans %}Reply{% endtrans %}</a>
 					{% if c.user_id == u.id or u.is_admin == True %}
-					<a href='/comment/edit/{{ c.id }}'>{% trans %}Edit{% endtrans %}</a>
-					<a href='/comment/delete/{{ c.id }}'>{% trans %}Delete{% endtrans %}</a>
+					<a class='post-option' href='/comment/edit/{{ c.id }}'>{% trans %}Edit{% endtrans %}</a>
+					<a class='post-option' href='/comment/delete/{{ c.id }}'>{% trans %}Delete{% endtrans %}</a>
 					{% endif %}
+					<a class='post-option' href='/comment/flag/{{ c.id }}'>{% trans %}Report{% endtrans %}</a>
+					{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
+					<a class='post-option' href='/comment/nuke/{{ c.id }}'>{% trans %}Nuke{% endtrans %}</a>
+					<a class='post-option' href='/board/ban/{{ c.board_id }}/{{ c.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
+					{% endif %}
+					<br>
 				{% endif %}
 				{% if c.more_children == True %}
-				<a href='/comment/view/{{ c.id }}'>{% trans %}View entire discussion{% endtrans %}</a>
+				<a class='post-option' href='/comment/view/{{ c.id }}'>{% trans %}View entire discussion{% endtrans %}</a>
 				{% endif %}
 			</div>
 			<div id='reply-form-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level }}0%;display:none;'>

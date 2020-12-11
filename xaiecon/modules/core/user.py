@@ -205,7 +205,7 @@ def email_verify_send(u=None):
 		smtp = smtplib.SMTP('localhost')
 		smtp.sendmail(sender,receivers,message)
 	except smtplib.SMTPException:
-		abort(500)	
+		abort(500)
 	print(f'Sending email to {u.email}')
 	
 	db.commit()
@@ -310,7 +310,7 @@ def mark_all_as_read(u=None):
 	db.query(Notification).filter_by(user_id=u.id).update({'is_read':True})
 	db.commit()
 	db.close()
-	cache.delete_memoize(notifications)
+	cache.delete_memoized(notifications)
 	return redirect('/user/notifications')
 
 @user.route('/user/leaderboard', methods = ['GET'])
@@ -499,11 +499,10 @@ def edit(u=None,uid=0):
 			file = request.files['profile']
 			if file:
 				# Remove old image
-				if user.image_file is not None:
-					try:
-						os.remove(os.path.join('user_data',user.image_file))
-					except FileNotFoundError:
-						pass
+				try:
+					os.remove(os.path.join('user_data',user.image_file))
+				except FileNotFoundError:
+					pass
 				
 				# Create thumbnail
 				filename = secure_filename(f'{secrets.token_hex(32)}.jpeg')
@@ -528,7 +527,7 @@ def edit(u=None,uid=0):
 			db.close()
 			return render_template('user/edit.html',u=u,title=f'Editing {user.username}',user=user)
 	except XaieconException as e:
-		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
+		return render_template('user_error.html',u=u,title='Whoops!',err=e)
 
 # Check user for csam, if so ban the user
 def csam_check_profile(uid: int):

@@ -5,21 +5,23 @@
 # Simple post-sharing base module
 #
 
+import re
+
 from flask import Blueprint, render_template, request, jsonify, redirect,  abort
-from flask_misaka import markdown
 from flask_babel import gettext
 
 from xaiecon.classes.base import open_db
 from xaiecon.classes.post import Post
 from xaiecon.classes.comment import Comment
-from xaiecon.classes.user import UserFollow
+from xaiecon.classes.user import User, UserFollow
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
+from xaiecon.classes.board import BoardSub
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.post import view as view_p
+from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.post import list_posts, list_feed, list_nuked
-
 from xaiecon.modules.core.helpers import send_notification
 from xaiecon.modules.core.wrappers import login_wanted, login_required
 
@@ -72,7 +74,7 @@ def edit(u=None,cid=0):
 			# Update comment
 			db.query(Comment).filter_by(id=cid).update({
 				'body':body,
-				'body_html':markdown(body)})
+				'body_html':md(body)})
 			db.commit()
 			
 			db.close()
@@ -136,36 +138,81 @@ def write_reply(u=None,cid=0):
 		db = open_db()
 		
 		body = request.form.get('body')
-		pid = int(request.form.get('pid',''))
-		
 		if len(body) == 0:
 			raise XaieconException('Body too short')
 		
-		# Add reply
-		reply = Comment(body=body,body_html=markdown(body),user_id=u.id,comment_id=cid)
-		db.add(reply)
-		db.commit()
-		
-		db.refresh(reply)
+		comment = db.query(Comment).filter_by(id=cid).first()
 		
 		# Increment number of comments
-		post = db.query(Post).filter_by(id=pid).options(joinedload('*')).first()
-		if post is None:
-			abort(404)
+		post_comment = None
+		post_cid = cid
+		post = None
+		while post is None:
+			post_comment = db.query(Comment).filter_by(id=post_cid).first()
+			if post_comment.post_id is None:
+				post_cid = post_comment.comment_id
+			else:
+				post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+				if post is None:
+					abort(404)
+				break
+		pid = post.id
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		
-		# Notify user who was replied, and post poster alert boardmaster of
-		# the posts in the guild
+		# Add reply
+		reply = Comment(body=body,body_html=md(body),user_id=u.id,comment_id=cid)
+		db.add(reply)
 		
-		# Notify user of comment which we replied
-		comment = db.query(Comment).filter_by(id=reply.comment_id).first()
+		db.commit()
+		db.refresh(reply)
+		
+		notif_msg = f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}'
 		
 		# Notify post poster
 		if post.user_id != u.id:
-			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}',post.user_id)
+			send_notification(notif_msg,post.user_id)
+		
 		# Notify commenter
 		if comment.user_id != u.id:
-			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}',comment.user_id)
+			send_notification(notif_msg,comment.user_id)
+		
+		ping = body.find('@everyone')
+		if ping != -1 and u.is_admin == True:
+			users = db.query(User).all()
+			for us in users:
+				if us.id != u.id:
+					send_notification(notif_msg,us.user_id)
+		
+		ping = body.find('@here')
+		if ping != -1 and u.mods(post.board_id):
+			subs = db.query(BoardSub).filter_by(board_id=post.board_id).all()
+			users = [db.query(User).filter_by(id=subs.user_id).first() for s in subs]
+			for us in users:
+				if us.id != u.id:
+					send_notification(notif_msg,us.user_id)
+		
+		for m in re.finditer(r'([u][\/]|[@])([a-zA-Z0-9#][^ ,.;:\n\r\t<>\/\'])*\w+',body):
+			m = m.group(0)
+			print(m)
+			try:
+				name = re.split(r'([u][\/]|[@])',m)[2]
+				tag = name.split('#')
+				
+				# direct mention
+				if len(tag) > 1:
+					uid = int(tag[1])
+					user = db.query(User).filter_by(id=uid).first()
+					if user is None:
+						raise IndexError
+					send_notification(notif_msg,user.id)
+				else:
+					users = db.query(User).filter_by(username=name).all()
+					if users is None:
+						raise IndexError
+					for user in users:
+						send_notification(notif_msg,user.id)
+			except IndexError:
+				pass
 		
 		db.close()
 		
@@ -252,19 +299,69 @@ def create(u=None,pid=0):
 			abort(404)
 		
 		# Add comment
-		comment = Comment(body=body,body_html=markdown(body),user_id=u.id,post_id=pid)
+		comment = Comment(body=body,body_html=md(body),user_id=u.id,post_id=pid)
 		db.add(comment)
 		
 		# Increment number of comments
 		db.query(Post).filter_by(id=pid).update({'number_comments':post.number_comments+1})
 		db.commit()
 		
-		send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}',post.user_id)
+		notif_msg = f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}'
+		
+		if post.user_id != u.id:
+			send_notification(notif_msg,post.user_id)
 		
 		# Notify followers
 		follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 		for f in follows:
-			send_notification(f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}',f.user_id)
+			if f.user_id != u.id:
+				send_notification(notif_msg,f.user_id)
+		
+		# Notify post poster
+		if post.user_id != u.id:
+			send_notification(notif_msg,post.user_id)
+		
+		# Notify commenter
+		if comment.user_id != u.id:
+			send_notification(notif_msg,comment.user_id)
+		
+		ping = body.find('@everyone')
+		if ping != -1 and u.is_admin == True:
+			users = db.query(User).all()
+			for us in users:
+				if us.id != u.id:
+					send_notification(notif_msg,us.user_id)
+		
+		ping = body.find('@here')
+		if ping != -1 and u.mods(post.board_id):
+			subs = db.query(BoardSub).filter_by(board_id=post.board_id).all()
+			users = [db.query(User).filter_by(id=subs.user_id).first() for s in subs]
+			for us in users:
+				if us.id != u.id:
+					send_notification(notif_msg,us.user_id)
+		
+		for m in re.finditer(r'([u][\/]|[@])([a-zA-Z0-9#][^ ,.;:\n\r\t<>\/\'])*\w+',body):
+			m = m.group(0)
+			print(m)
+			try:
+				name = re.split(r'([u][\/]|[@])',m)[2]
+				tag = name.split('#')
+				
+				# direct mention
+				if len(tag) > 1:
+					uid = int(tag[1])
+					user = db.query(User).filter_by(id=uid).first()
+					if user is None:
+						raise IndexError
+					send_notification(notif_msg,user.id)
+				else:
+					users = db.query(User).filter_by(username=name).all()
+					if users is None:
+						raise IndexError
+					for user in users:
+						send_notification(notif_msg,user.id)
+			except IndexError:
+				pass
 		
 		db.close()
 		
@@ -272,6 +369,7 @@ def create(u=None,pid=0):
 		cache.delete_memoized(list_posts)
 		cache.delete_memoized(list_nuked)
 		cache.delete_memoized(list_feed)
+		
 		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)

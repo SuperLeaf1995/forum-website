@@ -4,8 +4,8 @@
 import requests
 
 from flask import request, session
-from flask_misaka import markdown
 
+from xaiecon.modules.core.markdown import md
 from xaiecon.classes.base import open_db
 from xaiecon.classes.user import User
 from xaiecon.classes.apiapp import APIApp
@@ -70,12 +70,40 @@ def obtain_logged_user():
 	db.close()
 	return user
 
+def send_admin_notification(msg: str):
+	db = open_db()
+	
+	admins = db.query(User).filter_by(is_admin=True).all()
+	for a in admins:
+		notification = Notification(
+			body=msg,
+			body_html=md(msg),
+			user_id=a.id)
+		db.add(notification)
+		db.commit()
+	
+	db.close()
+
+def send_everyone_notification(msg: str):
+	db = open_db()
+	
+	users = db.query(User).all()
+	for u in users:
+		notification = Notification(
+			body=msg,
+			body_html=md(msg),
+			user_id=u.id)
+		db.add(notification)
+		db.commit()
+	
+	db.close()
+
 def send_notification(msg: str, target_id: int):
 	db = open_db()
 	
 	notification = Notification(
 		body=msg,
-		body_html=markdown(msg),
+		body_html=md(msg),
 		user_id=target_id)
 	db.add(notification)
 	db.commit()

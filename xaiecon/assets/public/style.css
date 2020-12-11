@@ -401,3 +401,10 @@ img {
   display: none;
   animation: fade-out 0.3s;
 }
+
+blockquote {
+  background-color: #e4f1f7;
+  padding: 4px;
+  padding-left: 16px;
+  border-left: solid 4px #3126d1;
+}

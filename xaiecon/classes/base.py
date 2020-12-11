@@ -7,8 +7,6 @@ import sqlalchemy
 import sqlalchemy.orm.state
 from sqlalchemy.ext.declarative import declarative_base
 
-from xaiecon.classes.exception import XaieconDatabaseException
-
 Base = declarative_base()
 
 def open_db():
@@ -23,12 +21,13 @@ def open_db():
 			i += 1
 		else:
 			break
-
 		if i > 5:
-			raise XaieconDatabaseException('Database timeout, either the database server is down or it\'s not accepting local connections. Contact sysadmin.')
-
+			engine = sqlalchemy.create_engine('sqlite:///:memory:',echo=True)
+			break
+	
 	Base.metadata.create_all(engine)
 	Session = sqlalchemy.orm.sessionmaker(bind=engine)
+	
 	session = Session()
 	
 	return session

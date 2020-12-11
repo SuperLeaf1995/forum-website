@@ -54,6 +54,14 @@ def view(u=None,bid=0,sort='new'):
 	db.close()
 	return render_template('board/view.html',u=u,title=board.name,board=board,posts=posts)
 
+# Compatibility with stuff
+@board.route('/+<name>', methods = ['GET'])
+@board.route('/!<name>', methods = ['GET'])
+@board.route('/r/<name>', methods = ['GET'])
+@board.route('/v/<name>', methods = ['GET'])
+@board.route('/p/<name>', methods = ['GET'])
+@board.route('/s/<name>', methods = ['GET'])
+@board.route('/c/<name>', methods = ['GET'])
 @board.route('/b/<name>', methods = ['GET'])
 @login_wanted
 def view_by_name(u=None,name=None):

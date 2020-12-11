@@ -12,12 +12,12 @@ import time
 import secrets
 import PIL
 import io
+import re
 
 #import spacy
 
 from bs4 import BeautifulSoup
 from flask import Blueprint, render_template, request, jsonify, redirect, send_from_directory, abort
-from flask_misaka import markdown
 from flask_babel import gettext
 
 from werkzeug.utils import secure_filename
@@ -29,13 +29,14 @@ from xaiecon.classes.comment import Comment
 from xaiecon.classes.category import Category
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.view import View
-from xaiecon.classes.board import Board
+from xaiecon.classes.board import Board, BoardSub
 from xaiecon.classes.exception import XaieconException
 
+from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.limiter import limiter
-from xaiecon.modules.core.helpers import send_notification
-from xaiecon.modules.core.wrappers import login_wanted, login_required
+from xaiecon.modules.core.helpers import send_notification, send_admin_notification, send_everyone_notification
+from xaiecon.modules.core.wrappers import login_wanted, login_required, only_admin
 
 from distutils.util import strtobool
 
@@ -196,6 +197,52 @@ def unnuke(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
+@post.route('/admin/nuke/<pid>', methods = ['GET'])
+@login_required
+@only_admin
+def admin_nuke(u=None,pid=0):
+	db = open_db()
+	
+	post = db.query(Post).filter_by(id=pid).first()
+	if post is None:
+		abort(404)
+	
+	# Remove old image
+	try:
+		os.remove(os.path.join('user_data',post.image_file))
+		os.remove(os.path.join('user_data',post.thumb_file))
+	except FileNotFoundError:
+		pass
+	
+	# Delete all stuff of the post
+	db.query(Post).filter_by(id=pid).update({
+		'is_deleted':True,
+		'body':'[deleted by user]',
+		'body_html':'[deleted by user]',
+		'is_link':False,
+		'is_image':False,
+		'image_file':'',
+		'thumb_file':'',
+		'link_url':''})
+	db.commit()
+	
+	# Kill user
+	user = db.query(User).filter_by(id=post.user_id).first()
+	db.query(User).filter_by(id=post.user_id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.commit()
+	db.refresh(user)
+	
+	db.close()
+	
+	# Delete caching
+	cache.delete_memoized(view,pid=pid)
+	cache.delete_memoized(list_posts)
+	cache.delete_memoized(list_nuked)
+	cache.delete_memoized(list_feed)
+	return '',200
+
 @post.route('/post/nuke/<pid>', methods = ['GET','POST'])
 @login_required
 def nuke(u=None,pid=0):
@@ -227,6 +274,8 @@ def nuke(u=None,pid=0):
 		cache.delete_memoized(list_posts)
 		cache.delete_memoized(list_nuked)
 		cache.delete_memoized(list_feed)
+		
+		send_admin_notification(f'Post with id {pid} has been nuked! Review it [here](/post/view/{pid}) and [do a final nuke](/admin/nuke/{pid}) if you consider it nescesary.')
 		
 		return redirect(f'/post/view/{pid}')
 	except XaieconException as e:
@@ -465,7 +514,7 @@ def edit(u=None,pid=0):
 							'is_thumb':True,
 							'thumb_file':thumb_filename})
 			
-			body_html = markdown(body)
+			body_html = md(body)
 			
 			# Update post entry on database
 			db.query(Post).filter_by(id=pid).update({
@@ -546,8 +595,8 @@ def write(u=None):
 			if title is None or title == '':
 				raise XaieconException('Empty title')
 			
-			body_html = markdown(body)
-
+			body_html = md(body)
+			
 			post = Post(keywords=keywords,
 						title=title,
 						body=body,
@@ -612,16 +661,56 @@ def write(u=None):
 
 			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.id,))
 			csam_thread.start()
-
+			
+			notif_msg = f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view/{post.user_info.id}) on [/b/{board.name}](/board/view/{board.id})\n\r{post.body}'
+			
 			# Alert boardmaster of the posts in the guild
 			if board.user_id != u.id:
-				send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',board.user_id)
-
+				send_notification(notif_msg,board.user_id)
+			
 			# Notify followers
 			follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 			for f in follows:
 				if f.user_id != u.id:
-					send_notification(f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view?uid={post.user_info.id}) on [/b/{board.name}](/board/view?bid={board.id})\n\r{post.body}',f.user_id)
+					send_notification(notif_msg,f.user_id)
+			
+			ping = body.find('@everyone')
+			if ping != -1 and u.is_admin == True:
+				users = db.query(User).all()
+				for us in users:
+					if us.id != u.id:
+						send_notification(notif_msg,us.user_id)
+			
+			ping = body.find('@here')
+			if ping != -1 and u.mods(post.board_id):
+				subs = db.query(BoardSub).filter_by(board_id=post.board_id).all()
+				users = [db.query(User).filter_by(id=subs.user_id).first() for s in subs]
+				for us in users:
+					if us.id != u.id:
+						send_notification(notif_msg,us.user_id)
+			
+			for m in re.finditer(r'([u][\/]|[@])([a-zA-Z0-9#][^ ,.;:\n\r\t<>\/\'])*\w+',body):
+				m = m.group(0)
+				print(m)
+				try:
+					name = re.split(r'([u][\/]|[@])',m)[2]
+					tag = name.split('#')
+					
+					# direct mention
+					if len(tag) > 1:
+						uid = int(tag[1])
+						user = db.query(User).filter_by(id=uid).first()
+						if user is None:
+							raise IndexError
+						send_notification(notif_msg,user.id)
+					else:
+						users = db.query(User).filter_by(username=name).all()
+						if users is None:
+							raise IndexError
+						for user in users:
+							send_notification(notif_msg,user.id)
+				except IndexError:
+					pass
 			
 			db.close()
 			
@@ -799,19 +888,12 @@ def list_feed(u=None, sort='new', page=0, category='All'):
 	posts = obtain_posts(u=u,sort=sort,category=category,page=page,num=num)
 	
 	# Remove all posts not in subscribed boards
-	subs = u.subscribed_boards()
-	subs_id = []
-	for s in subs:
-		subs_id.append(s.id)
-	
+	subs_id = [x.id for x in u.subscribed_boards()]
 	# And also remove posts when they are not of followed persons
-	follows = u.following
-	follows_id = []
-	for f in follows:
-		follows_id.append(f.target_id)
+	follows_id = [x.id for x in u.following]
 	
 	for p in posts:
-		if p.board_id not in subs_id and p.user_id not in follows_id:
+		if p.board_id not in subs_id and p.user_id not in follows_id and u.has_vote_on_post(p.id) == False:
 			posts.remove(p)
 			continue
 	
@@ -1023,34 +1105,19 @@ def csam_check_post(uid: int, pid: int):
 
 	print(f'Offensive post {post.id} found!')
 
-	# Remove all posts with offending url
-	offensive_posts = db.query(Post).filter_by(link_url=post.link_url).all()
-	for p in offensive_posts:
-		if p.is_image == True:
-			# Remove images
-			os.remove(os.path.join('user_data',p.thumb_file))
-			os.remove(os.path.join('user_data',p.image_file))
-
-		# Blank posts
-		db.query(Post).filter_by(id=p.id).update({
-			'link_url':'',
-			'is_image':False,
-			'image_file':'',
-			'thumb_file':'',
-			'body':'[deleted by automatic csam detection]',
-			'body_html':'[deleted by automatic csam detection]'
-		})
-
-		# Ban everyone involved
-		user = db.query(User).filter_by(id=p.user_id).first()
-		db.query(User).filter_by(id=p.user_id).update({
-			'ban_reason':'CSAM Automatic Removal',
-			'is_banned':True})
-		db.commit()
-		db.refresh(user)
+	# Ban user
+	
+	user = db.query(User).filter_by(id=post.user_id).first()
+	db.query(User).filter_by(id=post.user_id).update({
+		'ban_reason':'CSAM Automatic Removal',
+		'is_banned':True})
+	db.commit()
+	db.refresh(user)
 	
 	db.close()
 	cache.delete_memoized(view)
 	return
 
 print('Post share ... ok')
+
+# B :D

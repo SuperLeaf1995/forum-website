@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import redirect, request
+from flask import redirect, request, abort
 from functools import wraps
 from xaiecon.modules.core.helpers import obtain_logged_user
 
@@ -20,6 +20,18 @@ def login_required(f):
 		u = obtain_logged_user()
 		if u is None:
 			redirect('/user/login')
+		return f(u=u, *args, **kwargs)
+	return wrapper
+
+def only_admin(f):
+	@wraps(f)
+	def wrapper(*args, **kwargs):
+		try:
+			u = kwargs['u']
+			if u is None or u.is_admin == False:
+				abort(403)
+		except KeyError:
+			abort(403)
 		return f(u=u, *args, **kwargs)
 	return wrapper
 

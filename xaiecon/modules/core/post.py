@@ -679,19 +679,17 @@ def write(u=None):
 				users = db.query(User).all()
 				for us in users:
 					if us.id != u.id:
-						send_notification(notif_msg,us.user_id)
+						send_notification(notif_msg,us.id)
 			
 			ping = body.find('@here')
 			if ping != -1 and u.mods(post.board_id):
 				subs = db.query(BoardSub).filter_by(board_id=post.board_id).all()
-				users = [db.query(User).filter_by(id=subs.user_id).first() for s in subs]
-				for us in users:
-					if us.id != u.id:
-						send_notification(notif_msg,us.user_id)
+				for s in subs:
+					if s.user_id != u.id:
+						send_notification(notif_msg,s.user_id)
 			
 			for m in re.finditer(r'([u][\/]|[@])([a-zA-Z0-9#][^ ,.;:\n\r\t<>\/\'])*\w+',body):
 				m = m.group(0)
-				print(m)
 				try:
 					name = re.split(r'([u][\/]|[@])',m)[2]
 					tag = name.split('#')

@@ -220,9 +220,11 @@ def subscribe(u=None,bid=0):
 	
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
+		db.close()
 		return '',404
 	# Already subscribed
 	if u.is_subscribed(bid) == True:
+		db.close()
 		return '',400
 
 	sub = BoardSub(user_id=u.id,board_id=bid)
@@ -244,9 +246,11 @@ def unsubscribe(u=None,bid=0):
 	
 	# Board does not exist
 	if db.query(Board).filter_by(id=bid).first() is None:
+		db.close()
 		return '',404
 	# Not subscribed
 	if u.is_subscribed(bid) == False:
+		db.close()
 		return '',400
 	
 	db.query(BoardSub).filter_by(user_id=u.id,board_id=bid).delete()

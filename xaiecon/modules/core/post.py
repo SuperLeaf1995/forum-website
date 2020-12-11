@@ -656,13 +656,13 @@ def write(u=None):
 			
 			db.add(post)
 			db.commit()
-
+			
 			db.refresh(post)
-
+			
 			csam_thread = threading.Thread(target=csam_check_post, args=(u.id,post.id,))
 			csam_thread.start()
 			
-			notif_msg = f'# {post.title}\n\rBy [/u/{post.user_info.username}](/user/view/{post.user_info.id}) on [/b/{board.name}](/board/view/{board.id})\n\r{post.body}'
+			notif_msg = f'# {post.title}\n\rBy [/u/{u.username}](/user/view/{u.id}) on [/b/{board.name}](/board/view/{board.id})\n\r{post.body}'
 			
 			# Alert boardmaster of the posts in the guild
 			if board.user_id != u.id:

@@ -325,18 +325,19 @@ def netpoint_leaderboard(u=None,username=None):
 	return render_template('user/leaderboard.html',u=u,title='Network Points Leaderboard',users=user)
 
 @user.route('/u/<username>', methods = ['GET'])
+@user.route('/@<username>', methods = ['GET'])
 @login_wanted
 def view_by_username(u=None,username=None):
 	db = open_db()
 	user = db.query(User).filter(User.username.ilike(username)).all()
-	if user is None:
+	if user is None or len(user) == 0:
 		abort(404)
 	db.close()
 	
 	if len(user) > 1:
 		random.shuffle(user)
 		return render_template('user/pick.html',u=u,title=username,username=username,user=user,len=len(user))
-	return redirect(f'/user/view?uid={user[0].id}')
+	return redirect(f'/user/view/{user[0].id}')
 
 @user.route('/user/view/<int:uid>', methods = ['GET'])
 @login_wanted
@@ -345,7 +346,6 @@ def view_by_id(u=None,uid=0):
 	user = db.query(User).filter_by(id=uid).first()
 	if user is None:
 		abort(404)
-	
 	db.close()
 	
 	return render_template('user/info.html',u=u,title=user.username,user=user)

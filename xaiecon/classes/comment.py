@@ -5,7 +5,7 @@ import time
 import secrets
 
 from sqlalchemy.orm.state import InstanceState
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
 from xaiecon.classes.base import Base
@@ -27,6 +27,9 @@ class Comment(Base):
 	comment_info = relationship('Comment', foreign_keys=[comment_id])
 	post_info = relationship('Post', foreign_keys=[post_id])
 	user_info = relationship('User', foreign_keys=[user_id])
+	
+	is_nuked = Column(Boolean, default=False)
+	is_deleted = Column(Boolean, default=False)
 	
 	uuid = Column(String(32), default=secrets.token_hex(16))
 	

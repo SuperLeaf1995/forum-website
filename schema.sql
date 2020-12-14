@@ -116,6 +116,8 @@ CREATE TABLE xaiecon_comment(
 	downvote_count INT DEFAULT 0,
 	upvote_count INT DEFAULT 0,
 	total_vote_count INT DEFAULT 0,
+	is_nuked BOOLEAN DEFAULT FALSE,
+	is_deleted BOOLEAN DEFAULT FALSE,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	comment_id INT REFERENCES xaiecon_comment(id) ON UPDATE CASCADE,

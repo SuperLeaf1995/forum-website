@@ -29,6 +29,52 @@ from sqlalchemy.orm import joinedload
 
 comment = Blueprint('comment',__name__,template_folder='templates/comment')
 
+@comment.route('/comment/hide/<int:cid>', methods = ['GET'])
+@login_required
+def hide(u=None,cid=0):
+	db = open_db()
+	# Obtain boardinfo
+	post_comment = None
+	post_cid = cid
+	post = None
+	while post is None:
+		post_comment = db.query(Comment).filter_by(id=post_cid).first()
+		if post_comment.post_id is None:
+			post_cid = post_comment.comment_id
+		else:
+			post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+			if post is None:
+				abort(404)
+			break
+	if u.mods(post.board_id) == False or u.is_admin == False:
+		abort(403)
+	db.query(Comment).filter_by(id=cid).update({'is_hidden':True})
+	db.close()
+	return redirect('/comment/view/{cid}')
+
+@comment.route('/comment/unhide/<int:cid>', methods = ['GET'])
+@login_required
+def unhide(u=None,cid=0):
+	db = open_db()
+	# Obtain boardinfo
+	post_comment = None
+	post_cid = cid
+	post = None
+	while post is None:
+		post_comment = db.query(Comment).filter_by(id=post_cid).first()
+		if post_comment.post_id is None:
+			post_cid = post_comment.comment_id
+		else:
+			post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+			if post is None:
+				abort(404)
+			break
+	if u.mods(post.board_id) == False or u.is_admin == False:
+		abort(403)
+	db.query(Comment).filter_by(id=cid).update({'is_hidden':False})
+	db.close()
+	return redirect('/comment/view/{cid}')
+
 @comment.route('/comment/flag/<int:cid>', methods = ['GET','POST'])
 @login_required
 def flag(u=None,cid=0):

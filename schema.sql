@@ -118,6 +118,7 @@ CREATE TABLE xaiecon_comment(
 	total_vote_count INT DEFAULT 0,
 	is_nuked BOOLEAN DEFAULT FALSE,
 	is_deleted BOOLEAN DEFAULT FALSE,
+	is_hidden BOOLEAN DEFAULT FALSE,
 	post_id INT REFERENCES xaiecon_post(id) ON UPDATE CASCADE,
 	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
 	nuker_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,

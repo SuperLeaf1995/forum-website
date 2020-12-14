@@ -33,6 +33,7 @@ class Comment(Base):
 	nuker_info = relationship('User', foreign_keys=[user_id])
 	
 	is_deleted = Column(Boolean, default=False)
+	is_hidden = Column(Boolean, default=False)
 	
 	uuid = Column(String(32), default=secrets.token_hex(16))
 	

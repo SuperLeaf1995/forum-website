@@ -408,4 +408,13 @@ blockquote {
   padding: 4px;
   padding-left: 16px;
   border-left: solid 4px #3126d1;
+  color: black;
+}
+
+.comment-hidden {
+  opacity: 0.5;
+}
+
+.comment-hidden:hover {
+  opacity: 1.0;
 }

@@ -96,7 +96,7 @@
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
 				<img style='border-radius:16px;float:left;' width='32px' height='32px' src='/user/thumb/{{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view/{{ c.user_id }}'>/u/{{ c.user_info.username }}#{{ c.user_info.id }}</a></p>
-				<p>{{ c.body_html | safe }}</p>
+				<p {% if c.is_hidden == True %}class='comment-hidden'{% endif %}>{{ c.body_html | safe }}</p>
 				{% if u != None %}
 					<a class='post-option' onclick='reply_comment("reply-form-{{ c.id }}");'>{% trans %}Reply{% endtrans %}</a>
 					{% if c.user_id == u.id or u.is_admin == True %}
@@ -109,6 +109,11 @@
 					<a class='post-option' href='/comment/nuke/{{ c.id }}'>{% trans %}Nuke{% endtrans %}</a>
 					{% elif c.is_nuked == True and u.is_admin == True %}
 					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Unuke{% endtrans %}</a>
+					{% endif %}
+					{% if u.mods(post.board_info.id) == True and c.is_hidden == False %}
+					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Hide{% endtrans %}</a>
+					{% elif u.mods(post.board_info.id) == True and c.is_hidden == True %}
+					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Unhide{% endtrans %}</a>
 					{% endif %}
 					<a class='post-option' href='/board/ban/{{ c.board_id }}/{{ c.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 					{% endif %}

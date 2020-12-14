@@ -1,22 +1,22 @@
 # Translations template for PROJECT.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the Xaiecon project.
-# Gᴇʀᴍ :microbe:#6285 <EMAIL@ADDRESS>, 2020.
+# GERM (hashtag) 6285 <EMAIL@ADDRESS>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2020-12-04 13:09-0500\n"
-"PO-Revision-Date: 2020-12-14 14:05-0500\n"
+"PO-Revision-Date: 2020-12-14 17:25-0500\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.0\n"
 "X-Generator: Poedit 2.3\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Language: fr\n"
 
 #: factory.py:43
 msgid "Database Exception"
@@ -64,13 +64,16 @@ msgstr "Supprimation automatique de matériel pédopornographique"
 
 #: templates/404.html:5
 msgid "Looks like the resource you wanted is not here."
-msgstr "Il semble que la ressource que vous vouliez utiliser n'est pas disponible."
+msgstr ""
+"Il semble que la ressource que vous vouliez utiliser n'est pas disponible."
 
 #: templates/500.html:5 templates/dev_error.html:5
 msgid "Server is on fire. Hopefully this is not the production one..."
-msgstr "Le serveur est en feu. Espérons que ce n'est pas celui de la production ..."
+msgstr ""
+"Le serveur est en feu. Espérons que ce n'est pas celui de la production ..."
 
-#: templates/500.html:6 templates/common/footer.html:7 templates/user_error.html:6
+#: templates/500.html:6 templates/common/footer.html:7
+#: templates/user_error.html:6
 msgid "Discord Server"
 msgstr "Serveur Discord"
 
@@ -102,7 +105,8 @@ msgstr "et commencez à poster!"
 msgid "View feed"
 msgstr "Afficher le flux"
 
-#: templates/index.html:26 templates/user/signup.html:4 templates/user/signup.html:20
+#: templates/index.html:26 templates/user/signup.html:4
+#: templates/user/signup.html:20
 msgid "Signup"
 msgstr "Créer un compte"
 
@@ -125,18 +129,21 @@ msgstr "Code source"
 
 #: templates/common/gdprnotice.html:17
 msgid ""
-"We use cookies/sessions for login/signup process. Please consent to allow us to store "
-"cookies. If you signup/login you automatically consent that we store cookies."
+"We use cookies/sessions for login/signup process. Please consent to allow us "
+"to store cookies. If you signup/login you automatically consent that we "
+"store cookies."
 msgstr ""
-"Nous utilisons des cookies / sessions pour le processus de connexion / inscription. Veuillez "
-"consentir à nous permettre de stocker des cookies. Si vous vous inscrivez / vous connectez, "
-"vous consentez automatiquement à ce que nous stockions des cookies."
+"Nous utilisons des cookies / sessions pour le processus de connexion / "
+"inscription. Veuillez consentir à nous permettre de stocker des cookies. Si "
+"vous vous inscrivez / vous connectez, vous consentez automatiquement à ce "
+"que nous stockions des cookies."
 
 #: templates/common/navbar.html:13
 msgid "Sign-up"
 msgstr "S'inscrire"
 
-#: templates/common/navbar.html:14 templates/user/login.html:4 templates/user/login.html:13
+#: templates/common/navbar.html:14 templates/user/login.html:4
+#: templates/user/login.html:13
 msgid "Login"
 msgstr "Connecter"
 
@@ -286,16 +293,19 @@ msgstr "vues"
 msgid "comments"
 msgstr "commentaires"
 
-#: templates/post/brief.html:44 templates/post/details.html:61 templates/post/details.html:103
+#: templates/post/brief.html:44 templates/post/details.html:61
+#: templates/post/details.html:103
 msgid "Delete"
 msgstr "Supprimer"
 
-#: templates/post/brief.html:45 templates/post/details.html:62 templates/post/details.html:102
-#: templates/post/edit_comment.html:6 templates/user/edit.html:25
+#: templates/post/brief.html:45 templates/post/details.html:62
+#: templates/post/details.html:102 templates/post/edit_comment.html:6
+#: templates/user/edit.html:25
 msgid "Edit"
 msgstr "Modifier"
 
-#: templates/post/brief.html:48 templates/post/details.html:65 templates/post/kick.html:7
+#: templates/post/brief.html:48 templates/post/details.html:65
+#: templates/post/kick.html:7
 msgid "Kick"
 msgstr "Supprimer"
 
@@ -311,7 +321,8 @@ msgstr "Un-nuke"
 msgid "Ban user"
 msgstr "Bannir l'utilisateur"
 
-#: templates/post/brief.html:56 templates/post/details.html:73 templates/post/yank.html:15
+#: templates/post/brief.html:56 templates/post/details.html:73
+#: templates/post/yank.html:15
 msgid "Yank"
 msgstr "Déplacer"
 
@@ -320,7 +331,8 @@ msgid "Voters"
 msgstr "Voteurs"
 
 # report
-#: templates/post/brief.html:61 templates/post/details.html:78 templates/post/flag.html:7
+#: templates/post/brief.html:61 templates/post/details.html:78
+#: templates/post/flag.html:7
 msgid "Flag"
 msgstr "Signaler"
 
@@ -437,7 +449,8 @@ msgstr "Biographie"
 msgid "Profile picture"
 msgstr "Image de profil"
 
-#: templates/user/edit.html:9 templates/user/info.html:26 templates/user/info.html:28
+#: templates/user/edit.html:9 templates/user/info.html:26
+#: templates/user/info.html:28
 msgid "Electronic Mail Address"
 msgstr "Adresse Courriel"
 
@@ -445,7 +458,8 @@ msgstr "Adresse Courriel"
 msgid "Show E-Mail address?"
 msgstr "Afficher l'adresse e-mail?"
 
-#: templates/user/edit.html:13 templates/user/info.html:32 templates/user/info.html:34
+#: templates/user/edit.html:13 templates/user/info.html:32
+#: templates/user/info.html:34
 msgid "Telefax"
 msgstr "Téléfax"
 
@@ -481,7 +495,8 @@ msgstr "Cet utilisateur a été interdit pour"
 msgid "Network Points"
 msgstr "Points de Réseau"
 
-#: templates/user/info.html:28 templates/user/info.html:34 templates/user/info.html:40
+#: templates/user/info.html:28 templates/user/info.html:34
+#: templates/user/info.html:40
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -519,7 +534,9 @@ msgstr "Choisissez-en un"
 
 #: templates/user/pick.html:4
 msgid "There are multiple users with that username, select one of them"
-msgstr "Il y a plusieurs utilisateurs avec ce nom d'utilisateur, sélectionnez l'un d'entre eux"
+msgstr ""
+"Il y a plusieurs utilisateurs avec ce nom d'utilisateur, sélectionnez l'un "
+"d'entre eux"
 
 #: templates/user/signup.html:13
 msgid "Repeat password"

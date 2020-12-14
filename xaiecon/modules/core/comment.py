@@ -16,18 +16,150 @@ from xaiecon.classes.comment import Comment
 from xaiecon.classes.user import User, UserFollow
 from xaiecon.classes.vote import Vote
 from xaiecon.classes.exception import XaieconException
-from xaiecon.classes.board import BoardSub
+from xaiecon.classes.board import BoardSub, Board
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.post import view as view_p
 from xaiecon.modules.core.markdown import md
 from xaiecon.modules.core.post import list_posts, list_feed, list_nuked
-from xaiecon.modules.core.helpers import send_notification
-from xaiecon.modules.core.wrappers import login_wanted, login_required
+from xaiecon.modules.core.helpers import send_notification, send_admin_notification
+from xaiecon.modules.core.wrappers import login_wanted, login_required, only_admin
 
 from sqlalchemy.orm import joinedload
 
 comment = Blueprint('comment',__name__,template_folder='templates/comment')
+
+@comment.route('/comment/flag/<int:cid>', methods = ['GET','POST'])
+@login_required
+def flag(u=None,cid=0):
+	db = open_db()
+	if request.method == 'POST':
+		comment = db.query(Comment).filter_by(id=cid).first()
+		if comment is None:
+			abort(404)
+		
+		reason = request.form.get('reason')
+		if len(reason) == 0:
+			raise XaieconException('Give proper reason')
+		
+		notif_msg = f'# Comment flagged\n\r\n\r{reason}. Flagged by [/u/{u.username}#{u.id}](/user/view/{u.id})'
+		
+		# Send boardmaster and admin notification so proper action is done
+		send_notification(notif_msg,comment.board_info.user_id)
+		send_admin_notification(notif_msg)
+		
+		db.close()
+		return redirect(f'/comment/view/{cid}')
+	else:
+		db.close()
+		return render_template('post/flag.html',u=u,title='Flag comment',cid=cid)
+
+@comment.route('/comment/unnuke/<int:cid>', methods = ['GET','POST'])
+@login_required
+def unnuke(u=None,cid=0):
+	db = open_db()
+	try:
+		if u.is_admin == False:
+			raise XaieconException('Only admins can un-nuke')
+		
+		comment = db.query(Comment).filter_by(id=cid).first()
+		if comment is None:
+			abort(404)
+		
+		# Check that post is not already nuked and that user mods
+		# the guild
+		if comment.is_nuked == False:
+			raise XaieconException('Comment already deleted or has been unnuked by user or someone else')
+		
+		# "Un-Nuke" post
+		db.query(Comment).filter_by(id=cid).update({'is_nuked':False})
+		db.commit()
+		
+		db.close()
+		
+		cache.delete_memoized(view,cid=cid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
+		
+		return redirect(f'/comment/view/{cid}')
+	except XaieconException as e:
+		db.rollback()
+		db.close()
+		return render_template('user_error.html',u=u,title='Whoops!',err=e)
+
+@comment.route('/admin/comment/nuke/<int:cid>', methods = ['GET'])
+@login_required
+@only_admin
+def admin_nuke(u=None,cid=0):
+	db = open_db()
+	
+	comment = db.query(Comment).filter_by(id=cid).first()
+	if comment is None:
+		abort(404)
+	
+	# Delete all stuff of the comment
+	db.query(Comment).filter_by(id=cid).update({
+		'body':gettext('[deleted by nuking]'),
+		'body_html':gettext('[deleted by nuking]')})
+	db.commit()
+	
+	# Kill user
+	user = db.query(User).filter_by(id=comment.user_id).first()
+	db.query(User).filter_by(id=comment.user_id).update({
+		'ban_reason':'ToS break. Nuking.',
+		'is_banned':True})
+	db.commit()
+	db.refresh(user)
+	
+	db.close()
+	
+	# Delete caching
+	cache.delete_memoized(view,cid=cid)
+	cache.delete_memoized(list_posts)
+	cache.delete_memoized(list_nuked)
+	cache.delete_memoized(list_feed)
+	return '',200
+
+@comment.route('/comment/nuke/<int:cid>', methods = ['GET','POST'])
+@login_required
+def nuke(u=None,cid=0):
+	db = open_db()
+	try:
+		comment = db.query(Comment).filter_by(id=cid).first()
+		if comment is None:
+			abort(404)
+		
+		# User must be also mod of the post's origin board
+		board = db.query(Board).filter_by(id=comment.board_id).first()
+		
+		# Check that post is not already nuked and that user mods
+		# the guild
+		if board is None:
+			raise XaieconException('Post cannot be nuked because it is not in any board')
+		if comment.is_nuked == True:
+			raise XaieconException('Post already nuked/deleted by user or someone else')
+		if not u.mods(board.id) and u.is_admin == False:
+			raise XaieconException('You do not mod the origin board')
+		
+		# "Nuke" post
+		db.query(Post).filter_by(id=cid).update({'is_nuked':True,'nuker_id':u.id})
+		db.commit()
+		
+		db.close()
+		
+		cache.delete_memoized(view,cid=cid)
+		cache.delete_memoized(list_posts)
+		cache.delete_memoized(list_nuked)
+		cache.delete_memoized(list_feed)
+		
+		send_admin_notification(f'Comment with id {cid} has been nuked! Review it [here](/comment/view/{cid}) and [do a final nuke](/admin/comment/nuke/{cid}) if you consider it nescesary.')
+		
+		return redirect(f'/comment/view/{cid}')
+	except XaieconException as e:
+		db.rollback()
+		db.close()
+		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
 # AKA. Blanking the comment ;)
 @comment.route('/comment/delete/<cid>', methods = ['GET','POST'])

@@ -1,7 +1,7 @@
 {% extends "default_layout.html" %}
 {% block content %}
-<h1>{% trans %}Flag post{% endtrans %}</h1>
-<form enctype='multipart/form-data' method='POST' action='/post/flag/{{ pid }}'>
+<h1>{% trans %}Flag comment{% endtrans %}</h1>
+<form enctype='multipart/form-data' method='POST' action='/comment/flag/{{ cid }}'>
 	<label for='reason'>{% trans %}Reason{% endtrans %}</label>
 	<textarea class='textbar-normal' id='reason' name='reason' placeholder='{% trans %}Reason of flag{% endtrans %}'></textarea></br>
 	<input class='form-btn' type='submit' value='{% trans %}Flag{% endtrans %}'></br>

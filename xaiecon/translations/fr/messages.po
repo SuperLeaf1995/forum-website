@@ -1,0 +1,538 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the Xaiecon project.
+# Gᴇʀᴍ :microbe:#6285 <EMAIL@ADDRESS>, 2020.
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-12-04 13:09-0500\n"
+"PO-Revision-Date: 2020-12-14 14:05-0500\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+"X-Generator: Poedit 2.3\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: factory.py:43
+msgid "Database Exception"
+msgstr "Exception de base de données"
+
+#: factory.py:48
+msgid "Server Exception"
+msgstr "Exception serveur"
+
+#: factory.py:67
+msgid "Homepage"
+msgstr "Page d'accueil"
+
+#: modules/core/comment.py:45 modules/core/comment.py:46
+msgid "[deleted by user]"
+msgstr "[supprimé par l'utilisateur]"
+
+#: modules/core/comment.py:70
+msgid "Body too short"
+msgstr "Corps de texte trop court"
+
+#: modules/core/user.py:51
+msgid "Please input a password"
+msgstr "Veuillez saisir votre mot de passe"
+
+#: modules/core/user.py:53
+msgid "Please input a username"
+msgstr "Veuillez saisir votre nom d'utilisateur"
+
+#: modules/core/user.py:61 modules/core/user.py:85
+msgid "Invalid username or password"
+msgstr "Nom d'utilisateur ou mot de passe invalide"
+
+#: modules/core/user.py:142
+msgid "Thanks for registering."
+msgstr "Merci de vous être inscrit."
+
+#: modules/core/user.py:391
+msgid "Not authorized"
+msgstr "Non autorisé"
+
+#: modules/core/user.py:483
+msgid "CSAM Automatic Removal"
+msgstr "Supprimation automatique de matériel pédopornographique"
+
+#: templates/404.html:5
+msgid "Looks like the resource you wanted is not here."
+msgstr "Il semble que la ressource que vous vouliez utiliser n'est pas disponible."
+
+#: templates/500.html:5 templates/dev_error.html:5
+msgid "Server is on fire. Hopefully this is not the production one..."
+msgstr "Le serveur est en feu. Espérons que ce n'est pas celui de la production ..."
+
+#: templates/500.html:6 templates/common/footer.html:7 templates/user_error.html:6
+msgid "Discord Server"
+msgstr "Serveur Discord"
+
+#: templates/dev_error.html:8
+msgid "So what went wrong? Hmmm, maybe take a look at this?"
+msgstr "Alors qu'est-ce qui ne va pas ? Mm, peut-être jeter un oeil à ça ?"
+
+#: templates/dev_error.html:12
+msgid "Error Message"
+msgstr "Message d'erreur"
+
+#: templates/index.html:15
+msgid "Hello!"
+msgstr "Bonjour!"
+
+#: templates/index.html:16
+msgid "An open-source social network"
+msgstr "Un réseau social open source"
+
+#: templates/index.html:16
+msgid "Register"
+msgstr "Inscrivez vous"
+
+#: templates/index.html:16
+msgid "and start posting!"
+msgstr "et commencez à poster!"
+
+#: templates/index.html:22
+msgid "View feed"
+msgstr "Afficher le flux"
+
+#: templates/index.html:26 templates/user/signup.html:4 templates/user/signup.html:20
+msgid "Signup"
+msgstr "Créer un compte"
+
+#: templates/common/footer.html:3 templates/common/userpanel.html:23
+#: templates/user/signup.html:16
+msgid "Terms of Service"
+msgstr "Conditions de Service"
+
+#: templates/common/footer.html:4 templates/common/userpanel.html:24
+msgid "Privacy Policy"
+msgstr "Politique de Confidentialité"
+
+#: templates/common/footer.html:5 templates/common/userpanel.html:25
+msgid "Content Policy"
+msgstr "Politique de Contenu"
+
+#: templates/common/footer.html:6 templates/common/userpanel.html:26
+msgid "Source Code"
+msgstr "Code source"
+
+#: templates/common/gdprnotice.html:17
+msgid ""
+"We use cookies/sessions for login/signup process. Please consent to allow us to store "
+"cookies. If you signup/login you automatically consent that we store cookies."
+msgstr ""
+"Nous utilisons des cookies / sessions pour le processus de connexion / inscription. Veuillez "
+"consentir à nous permettre de stocker des cookies. Si vous vous inscrivez / vous connectez, "
+"vous consentez automatiquement à ce que nous stockions des cookies."
+
+#: templates/common/navbar.html:13
+msgid "Sign-up"
+msgstr "S'inscrire"
+
+#: templates/common/navbar.html:14 templates/user/login.html:4 templates/user/login.html:13
+msgid "Login"
+msgstr "Connecter"
+
+#: templates/common/navbar.html:21
+msgid "Logout"
+msgstr "Déconnecter"
+
+#: templates/common/navbar.html:23 templates/common/navbar.html:24
+msgid "Frontpage"
+msgstr "Page d'accueil"
+
+#: templates/common/navbar.html:27
+msgid "My feed"
+msgstr "Mon flux"
+
+#: templates/common/navbar.html:29
+msgid "Newest"
+msgstr "Récent"
+
+#: templates/common/navbar.html:30
+msgid "Oldest"
+msgstr "Ancien"
+
+#: templates/common/navbar.html:33
+msgid "Categories"
+msgstr "Catégories"
+
+#: templates/common/navbar.html:35
+msgid "Anarchy"
+msgstr "Anarchie"
+
+#: templates/common/navbar.html:36
+msgid "Animals"
+msgstr "Animaux"
+
+#: templates/common/navbar.html:37
+msgid "Culture"
+msgstr "Culture"
+
+#: templates/common/navbar.html:38
+msgid "Fiction"
+msgstr "Fiction"
+
+#: templates/common/navbar.html:39
+msgid "Humor"
+msgstr "Humour"
+
+#: templates/common/navbar.html:40
+msgid "Mathematics"
+msgstr "Mathématiques"
+
+#: templates/common/navbar.html:41
+msgid "News"
+msgstr "Nouvelles"
+
+#: templates/common/navbar.html:42
+msgid "Nonsense"
+msgstr "Sottises"
+
+#: templates/common/navbar.html:43
+msgid "NSFW"
+msgstr "NSFW"
+
+#: templates/common/navbar.html:44
+msgid "Other"
+msgstr "Autre"
+
+#: templates/common/navbar.html:45
+msgid "Pictures"
+msgstr "Images"
+
+#: templates/common/navbar.html:46
+msgid "Politics"
+msgstr "Politique"
+
+#: templates/common/navbar.html:47
+msgid "Programming"
+msgstr "Programmation"
+
+#: templates/common/navbar.html:48
+msgid "Technology"
+msgstr "Technologie"
+
+#: templates/common/navbar.html:49
+msgid "Videogames"
+msgstr "Jeux vidéo"
+
+#: templates/common/navbar.html:50
+msgid "Sports"
+msgstr "Sports"
+
+#: templates/common/navbar.html:54
+msgid "Home"
+msgstr "Acceuil"
+
+#: templates/common/navbar.html:57
+msgid "Search for posts"
+msgstr "Rechercher des articles"
+
+#: templates/common/userpanel.html:3
+msgid "User panel"
+msgstr "Panneau d'utilisateur"
+
+#: templates/common/userpanel.html:5
+msgid "New board"
+msgstr "Nouvelle discussion"
+
+# Board = discussion
+# post = message
+#: templates/common/userpanel.html:6
+msgid "New post"
+msgstr "Nouveau message"
+
+#: templates/common/userpanel.html:8
+msgid "Moderated"
+msgstr "Modérér"
+
+#: templates/common/userpanel.html:13
+msgid "Subscribed"
+msgstr "Abonné"
+
+#: templates/common/userpanel.html:19
+msgid "Get back"
+msgstr "Revenir"
+
+#: templates/common/userpanel.html:19
+msgid "the internet."
+msgstr "l'Internet."
+
+#: templates/logs/loglist.html:3
+msgid "Logs"
+msgstr "Registres"
+
+#: templates/post/brief.html:32
+msgid "Submitted"
+msgstr "Soumis"
+
+#: templates/post/brief.html:32 templates/user/notification.html:14
+msgid "calculating"
+msgstr "calcul en cours"
+
+#: templates/post/brief.html:39
+msgid "views"
+msgstr "vues"
+
+#: templates/post/brief.html:40
+msgid "comments"
+msgstr "commentaires"
+
+#: templates/post/brief.html:44 templates/post/details.html:61 templates/post/details.html:103
+msgid "Delete"
+msgstr "Supprimer"
+
+#: templates/post/brief.html:45 templates/post/details.html:62 templates/post/details.html:102
+#: templates/post/edit_comment.html:6 templates/user/edit.html:25
+msgid "Edit"
+msgstr "Modifier"
+
+#: templates/post/brief.html:48 templates/post/details.html:65 templates/post/kick.html:7
+msgid "Kick"
+msgstr "Supprimer"
+
+#: templates/post/brief.html:50 templates/post/details.html:67
+msgid "Nuke"
+msgstr "Nuke"
+
+#: templates/post/brief.html:52 templates/post/details.html:69
+msgid "Un-nuke"
+msgstr "Un-nuke"
+
+#: templates/post/brief.html:54 templates/post/details.html:71
+msgid "Ban user"
+msgstr "Bannir l'utilisateur"
+
+#: templates/post/brief.html:56 templates/post/details.html:73 templates/post/yank.html:15
+msgid "Yank"
+msgstr "Déplacer"
+
+#: templates/post/brief.html:59 templates/post/details.html:76
+msgid "Voters"
+msgstr "Voteurs"
+
+# report
+#: templates/post/brief.html:61 templates/post/details.html:78 templates/post/flag.html:7
+msgid "Flag"
+msgstr "Signaler"
+
+#: templates/post/brief.html:62 templates/post/details.html:79
+msgid "Embed"
+msgstr "Incorporer"
+
+#: templates/post/details.html:84
+msgid "Add comment"
+msgstr "Ajouter un commentaire"
+
+#: templates/post/details.html:86 templates/post/details.html:113
+msgid "Comment body"
+msgstr "Corps du commentaire"
+
+#: templates/post/details.html:92
+msgid "Comments"
+msgstr "Commentaires"
+
+#: templates/post/details.html:100 templates/post/details.html:114
+msgid "Reply"
+msgstr "Répondre"
+
+#: templates/post/details.html:107
+msgid "View entire discussion"
+msgstr "Afficher toute la discussion"
+
+#: templates/post/details.html:119
+msgid "No comments yet"
+msgstr "Aucun commentaire pour l'instant"
+
+#: templates/post/flag.html:3
+msgid "Flag post"
+msgstr "Signaler message"
+
+#: templates/post/flag.html:5
+msgid "Reason"
+msgstr "Raison"
+
+#: templates/post/flag.html:6
+msgid "Reason of flag"
+msgstr "Raison de signalement"
+
+#: templates/post/kick.html:3
+msgid "Kick post"
+msgstr "Supprimer message"
+
+#: templates/post/kick.html:6
+msgid "Are you sure?"
+msgstr "Êtes-vous sûr?"
+
+#: templates/post/voters.html:9
+msgid "No downvotes or upvotes yet"
+msgstr "Pas encore de votes négatifs ou positifs"
+
+#: templates/post/write.html:5
+msgid "Title"
+msgstr "Titre"
+
+#: templates/post/write.html:7
+msgid "Body"
+msgstr "Texte"
+
+#: templates/post/write.html:9
+msgid "Image upload"
+msgstr "Image"
+
+#: templates/post/write.html:11
+msgid "Keywords"
+msgstr "Mots clés"
+
+#: templates/post/write.html:13
+msgid "Link"
+msgstr "Lien"
+
+#: templates/post/write.html:15
+msgid "Show who voted?"
+msgstr "Montrer qui a voté?"
+
+#: templates/post/write.html:18
+msgid "Is post NSFW?"
+msgstr "Est-ce que le message est NSFW?"
+
+#: templates/post/write.html:22
+msgid "Board to post to"
+msgstr "Discussion où envoyer"
+
+#: templates/post/write.html:29
+msgid "Category"
+msgstr "Catégorie"
+
+#: templates/post/write.html:35
+msgid "Write"
+msgstr "Écrire"
+
+#: templates/post/yank.html:3
+msgid "Yank post"
+msgstr "Déplacer le message"
+
+#: templates/post/yank.html:7
+msgid "Board to yank to"
+msgstr "Discussion où déplacer"
+
+# Yank = deplacer
+#: templates/post/yank.html:18
+msgid "You are not moderating any boards, you cannot yank"
+msgstr "Vous ne modérez aucune discussion, vous ne pouvez pas déplacer"
+
+#: templates/user/edit.html:5
+msgid "Biography"
+msgstr "Biographie"
+
+#: templates/user/edit.html:7
+msgid "Profile picture"
+msgstr "Image de profil"
+
+#: templates/user/edit.html:9 templates/user/info.html:26 templates/user/info.html:28
+msgid "Electronic Mail Address"
+msgstr "Adresse Courriel"
+
+#: templates/user/edit.html:11
+msgid "Show E-Mail address?"
+msgstr "Afficher l'adresse e-mail?"
+
+#: templates/user/edit.html:13 templates/user/info.html:32 templates/user/info.html:34
+msgid "Telefax"
+msgstr "Téléfax"
+
+#: templates/user/edit.html:15
+msgid "Show telefax number?"
+msgstr "Afficher le numéro de fax?"
+
+#: templates/user/edit.html:17
+msgid "Telephone number"
+msgstr "Numéro de téléphone"
+
+#: templates/user/edit.html:19
+msgid "Show phone number?"
+msgstr "Afficher le numéro de téléphone?"
+
+#: templates/user/edit.html:21
+msgid "Check this box if you are ok viewing NSFW content"
+msgstr "Cochez cette case si vous êtes d'accord de voir du contenu NSFW"
+
+#: templates/user/edit.html:23
+msgid "Use dark mode"
+msgstr "Utilisez le mode noir"
+
+#: templates/user/follow_settings.html:7
+msgid "Apply"
+msgstr "Appliquer"
+
+#: templates/user/info.html:7
+msgid "This user has been banned for"
+msgstr "Cet utilisateur a été interdit pour"
+
+#: templates/user/info.html:9
+msgid "Network Points"
+msgstr "Points de Réseau"
+
+#: templates/user/info.html:28 templates/user/info.html:34 templates/user/info.html:40
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: templates/user/info.html:38 templates/user/info.html:40
+msgid "Telephone"
+msgstr "Téléphone"
+
+#: templates/user/info.html:44
+msgid "Edit details"
+msgstr "Modifier les détails"
+
+#: templates/user/leaderboard.html:3
+msgid "Leaderboard"
+msgstr "Classement"
+
+#: templates/user/login.html:9 templates/user/signup.html:9
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: templates/user/login.html:11 templates/user/signup.html:11
+msgid "Password"
+msgstr "Mot de passe"
+
+#: templates/user/notification.html:4
+msgid "Your notifications"
+msgstr "Vos notifications"
+
+#: templates/user/notification.html:7
+msgid "Mark all notifications as read"
+msgstr "Marquer toutes les notifications comme lues"
+
+#: templates/user/pick.html:3
+msgid "Pick one"
+msgstr "Choisissez-en un"
+
+#: templates/user/pick.html:4
+msgid "There are multiple users with that username, select one of them"
+msgstr "Il y a plusieurs utilisateurs avec ce nom d'utilisateur, sélectionnez l'un d'entre eux"
+
+#: templates/user/signup.html:13
+msgid "Repeat password"
+msgstr "Veuillez ressaisir votre mot de passe"
+
+#: templates/user/signup.html:16
+msgid "I agree with the"
+msgstr "Je suis d'accord avec la"
+
+#: templates/user/signup.html:16
+msgid "the Privacy Policy"
+msgstr "la Politique de Confidentialité"
+
+#: templates/user/signup.html:16
+msgid "and the Content Policy"
+msgstr "et la Politique de Contenu"

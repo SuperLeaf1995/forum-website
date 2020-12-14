@@ -85,7 +85,32 @@ def obtain_posts(u=None, sort='new', category='All', num=15, page=0):
 	db.close()
 	return post
 
-@post.route('/post/vote/<pid>', methods = ['POST'])
+@post.route('/post/flag/<int:pid>', methods = ['GET','POST'])
+@login_required
+def flag(u=None,pid=0):
+	db = open_db()
+	if request.method == 'POST':
+		post = db.query(Post).filter_by(id=pid).first()
+		if post is None:
+			abort(404)
+		
+		reason = request.form.get('reason')
+		if len(reason) == 0:
+			raise XaieconException('Give proper reason')
+		
+		notif_msg = f'# Post flagged\n\r\n\r{reason}. Flagged by [/u/{u.username}#{u.id}](/user/view/{u.id})'
+		
+		# Send boardmaster and admin notification so proper action is done
+		send_notification(notif_msg,post.board_info.user_id)
+		send_admin_notification(notif_msg)
+		
+		db.close()
+		return redirect(f'/post/view/{pid}')
+	else:
+		db.close()
+		return render_template('post/flag.html',u=u,title='Flag post',pid=pid)
+
+@post.route('/post/vote/<int:pid>', methods = ['POST'])
 @login_required
 def vote(u=None,pid=0):
 	db = open_db()
@@ -140,7 +165,7 @@ def vote(u=None,pid=0):
 		db.close()
 		return jsonify({'error':e}),400
 
-@post.route('/post/ballot/<pid>', methods = ['GET','POST'])
+@post.route('/post/ballot/<int:pid>', methods = ['GET','POST'])
 @login_wanted
 @cache.memoize(timeout=8600)
 def ballot(u=None,pid=0):
@@ -162,15 +187,14 @@ def ballot(u=None,pid=0):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',e=e)
 
-@post.route('/post/unnuke', methods = ['GET','POST'])
+@post.route('/post/unnuke/<int:pid>', methods = ['GET','POST'])
 @login_required
-def unnuke(u=None):
+def unnuke(u=None,pid=0):
 	db = open_db()
 	try:
 		if u.is_admin == False:
 			raise XaieconException('Only admins can un-nuke')
-
-		pid = request.values.get('pid')
+		
 		post = db.query(Post).filter_by(id=pid).first()
 		if post is None:
 			abort(404)
@@ -197,7 +221,7 @@ def unnuke(u=None):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/admin/nuke/<pid>', methods = ['GET'])
+@post.route('/admin/nuke/<int:pid>', methods = ['GET'])
 @login_required
 @only_admin
 def admin_nuke(u=None,pid=0):
@@ -229,7 +253,7 @@ def admin_nuke(u=None,pid=0):
 	# Kill user
 	user = db.query(User).filter_by(id=post.user_id).first()
 	db.query(User).filter_by(id=post.user_id).update({
-		'ban_reason':'CSAM Automatic Removal',
+		'ban_reason':'ToS breaking. Nuking',
 		'is_banned':True})
 	db.commit()
 	db.refresh(user)
@@ -243,7 +267,7 @@ def admin_nuke(u=None,pid=0):
 	cache.delete_memoized(list_feed)
 	return '',200
 
-@post.route('/post/nuke/<pid>', methods = ['GET','POST'])
+@post.route('/post/nuke/<int:pid>', methods = ['GET','POST'])
 @login_required
 def nuke(u=None,pid=0):
 	db = open_db()
@@ -283,7 +307,7 @@ def nuke(u=None,pid=0):
 		db.close()
 		return render_template('user_error.html',u=u,title = 'Whoops!',err=e)
 
-@post.route('/post/kick/<pid>', methods = ['GET','POST'])
+@post.route('/post/kick/<int:pid>', methods = ['GET','POST'])
 @login_required
 def kick(u=None,pid=0):
 	db = open_db()

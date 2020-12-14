@@ -29,6 +29,9 @@ class Comment(Base):
 	user_info = relationship('User', foreign_keys=[user_id])
 	
 	is_nuked = Column(Boolean, default=False)
+	nuker_id = Column(Integer, ForeignKey('xaiecon_user.id'))
+	nuker_info = relationship('User', foreign_keys=[user_id])
+	
 	is_deleted = Column(Boolean, default=False)
 	
 	uuid = Column(String(32), default=secrets.token_hex(16))

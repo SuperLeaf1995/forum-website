@@ -92,6 +92,7 @@
 		<h2>{% trans %}Comments{% endtrans %}</h2>
 		<hr>
 		{% for c in comment %}
+			{% if c.is_nuked == False and c.is_deleted == False %}
 			<div id='parent-{{ c.id }}' class='comment-block-details' style='margin-left:{{ c.depth_level-1 }}0%'>
 				<img style='border-radius:16px;float:left;' width='32px' height='32px' src='/user/thumb/{{ c.user_id }}'></img>
 				<p style='color:grey;'>Submitted <i class='content-datetime' value='{{ c.creation_date }}'>(calculating...)</i> by <a href='/user/view/{{ c.user_id }}'>/u/{{ c.user_info.username }}#{{ c.user_info.id }}</a></p>
@@ -104,7 +105,11 @@
 					{% endif %}
 					<a class='post-option' href='/comment/flag/{{ c.id }}'>{% trans %}Report{% endtrans %}</a>
 					{% if post.board_info and u.mods(post.board_info.id) == True or u.is_admin == True %}
+					{% if c.is_nuked == False %}
 					<a class='post-option' href='/comment/nuke/{{ c.id }}'>{% trans %}Nuke{% endtrans %}</a>
+					{% elif c.is_nuked == True and u.is_admin == True %}
+					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Unuke{% endtrans %}</a>
+					{% endif %}
 					<a class='post-option' href='/board/ban/{{ c.board_id }}/{{ c.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 					{% endif %}
 					<br>
@@ -120,6 +125,7 @@
 					<input class='form-btn' type='submit' value='{% trans %}Reply{% endtrans %}'>
 				</form>
 			</div>
+			{% endif %}
 		{% endfor %}
 	{% else %}
 		<h2>{% trans %}No comments yet{% endtrans %}</h2>

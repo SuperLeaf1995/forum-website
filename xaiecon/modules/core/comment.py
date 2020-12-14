@@ -42,17 +42,31 @@ def flag(u=None,cid=0):
 		if len(reason) == 0:
 			raise XaieconException('Give proper reason')
 		
-		notif_msg = f'# Comment flagged\n\r\n\r{reason}. Flagged by [/u/{u.username}#{u.id}](/user/view/{u.id})'
+		notif_msg = f'# Comment flagged\n\r\n\r{reason}. [View it here](/comment/view/{cid}). Flagged by [/u/{u.username}#{u.id}](/user/view/{u.id})'
 		
 		# Send boardmaster and admin notification so proper action is done
-		send_notification(notif_msg,comment.board_info.user_id)
+		
+		# Obtain boardinfo
+		post_comment = None
+		post_cid = cid
+		post = None
+		while post is None:
+			post_comment = db.query(Comment).filter_by(id=post_cid).first()
+			if post_comment.post_id is None:
+				post_cid = post_comment.comment_id
+			else:
+				post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+				if post is None:
+					abort(404)
+				break
+		send_notification(notif_msg,post.board_info.user_id)
 		send_admin_notification(notif_msg)
 		
 		db.close()
 		return redirect(f'/comment/view/{cid}')
 	else:
 		db.close()
-		return render_template('post/flag.html',u=u,title='Flag comment',cid=cid)
+		return render_template('post/comment_flag.html',u=u,title='Flag comment',cid=cid)
 
 @comment.route('/comment/unnuke/<int:cid>', methods = ['GET','POST'])
 @login_required
@@ -131,7 +145,20 @@ def nuke(u=None,cid=0):
 			abort(404)
 		
 		# User must be also mod of the post's origin board
-		board = db.query(Board).filter_by(id=comment.board_id).first()
+		# Increment number of comments
+		post_comment = None
+		post_cid = cid
+		post = None
+		while post is None:
+			post_comment = db.query(Comment).filter_by(id=post_cid).first()
+			if post_comment.post_id is None:
+				post_cid = post_comment.comment_id
+			else:
+				post = db.query(Post).filter_by(id=post_comment.post_id).options(joinedload('*')).first()
+				if post is None:
+					abort(404)
+				break
+		board = db.query(Board).filter_by(id=post.board_id).first()
 		
 		# Check that post is not already nuked and that user mods
 		# the guild
@@ -143,11 +170,12 @@ def nuke(u=None,cid=0):
 			raise XaieconException('You do not mod the origin board')
 		
 		# "Nuke" post
-		db.query(Post).filter_by(id=cid).update({'is_nuked':True,'nuker_id':u.id})
+		db.query(Comment).filter_by(id=cid).update({'is_nuked':True,'nuker_id':u.id})
 		db.commit()
 		
 		db.close()
 		
+		cache.delete_memoized(view_p,pid=post.id)
 		cache.delete_memoized(view,cid=cid)
 		cache.delete_memoized(list_posts)
 		cache.delete_memoized(list_nuked)

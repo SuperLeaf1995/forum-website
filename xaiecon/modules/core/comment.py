@@ -46,11 +46,15 @@ def hide(u=None,cid=0):
 			if post is None:
 				abort(404)
 			break
-	if u.mods(post.board_id) == False or u.is_admin == False:
+	if u.mods(post.board_id) == False and u.is_admin == False:
 		abort(403)
 	db.query(Comment).filter_by(id=cid).update({'is_hidden':True})
 	db.close()
-	return redirect('/comment/view/{cid}')
+	
+	cache.delete_memoized(view)
+	cache.delete_memoized(view_p,pid=post.id)
+	
+	return redirect(f'/comment/view/{cid}')
 
 @comment.route('/comment/unhide/<int:cid>', methods = ['GET'])
 @login_required
@@ -69,11 +73,15 @@ def unhide(u=None,cid=0):
 			if post is None:
 				abort(404)
 			break
-	if u.mods(post.board_id) == False or u.is_admin == False:
+	if u.mods(post.board_id) == False and u.is_admin == False:
 		abort(403)
 	db.query(Comment).filter_by(id=cid).update({'is_hidden':False})
 	db.close()
-	return redirect('/comment/view/{cid}')
+	
+	cache.delete_memoized(view)
+	cache.delete_memoized(view_p,pid=post.id)
+	
+	return redirect(f'/comment/view/{cid}')
 
 @comment.route('/comment/flag/<int:cid>', methods = ['GET','POST'])
 @login_required

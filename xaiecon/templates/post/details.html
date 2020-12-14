@@ -111,9 +111,9 @@
 					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Unuke{% endtrans %}</a>
 					{% endif %}
 					{% if u.mods(post.board_info.id) == True and c.is_hidden == False %}
-					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Hide{% endtrans %}</a>
+					<a class='post-option' href='/comment/hide/{{ c.id }}'>{% trans %}Hide{% endtrans %}</a>
 					{% elif u.mods(post.board_info.id) == True and c.is_hidden == True %}
-					<a class='post-option' href='/comment/unnuke/{{ c.id }}'>{% trans %}Unhide{% endtrans %}</a>
+					<a class='post-option' href='/comment/unhide/{{ c.id }}'>{% trans %}Unhide{% endtrans %}</a>
 					{% endif %}
 					<a class='post-option' href='/board/ban/{{ c.board_id }}/{{ c.user_id }}'>{% trans %}Ban user{% endtrans %}</a>
 					{% endif %}

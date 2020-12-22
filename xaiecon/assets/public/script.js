@@ -221,9 +221,11 @@ function update_content_time() {
 	}
 }
 
+var gpid;
+
 // display full image when clicking on image block thing
-function full_image() {
-	var e = document.getElementById('image-full');
+function full_image(pid) {
+	var e = document.getElementById('image-full-'+pid);
 	var s = document.getElementById('smoke-curtain');
 	
 	e.classList.remove('fucking-die');
@@ -234,13 +236,19 @@ function full_image() {
 	
 	e.animationName = 'fade-out';
 	s.animationName = 'fade-in';
+	
+	gpid = pid;
 }
 
 // close image when clicking outside it
 window.addEventListener('click', function(m) {
-	var e = document.getElementById('image-full');
-	var d = document.getElementById('image-full-dispenser');
+	var e = document.getElementById('image-full-'+gpid);
+	var d = document.getElementById('image-full-dispenser-'+gpid);
 	var s = document.getElementById('smoke-curtain');
+	
+	if(e === null || s === null || d === null) {
+		return;
+	}
 	
 	if(!e.contains(m.target) && !d.contains(m.target)) {
 		e.classList.add('fucking-die');
@@ -249,8 +257,12 @@ window.addEventListener('click', function(m) {
 });
 
 window.addEventListener('animationend', function(m) {
-	var e = document.getElementById('image-full');
+	var e = document.getElementById('image-full-'+gpid);
 	var s = document.getElementById('smoke-curtain');
+	
+	if(e === null || s === null) {
+		return;
+	}
 	
 	if(e.classList.contains('fucking-die') && s.classList.contains('fucking-die')) {
 		e.style.display = 'none';

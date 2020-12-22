@@ -1,8 +1,8 @@
 <article class='post-brief'>
 	{% if post.is_image == True %}
-		<div class='post-brief-thumb'><img id='image-full-dispenser' class='image-preview' onclick='full_image();' width='128px' height='128px' src='/post/thumb/{{ post.id }}'></img></div>
-		<div id='image-full' class='image-preview-full'>
-			<img src='/post/image/{{ post.id }}'>
+		<div class='post-brief-thumb'><img id='image-full-dispenser-{{ post.id }}' class='image-preview' onclick='full_image("{{ post.id }}");' width='128px' height='128px' src='/post/thumb/{{ post.id }}'></img></div>
+		<div id='image-full-{{ post.id }}' class='image-preview-full'>
+			<img src='/post/image/{{ post.id }}'></img>
 		</div>
 		<div id='smoke-curtain' class='smoke-curtain'></div>
 	{% elif post.is_thumb == True and post.is_link == True %}

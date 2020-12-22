@@ -765,7 +765,7 @@ def thumb(u=None,pid=0):
 	db.close()
 	return send_from_directory('../user_data',post.thumb_file)
 
-@post.route('/post/image/<pid>', methods = ['GET'])
+@post.route('/post/image/<int:pid>', methods = ['GET'])
 @login_wanted
 @limiter.exempt
 def image(u=None,pid=0):
@@ -778,7 +778,7 @@ def image(u=None,pid=0):
 	db.close()
 	return send_from_directory('../user_data',post.image_file)
 
-@post.route('/post/embed/<pid>', methods = ['GET'])
+@post.route('/post/embed/<int:pid>', methods = ['GET'])
 @login_wanted
 @cache.memoize(timeout=8600)
 def embed(u=None,pid=0):
@@ -1070,7 +1070,7 @@ def obtain_post_thumb(link: str):
 			content = img.get('content')
 			if content == '' or content is None:
 				content = img.get('src')
-				content = '{link}/{content}'
+				content = f'{link}/{content}'
 				if content == '' or content is None:
 					continue
 			
@@ -1081,6 +1081,8 @@ def obtain_post_thumb(link: str):
 				continue
 			return im
 		except requests.exceptions.InvalidURL:
+			continue
+		except OSError:
 			continue
 	
 	return None

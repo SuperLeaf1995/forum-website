@@ -1,0 +1,127 @@
+<html>
+	<head>
+		<style>
+/* Main selection for our website */
+::-moz-selection, ::-webkit-selection, ::selection {
+  background-color: #3126d1;
+  color: white;
+}
+body {
+  background-color: #f5f5f5;
+}
+li {
+  list-style: none;
+}
+hr {
+  border: 1px solid lightgrey;
+}
+img.server-icon {
+  border-radius: 24px;
+  width: 48px;
+  height: 48px;
+}
+i.time {
+  color:gray;
+}
+div {
+  float: left;
+  background-color: #ffffff;
+  margin: 2px;
+}
+.chat-div {
+  width: 75%;
+  height: 100vh;
+}
+.message {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+  float: left;
+}
+.input-area {
+  position: relative;
+  left: 0;
+  bottom: 0;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+}
+textarea {
+  border: none;
+  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
+  resize: none;
+  transition: 0.3s;
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+  margin-left: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  padding: 4px;
+  background-color: #f5f5f5;
+}
+		
+		</style>
+	</head>
+	<body>
+		<div style='width:8%;'>
+			<ul style='width:min-content;'>
+				<li><img class='server-icon' src='a'></li>
+				<li><img class='server-icon' src='a'></li>
+				<li><img class='server-icon' src='a'></li>
+			</ul>
+		</div>
+		<div class='chat-div'>
+			<ul>
+				<li class='message'>
+					<div>
+					<img style='float:left;' class='server-icon' src='a'>
+					<p style='float:left;'><b>admin</b> <i class='time'>40 seconds ago</i></p>
+					</div><br><br><br>
+					<p>Hello chat world!</p>
+				</li>
+				<li class='message'>
+					<div>
+					<img style='float:left;' class='server-icon' src='a'>
+					<p style='float:left;'><b>user2</b> <i class='time'>40 seconds ago</i></p>
+					</div><br><br><br>
+					<p>test</p>
+				</li>
+				<li class='message'>
+					<div>
+					<img style='float:left;' class='server-icon' src='a'>
+					<p style='float:left;'><b>admin</b> <i class='time'>40 seconds ago</i></p>
+					</div><br><br><br>
+					<p>test</p>
+					<p>test</p>
+					<p>test</p>
+				</li>
+				<li class='message'>
+					<div>
+					<img style='float:left;' class='server-icon' src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Bonsack_machine.png/400px-Bonsack_machine.png'>
+					<p style='float:left;'><b>user2</b> <i class='time'>40 seconds ago</i></p>
+					</div><br><br><br>
+					<p>test</p>
+					<p>test</p>
+					<p>test</p>
+				</li>
+			</ul>
+			<div class='input-area'>
+				<textarea></textarea>
+			</div>
+		</div>
+		<div style='width:fill-available;'>
+			<ul>
+				<h3>User list</h3>
+				<hr>
+				<li>
+					<b>admin#1</b><br>
+					<b>user2#5</b><br>
+					<b>ffffffff#2</b><br>
+					<b>uwuwuw#4</b><br>
+					<b>asdasdas#3</b><br>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

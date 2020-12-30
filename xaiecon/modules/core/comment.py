@@ -388,8 +388,7 @@ def write_reply(u=None,cid=0):
 			idlist.append(post.user_id)
 		
 		# Notify commenter
-		if comment.user_id != u.id:
-			if comment.user_id not in idlist:
+		if comment.user_id != u.id and comment.user_id not in idlist:
 				idlist.append(comment.user_id)
 
 		for id in idlist:
@@ -526,24 +525,22 @@ def create(u=None,pid=0):
 		
 		notif_msg = f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{comment.body}'
 		
-		if post.user_id != u.id:
-			send_notification(notif_msg,post.user_id)
+		idlist = []
+		if post.user_id != u.id and post.user_id not in idlist:
+				idlist.append(post.user_id)
 		
 		# Notify followers
-		idlist = []
 		follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 		for f in follows:
-			if f.user_id != u.id:
+			if f.user_id != u.id and f.user_id not in idlist:
 				idlist.append(f.user_id)
 		
 		# Notify post poster
-		if post.user_id != u.id:
-			if post.user_id not in idlist:
+		if post.user_id != u.id and post.user_id not in idlist:
 				idlist.append(post.user_id)
 		
 		# Notify commenter
-		if comment.user_id != u.id:
-			if comment.user_id not in idlist:
+		if comment.user_id != u.id and comment.user_id not in idlist:
 				idlist.append(comment.user_id)
 
 		for id in idlist:

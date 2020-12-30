@@ -382,13 +382,18 @@ def write_reply(u=None,cid=0):
 		
 		notif_msg = f'Comment by [/u/{comment.user_info.username}](/user/view/{post.user_info.id}) on [/b/{post.board_info.name}](/board/view/{post.board_info.id}) in post ***{post.title}*** [View](/comment/view/{comment.id})\n\r{reply.body}'
 		
+		idlist = []
 		# Notify post poster
 		if post.user_id != u.id:
-			send_notification(notif_msg,post.user_id)
+			idlist.append(post.user_id)
 		
 		# Notify commenter
 		if comment.user_id != u.id:
-			send_notification(notif_msg,comment.user_id)
+			if comment.user_id not in idlist:
+				idlist.append(comment.user_id)
+
+		for id in idlist:
+			send_notification(notif_msg,id)
 		
 		ping = body.find('@everyone')
 		if ping != -1 and u.is_admin == True:
@@ -525,19 +530,25 @@ def create(u=None,pid=0):
 			send_notification(notif_msg,post.user_id)
 		
 		# Notify followers
+		idlist = []
 		follows = db.query(UserFollow).filter_by(target_id=u.id,notify=True).all()
 		for f in follows:
 			if f.user_id != u.id:
-				send_notification(notif_msg,f.user_id)
+				idlist.append(f.user_id)
 		
 		# Notify post poster
 		if post.user_id != u.id:
-			send_notification(notif_msg,post.user_id)
+			if post.user_id not in idlist:
+				idlist.append(post.user_id)
 		
 		# Notify commenter
 		if comment.user_id != u.id:
-			send_notification(notif_msg,comment.user_id)
-		
+			if comment.user_id not in idlist:
+				idlist.append(comment.user_id)
+
+		for id in idlist:
+			send_notification(notif_msg,id)
+
 		ping = body.find('@everyone')
 		if ping != -1 and u.is_admin == True:
 			users = db.query(User).all()

@@ -35,7 +35,6 @@ def create_app() -> Flask:
 	hcaptcha.init_app(app)
 	babel.init_app(app)
 	limiter.init_app(app)
-	socketio.init_app(app)
 
 	@app.errorhandler(XaieconDatabaseException)
 	def handle_database_exception(e=None):

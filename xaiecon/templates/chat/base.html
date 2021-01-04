@@ -9,7 +9,7 @@
 {% else %}
 <link rel='stylesheet' href='/assets/style.css'>
 {% endif %}
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js'></script>
 		<style>
 /* Main selection for our website */
 hr {
@@ -58,11 +58,7 @@ textarea {
 		<script type='text/javascript'>
 var channel_id = 0;
 var server_id = 0;
-var socket = io({
-	query: {
-		sessionStorage
-	}
-});
+var socket = io();
 
 // On-connect event
 socket.on('connect', () => {

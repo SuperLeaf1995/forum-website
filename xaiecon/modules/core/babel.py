@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Module for hcaptcha verifications
+# Module for babels
 #
 
 from flask_babel import Babel

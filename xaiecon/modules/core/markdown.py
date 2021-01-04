@@ -22,7 +22,7 @@ _md = Markdown(renderer=renderer,extensions=(
 	'autolink',))
 
 user_mention = re.compile(r'([u][\/]|[@])([a-zA-Z0-9#][^ ,.;:\n\r\t<>\/\'])*\w+')
-board_mention = re.compile(r'([vbcsrp][\/]|[+!])([a-zA-Z0-9][^ ,.;:\n\r\t<>\/\'])*\w+')
+board_mention = re.compile(r'(?<![^\n\r ;.,])([vbcsrp][\/]|[+!])\w+')
 
 def create_user_link(matchobj: object):
 	text = matchobj.group(0)

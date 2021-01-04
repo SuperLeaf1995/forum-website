@@ -262,3 +262,40 @@ INSERT INTO xaiecon_category(name) VALUES
 	('Videogames'),
 	('Other'),
 	('Sports');
+
+-- Chat
+CREATE TABLE xaiecon_chat_server(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(255),
+	has_icon BOOLEAN DEFAULT FALSE,
+	icon_file VARCHAR(255),
+	user_count INT,
+	creation_date INT,
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	uuid VARCHAR(32)
+);
+
+CREATE TABLE xaiecon_chat_channel(
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(255),
+	creation_date INT,
+	server_id INT REFERENCES xaiecon_chat_server(id) ON UPDATE CASCADE,
+	uuid VARCHAR(32)
+);
+
+CREATE TABLE xaiecon_chat_message(
+	id SERIAL PRIMARY KEY,
+	body VARCHAR(5000),
+	body_html VARCHAR(5000),
+	creation_date INT,
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	channel_id INT REFERENCES xaiecon_chat_channel(id) ON UPDATE CASCADE,
+	uuid VARCHAR(32)
+);
+
+CREATE TABLE xaiecon_chat_server_join(
+	id SERIAL PRIMARY KEY,
+	user_id INT REFERENCES xaiecon_user(id) ON UPDATE CASCADE,
+	server_id INT REFERENCES xaiecon_chat_server(id) ON UPDATE CASCADE,
+	uuid VARCHAR(32)
+);

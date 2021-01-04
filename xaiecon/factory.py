@@ -1,14 +1,14 @@
 import os
 
 from flask import Flask, render_template, request, send_file
+from flask_babel import gettext
 
 from xaiecon.modules.core.cache import cache
 from xaiecon.modules.core.hcaptcha import hcaptcha
 from xaiecon.modules.core.babel import babel
 from xaiecon.modules.core.limiter import limiter
 from xaiecon.modules.core.wrappers import login_wanted
-
-from flask_babel import gettext
+from xaiecon.modules.core.socketio import socketio
 
 from xaiecon.classes.exception import XaieconDatabaseException, XaieconException
 from distutils.util import strtobool
@@ -35,6 +35,7 @@ def create_app() -> Flask:
 	hcaptcha.init_app(app)
 	babel.init_app(app)
 	limiter.init_app(app)
+	socketio.init_app(app)
 
 	@app.errorhandler(XaieconDatabaseException)
 	def handle_database_exception(e=None):
@@ -109,5 +110,8 @@ def create_app() -> Flask:
 	
 	from xaiecon.modules.core.help import help
 	app.register_blueprint(help)
+	
+	from xaiecon.modules.core.chat import chat
+	app.register_blueprint(chat)
 
 	return app

@@ -201,7 +201,7 @@ function update_content_time() {
 	var time = Date.now();
 	var ctime = Math.floor(time/1000);
 	for(var e of list) {
-		var otime = parseInt(e.attributes.value.nodeValue);
+		var otime = parseInt(e.attributes.value);
 		var diff = ctime-otime;
 		
 		// Convert diff to readable

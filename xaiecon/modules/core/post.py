@@ -1031,6 +1031,11 @@ def obtain_embed_url(link: str) -> str:
 		if p not in allowed_embeds:
 			continue
 		meta = soup.find('meta',property='og:video:secure_url')
+		if meta is None:
+			meta = soup.find('meta',property='og:video:url')
+			if meta is None:
+				continue
+			return meta.get('content')
 		return meta.get('content')
 	return None
 
@@ -1080,6 +1085,10 @@ def obtain_post_thumb(link: str):
 			if w <= 100 or h <= 100:
 				continue
 			return im
+		except requests.exceptions.MissingSchema:
+			continue
+		except requests.exceptions.ConnectionError:
+			pass
 		except requests.exceptions.InvalidURL:
 			continue
 		except OSError:

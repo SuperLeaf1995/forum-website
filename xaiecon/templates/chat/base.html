@@ -1,42 +1,49 @@
 <html>
 	<head>
+{% if u != None %}
+{% if u.uses_dark_mode == False %}
+<link rel='stylesheet' href='/assets/style.css'>
+{% else %}
+<link rel='stylesheet' href='/assets/dark-style.css'>
+{% endif %}
+{% else %}
+<link rel='stylesheet' href='/assets/style.css'>
+{% endif %}
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 		<style>
 /* Main selection for our website */
-::-moz-selection, ::-webkit-selection, ::selection {
-  background-color: #3126d1;
-  color: white;
-}
-body {
-  background-color: #f5f5f5;
-}
-li {
-  list-style: none;
-}
 hr {
   border: 1px solid lightgrey;
 }
-img.server-icon {
-  border-radius: 24px;
-  width: 48px;
-  height: 48px;
-}
-i.time {
-  color:gray;
+.content-datetime {
+  color: gray;
 }
 div {
   float: left;
-  background-color: #ffffff;
   margin: 2px;
+  padding: 8px;
 }
-.chat-div {
-  width: 75%;
-  height: 100vh;
+textarea {
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: fill-available;
+}
+.popup {
+  border: none;
+  box-shadow: 0 0 16px black;
+  position: fixed;
+  left: 25%;
+  top: 25%;
+  margin-right: 25%;
+  margin-bottom: 25%;
+  padding: 8px;
 }
 .message {
   width: -webkit-fill-available;
   width: -moz-available;
   width: fill-available;
   float: left;
+  list-style: none;
 }
 .input-area {
   position: relative;
@@ -45,81 +52,363 @@ div {
   width: -webkit-fill-available;
   width: -moz-available;
   width: fill-available;
+  height: 10%;
 }
-textarea {
-  border: none;
-  font-family: 'Didact Gothic','Actor','Arial','Times New Roman';
-  resize: none;
-  transition: 0.3s;
-  width: -webkit-fill-available;
-  width: -moz-available;
-  width: fill-available;
-  margin-left: 8px;
-  margin-right: 8px;
-  margin-bottom: 8px;
-  padding: 4px;
-  background-color: #f5f5f5;
-}
-		
 		</style>
+		<script type='text/javascript'>
+var channel_id = 0;
+var server_id = 0;
+var socket = io({
+	query: {
+		sessionStorage
+	}
+});
+
+// On-connect event
+socket.on('connect', () => {
+	// TODO: Do stuff
+});
+
+socket.on('switch_server', (data) => {
+	server_id = data.server_id;
+	socket.emit('channels_of', {
+		server_id: server_id
+	})
+})
+
+socket.on('switch_channel', (data) => {
+	channel_id = data.channel_id;
+});
+
+function messageAppend(data) {
+	var li, div, elem, p, list;
+	
+	if(data.channel_id != channel_id) {
+		return;
+	}
+	
+	list = document.getElementById('chat-list');
+	
+	// Use data and add new message
+	li = document.createElement('li');
+	li.id = data.msg_id;
+	li.className = 'message';
+	
+	// Div
+	div = document.createElement('div');
+	
+	// Add user icon
+	elem = document.createElement('img');
+	elem.class = 'server-icon';
+	elem.src = '/user/thumb/'+data.uid;
+	elem.alt = 'User profile of '+data.username;
+	elem.height = 48;
+	elem.width = 48;
+	elem.style = 'float:left;border-radius:24px;'
+	div.appendChild(elem);
+	
+	// Username
+	elem = document.createElement('b');
+	elem.innerText = data.username+' ';
+	div.appendChild(elem);
+	
+	// This will be the realtime updated message :D
+	elem = document.createElement('i');
+	elem.className = 'content-datetime';
+	elem.id = data.time_utc;
+	div.appendChild(elem);
+	
+	// Append body	
+	elem = document.createElement('p');
+	elem.style = 'float:left;';
+	div.appendChild(elem);
+	
+	elem = document.createElement('p');
+	elem.innerHTML = data.body;
+	div.appendChild(elem);
+	
+	elem = document.createElement('p');
+	div.appendChild(elem);
+	
+	li.appendChild(div);
+	list.appendChild(li);
+	
+	scroll_smooth();
+	
+	// TODO: Sort fucking messages
+	sort_messages();
+}
+
+socket.on('make_message', (data) => {
+	messageAppend(data);
+	
+	// TODO: Sort fucking messages
+	sort_messages();
+});
+
+function scroll_smooth() {
+	let c,l;
+	
+	// Do not scroll if we are viewing old messages
+	l = document.getElementById('chat-list');
+	c = (l.scrollTop)/(l.scrollHeight-l.clientHeight);
+	
+	if(c === 1.0) {
+		return;
+	} else if(c >= 0.95) {
+		l.scrollBy(0,3);
+		delay = setTimeout(scroll_smooth,5);
+	}
+}
+
+// Stop scroll if mosue moves
+document.addEventListener('wheel', (event) => {
+	clearTimeout(scroll_smooth);
+});
+
+function sort_messages() {
+	list = document.getElementById('messages-list');
+	elem = document.getElementsByTagName('LI');
+	
+	for(e in elem) {
+		// console.log(e);
+	}
+}
+
+socket.on('server_channels', (data) => {
+	var list;
+	var name;
+	
+	list = document.getElementById('channel-list');
+	name = document.getElementById('channel-list-server-name');
+	
+	name.innerText
+	list.innerHtml = '';
+});
+
+function addMessage() {
+	socket.emit('message_send', {
+		body: document.getElementById('message-textarea').value,
+		channel_id: channel_id
+	});
+}
+
+function showJoinServer() {
+	document.getElementById('join-server-popup').style.display = 'block';
+}
+function showAddServer() {
+	document.getElementById('create-server-popup').style.display = 'block';
+}
+function showAddChannel() {
+	document.getElementById('create-channel-popup').style.display = 'block';
+}
+
+function joinServer() {
+	socket.emit('join_server', {
+		uuid: document.getElementById('server-uuid').value
+	});
+	document.getElementById('join-server-popup').style.display = 'none';
+}
+function addServer() {
+	socket.emit('make_server', {
+		name: document.getElementById('server-name').value
+	});
+	document.getElementById('create-server-popup').style.display = 'none';
+}
+function addChannel() {
+	console.log('Adding new channel');
+	
+	socket.emit('make_channel', {
+		name: document.getElementById('channel-name').value,
+		server_id: server_id
+	});
+	socket.emit('channels_of',{
+		server_id: server_id
+	})
+	document.getElementById('create-channel-popup').style.display = 'none';
+}
+
+function update_content_time() {
+	var list = document.getElementsByClassName('content-datetime');
+	var time = Date.now();
+	var ctime = Math.floor(time/1000);
+	for(var e of list) {
+		var otime = parseInt(e.id);
+		var diff = ctime-otime;
+		
+		// Convert diff to readable
+		var text = '';
+		
+		if(diff <= 60) {
+			text = diff+' seconds ago';
+		} else if(diff >= 61 && diff <= 60*60) {
+			text = Math.floor(diff/60)+' minutes and '+Math.floor(diff%60)+' seconds ago';
+		} else if(diff >= (60*60)+1 && diff <= (60*60*24)) {
+			text = Math.floor(diff/(60*60))+' hours and '+Math.floor((diff/60)%60)+' minutes ago';
+		} else if(diff >= (60*60*24)+1) {
+			text = Math.floor(diff/(60*60*24))+' days and '+Math.floor((diff/24)%24)+' hours ago';
+		}
+		
+		e.innerText = text;
+	}
+}
+setInterval(update_content_time,1000);
+
+// Automatically send message on enter
+document.addEventListener('keyup', (event) => {
+	if(event.keyCode !== 13) {
+		return;
+	}
+	event.preventDefault();
+	addMessage();
+	document.getElementById('message-textarea').value = '';
+});
+
+function changeServer(id) {
+	console.log('Server swap to',id);
+	server_id = id;
+	
+	// Obtain new channel list
+	socket.emit('channels_of', {
+		server_id: server_id
+	});
+	
+	// Update info
+	console.log('Request serverinfo')
+	socket.emit('serverinfo_of', {
+		server_id: server_id
+	});
+}
+
+function changeChannel(id) {
+	console.log('Channel swap to',id)
+	channel_id = id;
+	
+	// Obtain message list
+	socket.emit('messages_of', {
+		channel_id: channel_id
+	})
+}
+
+socket.on('serverinfo_of', (data) => {
+	console.log('New data',data);
+	document.getElementById('channel-list-server-name').innerText = data['server_name'];
+	document.getElementById('channel-list-server-uuid').innerText = data['server_uuid'];
+});
+
+socket.on('channels_of', (data) => {
+	var list = document.getElementById('channel-list');
+
+	// Blank list
+	list.innerHTML = '';
+
+	console.log(data.channels);
+	data.channels.forEach((e) => {
+		let li = document.createElement('li');
+		let a = document.createElement('a');
+		a.innerText = '#'+e.name;
+		a.onclick = function() { changeChannel(e.id) };
+		li.appendChild(a);
+		list.appendChild(li);
+	});
+});
+
+socket.on('messages_of', (data) => {
+	console.log(data);
+	document.getElementById('chat-list').innerHTML = '';
+	data.forEach((e) => {
+		messageAppend(e);
+	});
+});
+
+function hideJoinServer() {
+	document.getElementById('join-server-popup').style.display = 'none';
+}
+function hideAddServer() {
+	document.getElementById('create-server-popup').style.display = 'none';
+}
+function hideAddChannel() {
+	document.getElementById('create-channel-popup').style.display = 'none';
+}
+		</script>
 	</head>
-	<body>
-		<div style='width:8%;'>
-			<ul style='width:min-content;'>
-				<li><img class='server-icon' src='a'></li>
-				<li><img class='server-icon' src='a'></li>
-				<li><img class='server-icon' src='a'></li>
+	<body class='body-grey'>
+		<div class='popup block-content' id='create-server-popup' style='display:none;'>
+			<h1>Create new community</h1>
+			<i>Communities allows you group multiple rooms into a same umbrella</i><br>
+			
+			<label for='server-name'>Community name:</label>
+			<textarea class='textbar-normal' name='server-name' id='server-name'></textarea>
+			<button class='form-btn' onclick='addServer();'>Add community</button>
+			<button class='form-btn' onclick='hideAddServer();'>Nevermind</button>
+		</div>
+		<div class='popup block-content' id='join-server-popup' style='display:none;'>
+			<h1>Join a community</h1>
+			<i>Joining a community is easy, just ask for their uuid</i><br>
+			
+			<label for='server-uuid'>UUID:</label>
+			<textarea class='textbar-normal' name='server-uuid' id='server-uuid'></textarea>
+			<button class='form-btn' onclick='joinServer();'>Join community</button>
+			<button class='form-btn' onclick='hideJoinServer();'>Nevermind</button>
+		</div>
+		<div class='popup block-content' id='create-channel-popup' style='display:none;'>
+			<h1>Create new room</h1>
+			<i>Rooms allows you to chat of a specific topic</i><br>
+			
+			<label for='channel-name'>Room name:</label>
+			<textarea class='textbar-normal' name='channel-name' id='channel-name'></textarea>
+			<button class='form-btn' onclick='addChannel();'>Add room</button>
+			<button class='form-btn' onclick='hideAddChannel();'>Nevermind</button>
+		</div>
+		<div class='block-content' style='width:5%;'>
+			<ul>
+				<li><a onclick='showAddServer();'>/add</a></li>
+				<li><a onclick='showJoinServer();'>/join</a></li>
+			</ul>
+			<ul>
+			{% if servers != None %}
+				{% for server in servers %}
+					<li><a onclick='changeServer({{ server.id }})'>{{ server.name }}</a></li>
+				{% endfor %}
+			{% endif %}
 			</ul>
 		</div>
-		<div class='chat-div'>
+		<div class='block-content' style='width:15%;'>
+			<h1 id='channel-list-server-name'>(unknown)</h1>
+			<b>UUID:</b><i id='channel-list-server-uuid'>(unknown)</i>
+			<hr>
+			<ul id='channel-list'>
+				<i>No community selected</i>
+			</ul>
 			<ul>
-				<li class='message'>
-					<div>
-					<img style='float:left;' class='server-icon' src='a'>
-					<p style='float:left;'><b>admin</b> <i class='time'>40 seconds ago</i></p>
-					</div><br><br><br>
-					<p>Hello chat world!</p>
-				</li>
-				<li class='message'>
-					<div>
-					<img style='float:left;' class='server-icon' src='a'>
-					<p style='float:left;'><b>user2</b> <i class='time'>40 seconds ago</i></p>
-					</div><br><br><br>
-					<p>test</p>
-				</li>
-				<li class='message'>
-					<div>
-					<img style='float:left;' class='server-icon' src='a'>
-					<p style='float:left;'><b>admin</b> <i class='time'>40 seconds ago</i></p>
-					</div><br><br><br>
-					<p>test</p>
-					<p>test</p>
-					<p>test</p>
-				</li>
-				<li class='message'>
-					<div>
-					<img style='float:left;' class='server-icon' src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Bonsack_machine.png/400px-Bonsack_machine.png'>
-					<p style='float:left;'><b>user2</b> <i class='time'>40 seconds ago</i></p>
-					</div><br><br><br>
-					<p>test</p>
-					<p>test</p>
-					<p>test</p>
-				</li>
+				<li><a onclick='showAddChannel();'>/add</a></li>
+			</ul>
+		</div>
+		<div class='block-content' style='width:50%;'>
+			<ul style='height:80%;overflow-x:hidden;overflow-y:scroll;' id='chat-list'>
+				<!-- put stuff here -->
+				{% if messages != None %}
+					{% for msg in messages %}
+					<li id='{{ msg.id }}' class='message'>
+						<div>
+							<img style="float:left;border-radius:24px;" src="/user/thumb/{{ msg.user_id }}" alt="User profile of {{ msg.user_info.username }}" width="48" height="48">
+							<b>{{ msg.user_info.username }} </b><i class="content-datetime" id="{{ msg.creation_date }}">(calculating...)</i>
+							<p style="float: left;">{{ msg.body_html|safe }}</p>
+						</div>
+					</li>
+					{% endfor %}
+				{% endif %}
 			</ul>
 			<div class='input-area'>
-				<textarea></textarea>
+				<textarea class='textbar-normal' id='message-textarea'></textarea>
 			</div>
 		</div>
-		<div style='width:fill-available;'>
+		<div class='block-content' style='width:10%;'>
 			<ul>
 				<h3>User list</h3>
 				<hr>
 				<li>
-					<b>admin#1</b><br>
-					<b>user2#5</b><br>
-					<b>ffffffff#2</b><br>
-					<b>uwuwuw#4</b><br>
-					<b>asdasdas#3</b><br>
+					<b>Still in alpha... Await for more updates</b><br>
 				</li>
 			</ul>
 		</div>

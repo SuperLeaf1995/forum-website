@@ -2,6 +2,8 @@ Flask>=1.1.2
 Flask-Caching>=1.9.0
 Flask-Babel
 Flask-Limiter
+flask-socketio
+Flask-JWT
 misaka
 pygments
 Jinja2>=2.11.2

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect
 from flask_babel import gettext
 
 from xaiecon.modules.core.cache import cache
@@ -64,6 +64,12 @@ def create_app() -> Flask:
 	def send_index(u=None):
 		return render_template('index.html',u=u,title=gettext('Homepage'))
 
+	@app.before_request
+	def before_request_fn():
+		if request.url.startswith('http://') and 'localhost' not in app.config['DOMAIN_NAME']:
+			url = request.url.replace('http://','https://',1)
+			return redirect(url)
+	
 	@app.after_request
 	def after_request_fn(response):
 		if os.environ.get('FLASK_ENV') == 'production':

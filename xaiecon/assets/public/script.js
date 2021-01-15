@@ -205,17 +205,67 @@ function update_content_time() {
 		var diff = ctime-otime;
 		
 		// Convert diff to readable
-		var text;
+		var text = '';
+		
+		let seconds = Math.floor(diff%60);
+		let minutes = Math.floor((diff/60)%60);
+		let hours = Math.floor((diff/(60*60))%24);
+		let days = Math.floor((diff/(60*60*24))%7);
+		let weeks = Math.floor((diff/(60*60*24*7))%4);
+		let months = Math.floor((diff/(60*60*24*30))%12);
 		
 		if(diff <= 60) {
-			text = diff+' seconds ago';
+			text = seconds+' seconds ago';
 		} else if(diff >= 61 && diff <= 60*60) {
-			text = Math.floor(diff/60)+' minutes and '+Math.floor(diff%60)+' seconds ago';
+			if(minutes === 0) {
+				text += 'a minute';
+			} else {
+				text += minutes+' minutes';
+			}
+			text += ' and ';
+			if(seconds === 0) {
+				text += 'a second';
+			} else {
+				text += seconds+' seconds';
+			}
 		} else if(diff >= (60*60)+1 && diff <= (60*60*24)) {
-			text = Math.floor(diff/(60*60))+' hours and '+Math.floor((diff/60)%60)+' minutes ago';
-		} else if(diff >= (60*60*24)+1) {
-			text = Math.floor(diff/(60*60*24))+' days and '+Math.floor((diff/24)%24)+' hours ago';
+			if(hours === 0) {
+				text += 'an hour';
+			} else {
+				text += hours+' hours';
+			}
+			text += ' and ';
+			if(minutes === 0) {
+				text += 'a minute';
+			} else {
+				text += minutes+' minutes';
+			}
+		} else if(diff >= (60*60*24)+1 && diff <= diff >= (60*60*24*7)) {
+			if(days === 0) {
+				text += 'a day';
+			} else {
+				text += days+' days';
+			}
+			text += ' and ';
+			if(hours === 0) {
+				text += 'an hour';
+			} else {
+				text += hours+' hours';
+			}
+		}  else if(diff >= (60*60*24*7)+1) {
+			if(weeks === 0) {
+				text += 'a week';
+			} else {
+				text += weeks+' weeks';
+			}
+			text += ' and ';
+			if(days === 0) {
+				text += 'a day';
+			} else {
+				text += days+' days';
+			}
 		}
+		text += ' ago';
 		
 		e.innerText = text;
 	}

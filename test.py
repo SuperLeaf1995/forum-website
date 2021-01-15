@@ -13,10 +13,30 @@ from xaiecon.__init__ import app
 os.environ['SQLALCHEMY_URL'] = 'postgresql://postgres:postgres@postgres:5432/xaiecon_test'
 
 class TestFlaskApp(unittest.TestCase):
+	# test a database connection
 	def test_database(self):
 		db = open_db()
 		db.close()
 	
+	# test signup
+	def test_signup(self):
+		x = threading.Thread(target=app_start)
+		x.daemon = True
+		x.start()
+		
+		# send POST to signup
+		headers = {'User-Agent':'webapp-post-signup'}
+		data = {
+				'password':'TestingPassword69420',
+				'username':'TestUser',
+				'agree_tos':'True'
+		}
+		resp = requests.post('http://localhost:5000/user/signup',headers=headers,data=data)
+		self.assertNotEqual(resp.status_code,500)
+		
+		x.join()
+	
+	# test the application
 	def test_app(self):
 		x = threading.Thread(target=app_start)
 		x.daemon = True
@@ -116,6 +136,7 @@ class TestFlaskApp(unittest.TestCase):
 					
 					x = requests.get(a['href'],headers=headers)
 					self.assertTrue(x.status_code in [200,302,303,304])
+		x.join()
 	
 	# TODO: Add even more tests
 

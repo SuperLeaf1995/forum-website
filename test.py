@@ -135,8 +135,8 @@ class TestFlaskApp(unittest.TestCase):
 					if a.get('href') == '' or a.get('href') is None or a.get('href').startswith('/') or a.get('href').startswith('#'):
 						continue
 					
-					x = requests.get(a['href'],headers=headers)
-					self.assertTrue(x.status_code in [200,302,303,304])
+					xr = requests.get(a['href'],headers=headers)
+					self.assertTrue(xr.status_code in [200,302,303,304])
 		x.join()
 	
 	# TODO: Add even more tests

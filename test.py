@@ -35,6 +35,7 @@ class TestFlaskApp(unittest.TestCase):
 		resp = requests.post('http://localhost:5000/user/signup',headers=headers,data=data)
 		self.assertNotEqual(resp.status_code,500)
 		
+		stop_threads = True
 		x.join()
 	
 	# test the application
@@ -137,6 +138,7 @@ class TestFlaskApp(unittest.TestCase):
 					
 					xr = requests.get(a['href'],headers=headers)
 					self.assertTrue(xr.status_code in [200,302,303,304])
+		stop_threads = True
 		x.join()
 	
 	# TODO: Add even more tests

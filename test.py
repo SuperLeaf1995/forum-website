@@ -27,6 +27,7 @@ class TestFlaskApp(unittest.TestCase):
 		# send POST to signup
 		headers = {'User-Agent':'webapp-post-signup'}
 		data = {
+				'name':'Default Name',
 				'password':'TestingPassword69420',
 				'username':'TestUser',
 				'agree_tos':'True'

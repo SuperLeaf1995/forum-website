@@ -1,5 +1,4 @@
 # Xaiecon
-Censorship resistant platform, decentralized and federated.
 
 ## Install
 ### Manual

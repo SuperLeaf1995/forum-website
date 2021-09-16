@@ -20,7 +20,7 @@ Then run the server with one single command:
 Visit `localhost:5000` on your browser to see your instance running.
 
 ### Docker
-Clone the repository via `git clone https://gitlab.com/superleaf1995/xaiecon`.
+Clone the repository via `git clone https://github.com/superleaf1995/xaiecon`.
 
 Then build the docker image with the following command: `sudo docker build -t xaiecon:1.0 .`
 
